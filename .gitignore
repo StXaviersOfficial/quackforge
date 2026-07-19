@@ -1,2 +1,41 @@
 skills/
 node_modules/
+
+# Credentials & secrets — never commit
+credentials.txt
+.secure/
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+.next/
+out/
+dist/
+build/
+
+# Dependencies
+.pnpm-store/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+
+# Playwright
+test-results/
+playwright-report/
