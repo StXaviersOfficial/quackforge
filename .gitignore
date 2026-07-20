@@ -67,3 +67,6 @@ db/*.db-journal
 
 # Secrets
 .secure/
+
+# Firebase cache
+.firebase/
