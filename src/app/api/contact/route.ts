@@ -13,11 +13,13 @@ const PROJECT_TYPES = [
 ] as const
 
 const BUDGETS = [
-  'demo-2-days',
+  'demo',
   '99',
-  '149',
-  '299',
+  '249',
+  '599',
+  '1499',
   'custom',
+  'maintenance',
   'undecided',
 ] as const
 
