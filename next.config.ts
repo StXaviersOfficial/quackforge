@@ -1,12 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  reactStrictMode: false,
+  // SSR mode (default) — works on Vercel. For Firebase Hosting,
+  // use Vercel as origin and Firebase only for the .web.app subdomain.
 };
 
 export default nextConfig;
