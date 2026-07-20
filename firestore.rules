@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // enquiries: anyone can write their own enquiry, no one reads publicly
+    match /enquiries/{id} {
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() >= 2
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() >= 10;
+      allow read, update, delete: if false; // admin-only via SDK
+    }
+
+    // all other collections: locked down (admin SDK only)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
