@@ -1,33 +1,29 @@
-"use client"
+"use client";
 
-import { Github, Mail, MessageCircle, Heart } from "lucide-react"
-import { Marquee, FadeUp } from "@/components/motion-primitives"
-import { motion } from "framer-motion"
+import { Github, Mail, MessageCircle } from "lucide-react";
+import { Marquee, FadeUp } from "@/components/motion-primitives";
+import { motion } from "framer-motion";
 
 export function Footer() {
-  const year = new Date().getFullYear()
+  const year = new Date().getFullYear();
 
   const stackMarquee = [
     "Next.js 16",
     "TypeScript",
     "Tailwind 4",
-    "Firebase",
-    "Cloudflare Workers",
     "Kotlin",
     "Java",
     "Gradle",
     "Prisma",
-    "Vercel",
     "Material 3",
     "Forge",
     "Python",
     "Google OAuth",
     "REST APIs",
-  ]
+  ];
 
   return (
-    <footer className="mt-auto border-t border-border bg-background/60 backdrop-blur-sm">
-      {/* Tech marquee */}
+    <footer className="mt-auto border-t border-border bg-background/95">
       <div className="py-6 border-b border-border">
         <Marquee speed={28}>
           {stackMarquee.map((s, i) => (
@@ -36,9 +32,7 @@ export function Footer() {
               className="flex items-center gap-3 px-6 text-sm font-mono text-muted-foreground"
             >
               <span className="h-1 w-1 rounded-full bg-cyan-400" />
-              <span className="hover:text-cyan-300 transition-colors cursor-default">
-                {s}
-              </span>
+              <span className="hover:text-cyan-300 transition-colors cursor-default">{s}</span>
             </div>
           ))}
         </Marquee>
@@ -51,12 +45,12 @@ export function Footer() {
               <img
                 src="/quackforge-logo.png"
                 alt=""
-                className="h-9 w-9 rounded-lg object-cover ring-1 ring-cyan-400/30"
-                width={36}
-                height={36}
+                className="h-10 w-10 rounded-lg object-cover ring-1 ring-cyan-400/40"
+                width={40}
+                height={40}
               />
               <div className="flex flex-col">
-                <span className="text-sm font-semibold">
+                <span className="text-base font-semibold">
                   Quack<span className="text-gradient-cyan">Forge</span>
                 </span>
                 <span className="text-[11px] text-muted-foreground">
@@ -72,7 +66,8 @@ export function Footer() {
                 { href: "#services", label: "Services" },
                 { href: "#pricing", label: "Pricing" },
                 { href: "#work", label: "Work" },
-                { href: "#process", label: "Process" },
+                { href: "#testimonials", label: "Testimonials" },
+                { href: "#team", label: "Team" },
                 { href: "#faq", label: "FAQ" },
                 { href: "#contact", label: "Contact" },
               ].map((item) => (
@@ -118,23 +113,12 @@ export function Footer() {
           transition={{ delay: 0.3 }}
           className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground"
         >
-          <p>
-            © {year} QuackForge. Built with Next.js 16, Tailwind 4, and Firebase.
-          </p>
-          <p className="font-mono flex items-center gap-1.5">
-            Deploying to{" "}
-            <a
-              href="https://quackforge.web.app"
-              className="text-cyan-300 hover:text-cyan-200 transition-colors"
-            >
-              quackforge.web.app
-            </a>
-            <Heart className="h-3 w-3 fill-current text-cyan-300" />
-          </p>
+          <p>© {year} QuackForge. Built with Next.js 16 and Tailwind 4.</p>
+          <p className="font-mono text-cyan-300/80">Remote worldwide · taking new projects</p>
         </motion.div>
       </div>
     </footer>
-  )
+  );
 }
 
 function SocialLink({
@@ -143,10 +127,10 @@ function SocialLink({
   icon,
   hoverColor,
 }: {
-  href: string
-  label: string
-  icon: React.ReactNode
-  hoverColor: string
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  hoverColor: string;
 }) {
   return (
     <motion.a
@@ -161,5 +145,5 @@ function SocialLink({
     >
       {icon}
     </motion.a>
-  )
+  );
 }

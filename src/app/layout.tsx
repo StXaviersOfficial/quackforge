@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s · QuackForge",
   },
   description:
-    "Independent dev studio shipping web apps, Android apps, SEO wins, and custom-domain deploys. Next.js, Firebase, Cloudflare Workers, Kotlin. Demos in 48 hours.",
+    "Independent dev studio shipping web apps, Android apps, SEO wins, and custom-domain deploys. Dedicated infrastructure, custom-built systems, demos in 48 hours.",
   keywords: [
     "QuackForge",
     "freelance developer India",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     "landing page designer",
     "REST API developer",
   ],
-  authors: [{ name: "Xavier", url: "https://quackforge.web.app" }],
+  authors: [{ name: "QuackForge", url: SITE_URL }],
   creator: "QuackForge",
   publisher: "QuackForge",
   applicationName: "QuackForge",
@@ -103,13 +103,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "google-site-verification-token-here",
-  },
 };
 
 export const viewport = {
-  themeColor: "#00E5FF",
+  themeColor: "#22D3EE",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -127,11 +124,7 @@ const jsonLd = {
   image: `${SITE_URL}/og-image.png`,
   description:
     "Independent dev studio shipping web apps, Android apps, SEO ranking, and custom-domain deploys.",
-  founder: {
-    "@type": "Person",
-    name: "Xavier",
-    url: SITE_URL,
-  },
+  founder: { "@type": "Organization", name: "QuackForge" },
   knowsAbout: [
     "Next.js",
     "TypeScript",
@@ -152,7 +145,7 @@ const jsonLd = {
     "@type": "AggregateOffer",
     priceCurrency: "USD",
     lowPrice: "0",
-    highPrice: "299",
+    highPrice: "1499",
     offerCount: "6",
   },
   areaServed: "Worldwide",
@@ -178,18 +171,18 @@ const faqLd = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "How fast can QuackForge ship a working demo?",
+      name: "How fast can QuackForge ship a demo?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Two business days for a working demo site with your copy and brand colors. The demo is deployed to a live preview URL. You only pay if you decide to keep it.",
+        text: "Two business days. You get a clickable multi-page frontend prototype with your copy and brand colors, deployed to a live preview URL. No backend or forms wired yet at this tier.",
       },
     },
     {
       "@type": "Question",
-      name: "What does the $99 Starter tier include?",
+      name: "What's in the $99 Starter tier?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "A single-page landing site, custom domain setup, SSL, CDN, Firestore-backed contact form, basic SEO meta and sitemap, and two revision rounds. Covers the first year.",
+        text: "A multi-page site (up to 3 pages), shared backend for contact form, subdomain hosting, and basic SEO. No custom domain at this tier.",
       },
     },
     {
@@ -197,7 +190,7 @@ const faqLd = {
       name: "Do you build Android apps?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Native Android in Kotlin or Java with Gradle builds, Firebase Auth, REST sync, Material 3, and Play Store rollout. Covered under the Pro tier or custom quote.",
+        text: "Yes. Native Android in Kotlin or Java with Gradle builds, Firebase Auth, REST sync, Material 3, and Play Store rollout. Covered under the Pro tier or a custom quote.",
       },
     },
     {
@@ -205,15 +198,23 @@ const faqLd = {
       name: "Who owns the source code?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "You do. From day one, source is pushed to a private GitHub repo you own. All paid tiers include full source handover.",
+        text: "You do. From day one, source is pushed to a private GitHub repo you own. All paid tiers include full source handover on completion.",
       },
     },
     {
       "@type": "Question",
-      name: "How do I reach you directly?",
+      name: "What's the fastest way to reach the team?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Discord is the fastest — join https://discord.gg/VhKgEetwr8 and message me. Email is quackeditzofficial@gmail.com. Response window is 24 hours.",
+        text: "Discord. Join https://discord.gg/VhKgEetwr8 and message the team directly. Email works too: quackeditzofficial@gmail.com. Response window is 24 hours.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do you take on retainers after launch?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. The Care Basic and Care Complete plans cover ongoing maintenance, monitoring, and content edits. Larger retainers are available for continuous development work.",
       },
     },
   ],
