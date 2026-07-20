@@ -1,149 +1,168 @@
 "use client";
 
-import { Github, Mail, MessageCircle } from "lucide-react";
-import { Marquee, FadeUp } from "@/components/motion-primitives";
+import { Mail, MapPin } from "lucide-react";
+import { FadeUp } from "@/components/motion-primitives";
 import { motion } from "framer-motion";
+import { DiscordLogo } from "@/components/discord-fab";
+import { useBooking } from "@/hooks/use-booking";
+import { Button } from "@/components/ui/button";
 
 export function Footer() {
   const year = new Date().getFullYear();
-
-  const stackMarquee = [
-    "Next.js 16",
-    "TypeScript",
-    "Tailwind 4",
-    "Kotlin",
-    "Java",
-    "Gradle",
-    "Prisma",
-    "Material 3",
-    "Forge",
-    "Python",
-    "Google OAuth",
-    "REST APIs",
-  ];
+  const { openBooking } = useBooking();
 
   return (
     <footer className="mt-auto border-t border-border bg-background/95">
-      <div className="py-6 border-b border-border">
-        <Marquee speed={28}>
-          {stackMarquee.map((s, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 px-6 text-sm font-mono text-muted-foreground"
-            >
-              <span className="h-1 w-1 rounded-full bg-cyan-400" />
-              <span className="hover:text-cyan-300 transition-colors cursor-default">{s}</span>
-            </div>
-          ))}
-        </Marquee>
-      </div>
-
-      <div className="mx-auto max-w-6xl px-5 sm:px-6 py-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          <FadeUp>
-            <div className="flex items-center gap-3">
-              <img
-                src="/quackforge-logo.png"
-                alt=""
-                className="h-10 w-10 rounded-lg object-cover ring-1 ring-cyan-400/40"
-                width={40}
-                height={40}
-              />
-              <div className="flex flex-col">
-                <span className="text-base font-semibold">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 py-12">
+        {/* Top: brand + CTA */}
+        <FadeUp>
+          <div className="flex flex-col lg:flex-row gap-8 lg:items-end lg:justify-between pb-10 border-b border-border">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <img
+                  src="/quackforge-logo.png"
+                  alt=""
+                  className="h-10 w-10 rounded-lg object-cover ring-1 ring-cyan-400/40"
+                  width={40}
+                  height={40}
+                />
+                <span className="text-2xl font-semibold tracking-tight">
                   Quack<span className="text-gradient-cyan">Forge</span>
                 </span>
-                <span className="text-[11px] text-muted-foreground">
-                  Independent dev studio · est. 2024
-                </span>
               </div>
+              <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
+                Independent dev studio. Web apps, Android apps, SEO, custom
+                domains, automation. Free demos ship in 48 hours.
+              </p>
             </div>
-          </FadeUp>
 
-          <FadeUp delay={0.1}>
-            <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              {[
-                { href: "#services", label: "Services" },
-                { href: "#pricing", label: "Pricing" },
-                { href: "#work", label: "Work" },
-                { href: "#testimonials", label: "Testimonials" },
-                { href: "#team", label: "Team" },
-                { href: "#faq", label: "FAQ" },
-                { href: "#contact", label: "Contact" },
-              ].map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="text-muted-foreground hover:text-cyan-300 transition-colors link-underline"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </FadeUp>
-
-          <FadeUp delay={0.2}>
-            <div className="flex items-center gap-1.5">
-              <SocialLink
-                href="https://discord.gg/VhKgEetwr8"
-                label="Discord"
-                icon={<MessageCircle className="h-4 w-4" />}
-                hoverColor="hover:bg-[#5865F2]/15 hover:text-[#7984F5] hover:border-[#5865F2]/50"
-              />
-              <SocialLink
-                href="https://github.com/StXaviersOfficial"
-                label="GitHub"
-                icon={<Github className="h-4 w-4" />}
-                hoverColor="hover:bg-cyan-400/10 hover:text-cyan-300 hover:border-cyan-400/50"
-              />
-              <SocialLink
-                href="mailto:quackeditzofficial@gmail.com"
-                label="Email"
-                icon={<Mail className="h-4 w-4" />}
-                hoverColor="hover:bg-cyan-400/10 hover:text-cyan-300 hover:border-cyan-400/50"
-              />
+            <div className="flex flex-col gap-3 lg:items-end">
+              <Button
+                onClick={() => openBooking({})}
+                className="bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow self-start lg:self-end"
+              >
+                Book a Project
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Or browse the{" "}
+                <a href="#pricing" className="text-cyan-300 hover:text-cyan-200 underline-offset-4 underline">
+                  pricing tiers
+                </a>{" "}
+                first.
+              </p>
             </div>
-          </FadeUp>
+          </div>
+        </FadeUp>
+
+        {/* Middle: nav columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-b border-border">
+          <FooterCol title="Studio">
+            <FooterLink href="#services">Services</FooterLink>
+            <FooterLink href="#pricing">Pricing</FooterLink>
+            <FooterLink href="#maintenance">Care Plans</FooterLink>
+            <FooterLink href="#team">Team</FooterLink>
+          </FooterCol>
+          <FooterCol title="Build">
+            <FooterLink href="#contact">Book a Project</FooterLink>
+            <FooterLink href="#faq">FAQ</FooterLink>
+            <FooterLink href="https://discord.gg/VhKgEetwr8" external>
+              Discord server
+            </FooterLink>
+          </FooterCol>
+          <FooterCol title="Reach us">
+            <a
+              href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              quackforgeofficial@gmail.com
+            </a>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5" />
+              India · UTC+5:30 · Remote worldwide
+            </div>
+          </FooterCol>
+          <FooterCol title="Social">
+            <a
+              href="https://discord.gg/VhKgEetwr8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-[#7984F5] transition-colors"
+            >
+              <DiscordLogo className="h-3.5 w-3.5" />
+              Discord
+            </a>
+            <a
+              href="https://github.com/StXaviersOfficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+            >
+              <GithubLogo className="h-3.5 w-3.5" />
+              GitHub
+            </a>
+            <a
+              href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              Email
+            </a>
+          </FooterCol>
         </div>
 
+        {/* Bottom: copyright */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground"
+          transition={{ delay: 0.2 }}
+          className="pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground"
         >
-          <p>© {year} QuackForge. Built with Next.js 16 and Tailwind 4.</p>
-          <p className="font-mono text-cyan-300/80">Remote worldwide · taking new projects</p>
+          <p>© {year} QuackForge. Independent dev studio · est. 2024.</p>
+          <p className="font-mono text-cyan-300/70">
+            Taking new projects · reply within 24 hours
+          </p>
         </motion.div>
       </div>
     </footer>
   );
 }
 
-function SocialLink({
+function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <h4 className="eyebrow text-cyan-300 mb-1">{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function FooterLink({
   href,
-  label,
-  icon,
-  hoverColor,
+  children,
+  external,
 }: {
   href: string;
-  label: string;
-  icon: React.ReactNode;
-  hoverColor: string;
+  children: React.ReactNode;
+  external?: boolean;
 }) {
   return (
-    <motion.a
+    <a
       href={href}
-      target={href.startsWith("http") ? "_blank" : undefined}
-      rel="noopener noreferrer"
-      aria-label={label}
-      title={label}
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.95 }}
-      className={`inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors ${hoverColor}`}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className="text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
     >
-      {icon}
-    </motion.a>
+      {children}
+    </a>
+  );
+}
+
+function GithubLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+    </svg>
   );
 }

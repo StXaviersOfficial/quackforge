@@ -2,16 +2,17 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, X, MessageCircle } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/motion-primitives";
+import { useBooking } from "@/hooks/use-booking";
 import { cn } from "@/lib/utils";
+import { DiscordLogo } from "@/components/discord-fab";
 
 const NAV = [
   { href: "#services", label: "Services" },
   { href: "#pricing", label: "Pricing" },
-  { href: "#work", label: "Work" },
-  { href: "#testimonials", label: "Testimonials" },
+  { href: "#maintenance", label: "Care Plans" },
   { href: "#team", label: "Team" },
   { href: "#faq", label: "FAQ" },
 ];
@@ -19,6 +20,7 @@ const NAV = [
 export function SiteNav() {
   const [open, setOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+  const { openBooking } = useBooking();
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -36,7 +38,7 @@ export function SiteNav() {
           : "bg-transparent border-b border-transparent"
       )}
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <nav className="flex h-20 items-center justify-between">
           <Link
             href="#top"
@@ -47,9 +49,9 @@ export function SiteNav() {
               <img
                 src="/quackforge-logo.png"
                 alt=""
-                className="h-12 w-12 rounded-lg object-cover ring-1 ring-cyan-400/40 transition-all duration-300 group-hover:ring-cyan-300 group-hover:scale-105"
-                width={48}
-                height={48}
+                className="h-11 w-11 rounded-lg object-cover ring-1 ring-cyan-400/40 transition-all duration-300 group-hover:ring-cyan-300 group-hover:scale-105"
+                width={44}
+                height={44}
               />
               <div
                 aria-hidden
@@ -76,19 +78,22 @@ export function SiteNav() {
           <div className="flex items-center gap-2">
             <Magnetic strength={0.3}>
               <Button
-                asChild
-                size="sm"
-                className="hidden sm:inline-flex bg-[#5865F2] hover:bg-[#4752C4] text-white border-0 pulse-glow"
+                onClick={() => openBooking({})}
+                className="hidden sm:inline-flex bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow h-10"
               >
-                <a
-                  href="https://discord.gg/VhKgEetwr8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MessageCircle className="mr-1.5 h-4 w-4" />
-                  Join Discord
-                </a>
+                Book a Project
               </Button>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a
+                href="https://discord.gg/VhKgEetwr8"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Join our Discord server"
+                className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#5865F2] hover:bg-[#4752C4] text-white transition-colors"
+              >
+                <DiscordLogo className="h-5 w-5" />
+              </a>
             </Magnetic>
             <button
               className="lg:hidden inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted"
@@ -104,7 +109,7 @@ export function SiteNav() {
 
       {open && (
         <div className="lg:hidden border-t border-border bg-background/95">
-          <div className="mx-auto max-w-6xl px-5 py-3 flex flex-col gap-1">
+          <div className="mx-auto max-w-7xl px-5 py-3 flex flex-col gap-1">
             {NAV.map((item) => (
               <a
                 key={item.href}
@@ -116,19 +121,13 @@ export function SiteNav() {
               </a>
             ))}
             <Button
-              asChild
-              size="sm"
-              className="mt-2 bg-[#5865F2] hover:bg-[#4752C4] text-white"
+              onClick={() => {
+                setOpen(false);
+                openBooking({});
+              }}
+              className="mt-2 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold"
             >
-              <a
-                href="https://discord.gg/VhKgEetwr8"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-              >
-                <MessageCircle className="mr-1.5 h-4 w-4" />
-                Join Discord
-              </a>
+              Book a Project
             </Button>
           </div>
         </div>

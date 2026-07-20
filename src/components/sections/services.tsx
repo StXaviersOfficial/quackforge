@@ -1,21 +1,10 @@
 "use client";
 
 import {
-  Code2,
-  Smartphone,
-  Search,
-  Globe,
-  Boxes,
-  Webhook,
+  Code2, Smartphone, Search, Globe, Boxes, Webhook,
+  Bot, Zap, FileCode2, Brain, MessageSquare, Workflow,
   type LucideIcon,
 } from "lucide-react";
-import {
-  StaggerGroup,
-  FadeUp,
-  TiltCard,
-  HoverLift,
-  GlowBorder,
-} from "@/components/motion-primitives";
 import { motion } from "framer-motion";
 
 interface Service {
@@ -28,21 +17,27 @@ interface Service {
 const SERVICES: Service[] = [
   {
     icon: Code2,
-    title: "Web apps",
-    desc: "Next.js + TypeScript apps with auth, payments, and dashboards. Dedicated backend infrastructure. Custom-built systems, not shared-tier shortcuts.",
+    title: "Web apps (React/Next.js)",
+    desc: "Next.js + TypeScript apps with auth, payments, and dashboards. SSR, App Router, Prisma/Firestore.",
     stack: ["Next.js 16", "TypeScript", "Tailwind", "Prisma"],
+  },
+  {
+    icon: FileCode2,
+    title: "Static HTML/CSS sites",
+    desc: "Pure HTML/CSS/JS sites when you don't need a framework — fast to load, easy to host, zero dependencies.",
+    stack: ["HTML5", "CSS3", "Vanilla JS", "Vite"],
   },
   {
     icon: Smartphone,
     title: "Android apps",
-    desc: "Native Android in Kotlin/Java with Gradle, Firebase Auth, REST sync, Material 3, and Play Store rollout.",
-    stack: ["Kotlin", "Java", "Gradle", "Firebase"],
+    desc: "Native Android in Kotlin or Java with Gradle, Firebase Auth, REST sync, Material 3, Play Store rollout.",
+    stack: ["Kotlin", "Java", "Gradle", "Material 3"],
   },
   {
     icon: Search,
     title: "SEO ranking",
-    desc: "Technical audits, Core Web Vitals, structured data, content architecture. Built to climb — not look pretty.",
-    stack: ["Lighthouse", "Schema.org", "Sitemaps", "GA4"],
+    desc: "Technical audits, Core Web Vitals, structured data, content architecture, keyword tracking. Built to climb.",
+    stack: ["Lighthouse", "Schema.org", "GA4", "Search Console"],
   },
   {
     icon: Globe,
@@ -57,39 +52,79 @@ const SERVICES: Service[] = [
     stack: ["Java", "Forge", "Fabric", "Bukkit"],
   },
   {
+    icon: Bot,
+    title: "Discord bots",
+    desc: "Custom Discord bots — moderation, automation, ticket systems, music, role management. Slash commands, buttons, modals.",
+    stack: ["Discord.js", "Node.js", "Slash Commands", "SQLite"],
+  },
+  {
+    icon: MessageSquare,
+    title: "Telegram & WhatsApp bots",
+    desc: "Telegram bot for orders, support, content delivery. WhatsApp Business API automation for lead capture and follow-ups.",
+    stack: ["Telegraf", "WhatsApp API", "Webhooks", "Node.js"],
+  },
+  {
     icon: Webhook,
     title: "APIs & integrations",
     desc: "REST endpoints, OAuth (Google, GitHub, Discord), webhooks, payment gateways. Edge functions for the cheap-and-fast tier.",
     stack: ["REST", "Google OAuth", "Stripe", "Workers"],
   },
+  {
+    icon: Brain,
+    title: "AI integrations",
+    desc: "LLM chatbots, image generation, AI agents. Bring AI into your product — chat, search, content generation, classification.",
+    stack: ["OpenAI", "Claude", "Gemini", "Vector DB"],
+  },
+  {
+    icon: Workflow,
+    title: "Automation scripts",
+    desc: "Python/Node scripts that automate boring work — scraping, data sync, scheduled reports, file processing, ETL pipelines.",
+    stack: ["Python", "Node.js", "Cron", "Puppeteer"],
+  },
+  {
+    icon: Zap,
+    title: "Performance audits",
+    desc: "Slow site? We profile, identify bottlenecks, and ship fixes. Lighthouse 95+ targets, real user monitoring setup.",
+    stack: ["Lighthouse", "WebPageTest", "DevTools", "RUM"],
+  },
 ];
 
 export function Services() {
   return (
-    <section id="services" className="scroll-mt-16 py-20 sm:py-28 relative">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <StaggerGroup className="max-w-2xl mb-10 sm:mb-12" stagger={0.1}>
-          <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 01 · Services
-            </p>
-          </FadeUp>
-          <FadeUp>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-              Six things.{" "}
-              <span className="text-gradient-cyan">Done properly.</span>
-            </h2>
-          </FadeUp>
-          <FadeUp>
-            <p className="mt-4 text-muted-foreground text-lg">
-              Narrow focus, deep execution. Every engagement ships with source
-              code and docs.
-            </p>
-          </FadeUp>
-        </StaggerGroup>
+    <section id="services" className="scroll-mt-16 py-16 sm:py-20 relative">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="max-w-2xl mb-8 sm:mb-10">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="eyebrow text-cyan-300 mb-3 flex items-center gap-2"
+          >
+            <span className="h-px w-8 bg-cyan-400/50" /> 01 · Services
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ delay: 0.08, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="text-3xl sm:text-4xl font-semibold tracking-tight"
+          >
+            Twelve things. <span className="text-gradient-cyan">Done properly.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ delay: 0.16, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="mt-3 text-muted-foreground text-base sm:text-lg"
+          >
+            Narrow focus, deep execution. Every engagement ships with source code and docs.
+          </motion.p>
+        </div>
 
-        {/* Mobile: horizontal swipe carousel; Desktop: grid */}
-        <div className="swipe-carousel flex gap-4 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible -mx-5 px-5 md:mx-0 md:px-0 pb-4 md:pb-0">
+        {/* Desktop: grid 4 cols. Mobile: 2 cols compact grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
             return (
@@ -99,44 +134,36 @@ export function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{
-                  delay: i * 0.08,
+                  delay: (i % 4) * 0.05,
                   duration: 0.6,
                   ease: [0.4, 0, 0.2, 1],
                 }}
-                className="w-[85%] sm:w-[60%] md:w-auto"
+                whileHover={{ y: -4, scale: 1.02 }}
+                className="group rounded-xl border border-border bg-card hover:border-cyan-400/40 transition-colors p-4 sm:p-5"
               >
-                <GlowBorder className="rounded-xl h-full">
-                  <TiltCard
-                    max={4}
-                    className="h-full rounded-xl border border-border bg-card/95 p-6 hover:border-cyan-400/40 transition-colors"
-                  >
-                    <div className="flex items-start gap-4 mb-3">
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300"
-                      >
-                        <Icon className="h-5 w-5" />
-                      </motion.div>
-                      <h3 className="text-lg font-semibold tracking-tight pt-1.5">
-                        {s.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      {s.desc}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {s.stack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded border border-border bg-background text-muted-foreground"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </TiltCard>
-                </GlowBorder>
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 mb-3"
+                >
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                </motion.div>
+                <h3 className="text-sm sm:text-base font-semibold tracking-tight mb-1.5 leading-tight">
+                  {s.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-3">
+                  {s.desc}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {s.stack.map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border bg-background text-muted-foreground"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </motion.div>
             );
           })}

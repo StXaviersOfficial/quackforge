@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
+import { BookingProvider } from "@/hooks/use-booking";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s · QuackForge",
   },
   description:
-    "Independent dev studio shipping web apps, Android apps, SEO wins, and custom-domain deploys. Dedicated infrastructure, custom-built systems, demos in 48 hours.",
+    "Independent dev studio shipping web apps, Android apps, SEO wins, custom-domain deploys, Discord bots, automation, AI integrations. Free demos in 48 hours.",
   keywords: [
     "QuackForge",
     "freelance developer India",
@@ -46,6 +47,11 @@ export const metadata: Metadata = {
     "web app development",
     "landing page designer",
     "REST API developer",
+    "Discord bot developer",
+    "Telegram bot developer",
+    "WhatsApp automation",
+    "AI integration developer",
+    "automation scripts",
   ],
   authors: [{ name: "QuackForge", url: SITE_URL }],
   creator: "QuackForge",
@@ -53,9 +59,7 @@ export const metadata: Metadata = {
   applicationName: "QuackForge",
   category: "technology",
   formatDetection: { email: false, address: false, telephone: false },
-  alternates: {
-    canonical: SITE_URL,
-  },
+  alternates: { canonical: SITE_URL },
   icons: {
     icon: [
       { url: "/quackforge-logo.png", type: "image/png", sizes: "32x32" },
@@ -72,7 +76,7 @@ export const metadata: Metadata = {
     siteName: "QuackForge",
     title: "QuackForge — Full-stack dev studio. Web, Android, SEO.",
     description:
-      "Independent dev studio shipping web apps, Android apps, SEO wins, and custom-domain deploys. Demos in 48 hours.",
+      "Independent dev studio shipping web apps, Android apps, SEO wins, custom-domain deploys. Free demos in 48 hours.",
     images: [
       {
         url: "/og-image.png",
@@ -86,14 +90,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "QuackForge — Full-stack dev studio",
     description:
-      "Web apps, Android apps, SEO ranking, custom-domain deploys. Shipped in days, not quarters.",
+      "Web apps, Android apps, SEO ranking, custom-domain deploys, Discord bots, automation. Shipped fast.",
     creator: "@quackeditz",
     images: ["/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -123,12 +126,14 @@ const jsonLd = {
   logo: `${SITE_URL}/quackforge-logo.png`,
   image: `${SITE_URL}/og-image.png`,
   description:
-    "Independent dev studio shipping web apps, Android apps, SEO ranking, and custom-domain deploys.",
+    "Independent dev studio shipping web apps, Android apps, SEO ranking, custom-domain deploys, Discord bots, and automation.",
   founder: { "@type": "Organization", name: "QuackForge" },
   knowsAbout: [
     "Next.js",
     "TypeScript",
     "JavaScript",
+    "HTML",
+    "CSS",
     "Java",
     "Kotlin",
     "Python",
@@ -140,6 +145,9 @@ const jsonLd = {
     "Google OAuth",
     "Search Engine Optimization",
     "Minecraft modding",
+    "Discord bots",
+    "Telegram bots",
+    "AI integrations",
   ],
   offers: {
     "@type": "AggregateOffer",
@@ -158,7 +166,7 @@ const jsonLd = {
     {
       "@type": "ContactPoint",
       contactType: "sales",
-      email: "quackeditzofficial@gmail.com",
+      email: "quackforgeofficial@gmail.com",
       url: `${SITE_URL}/#contact`,
       availableLanguage: ["English"],
     },
@@ -206,7 +214,7 @@ const faqLd = {
       name: "What's the fastest way to reach the team?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Discord. Join https://discord.gg/VhKgEetwr8 and message the team directly. Email works too: quackeditzofficial@gmail.com. Response window is 24 hours.",
+        text: "Join our Discord server for the fastest response — usually within minutes. Email also works at quackforgeofficial@gmail.com. Response window is 24 hours.",
       },
     },
     {
@@ -238,7 +246,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${display.variable} antialiased bg-background text-foreground min-h-screen flex flex-col`}
       >
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SmoothScrollProvider>
+          <BookingProvider>{children}</BookingProvider>
+        </SmoothScrollProvider>
         <Toaster />
       </body>
     </html>

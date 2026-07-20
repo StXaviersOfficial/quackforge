@@ -1,7 +1,7 @@
 "use client";
 
 import { Code2, Palette, Server, Headset } from "lucide-react";
-import { StaggerGroup, FadeUp, TiltCard, HoverLift } from "@/components/motion-primitives";
+import { StaggerGroup, FadeUp } from "@/components/motion-primitives";
 import { motion } from "framer-motion";
 
 interface Role {
@@ -39,12 +39,12 @@ const ROLES: Role[] = [
 
 export function Team() {
   return (
-    <section id="team" className="scroll-mt-16 py-20 sm:py-28 relative border-t border-border/50">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <StaggerGroup className="max-w-3xl mb-10 sm:mb-12" stagger={0.1}>
+    <section id="team" className="scroll-mt-16 py-16 sm:py-20 relative border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <StaggerGroup className="max-w-3xl mb-8 sm:mb-10" stagger={0.1}>
           <FadeUp>
             <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 06 · Team
+              <span className="h-px w-8 bg-cyan-400/50" /> 04 · Team
             </p>
           </FadeUp>
           <FadeUp>
@@ -53,14 +53,14 @@ export function Team() {
             </h2>
           </FadeUp>
           <FadeUp>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+            <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">
               QuackForge runs on defined roles, not a fixed roster — the right
               people are on your project based on what it needs.
             </p>
           </FadeUp>
         </StaggerGroup>
 
-        <div className="swipe-carousel flex gap-4 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible -mx-5 px-5 md:mx-0 md:px-0 pb-4 md:pb-0 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
           {ROLES.map((role, i) => {
             const Icon = role.icon;
             return (
@@ -74,27 +74,21 @@ export function Team() {
                   duration: 0.6,
                   ease: [0.4, 0, 0.2, 1],
                 }}
-                className="w-[80%] sm:w-[50%] md:w-auto"
+                whileHover={{ y: -4, scale: 1.02 }}
+                className="rounded-xl border border-border bg-card p-5 hover:border-cyan-400/40 transition-colors"
               >
-                <HoverLift y={-3}>
-                  <TiltCard
-                    max={4}
-                    className="h-full rounded-xl border border-border bg-card p-6 hover:border-cyan-400/40 transition-colors"
-                  >
-                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 mb-4">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="text-base font-semibold tracking-tight mb-2">{role.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{role.body}</p>
-                  </TiltCard>
-                </HoverLift>
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 mb-3">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-semibold tracking-tight mb-2">{role.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{role.body}</p>
               </motion.div>
             );
           })}
         </div>
 
         <FadeUp delay={0.2}>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl">
+          <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
             Small projects move fast with a tight loop. Larger builds bring in
             the right specialists as scope demands — you get the team size the
             work actually needs, not a fixed headcount padding the invoice.
