@@ -1,15 +1,5 @@
 {
   "projects": {
-    "default": "quackforge",
-    "stxavierswebsite": "stxavierswebsite"
-  },
-  "targets": {
-    "quackforge": {
-      "hosting": {
-        "quackforge": [
-          "quackforge"
-        ]
-      }
-    }
+    "default": "quackforge"
   }
 }
