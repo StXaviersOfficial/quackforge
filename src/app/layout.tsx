@@ -182,7 +182,7 @@ const faqLd = {
       name: "What's in the $99 Starter tier?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "A multi-page site (up to 3 pages), shared backend for contact form, subdomain hosting, and basic SEO. No custom domain at this tier.",
+        text: "A multi-page site (up to 3 pages), shared backend for contact form, subdomain hosting, and basic SEO. No custom domain at this tier — that kicks in at the Growth tier.",
       },
     },
     {

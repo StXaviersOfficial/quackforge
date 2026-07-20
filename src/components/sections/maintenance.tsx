@@ -147,7 +147,7 @@ export function Maintenance() {
                       )}
                     >
                       <a href="#contact">
-                        Get {plan.name}
+                        {plan.name === "Request a Fix" ? "Send the brief" : `Choose ${plan.name}`}
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </a>
                     </Button>
