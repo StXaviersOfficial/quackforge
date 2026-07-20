@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { cn } from '@/lib/utils'
+import * as React from "react"
+import Link from "next/link"
+import { Menu, X, MessageCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Magnetic } from "@/components/motion-primitives"
+import { cn } from "@/lib/utils"
 
 const NAV = [
-  { href: '#services', label: 'Services' },
-  { href: '#pricing', label: 'Pricing' },
-  { href: '#work', label: 'Work' },
-  { href: '#process', label: 'Process' },
-  { href: '#contact', label: 'Contact' },
+  { href: "#services", label: "Services" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#work", label: "Work" },
+  { href: "#process", label: "Process" },
+  { href: "#faq", label: "FAQ" },
 ]
 
 export function SiteNav() {
@@ -22,17 +22,17 @@ export function SiteNav() {
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
     onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 w-full transition-colors duration-200',
+        "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
         scrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border'
-          : 'bg-transparent border-b border-transparent'
+          ? "bg-background/70 backdrop-blur-xl border-b border-border"
+          : "bg-transparent border-b border-transparent"
       )}
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
@@ -42,15 +42,18 @@ export function SiteNav() {
             className="flex items-center gap-2.5 group"
             aria-label="QuackForge home"
           >
-            <img
-              src="/quackforge-logo.png"
-              alt=""
-              className="h-8 w-8 rounded-md object-cover"
-              width={32}
-              height={32}
-            />
+            <div className="relative">
+              <img
+                src="/quackforge-logo.png"
+                alt=""
+                className="h-9 w-9 rounded-lg object-cover ring-1 ring-cyan-400/30 transition-all duration-300 group-hover:ring-cyan-400 group-hover:scale-105"
+                width={36}
+                height={36}
+              />
+              <div className="absolute inset-0 rounded-lg bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md" />
+            </div>
             <span className="text-base font-semibold tracking-tight">
-              QuackForge
+              Quack<span className="text-gradient-cyan">Forge</span>
             </span>
           </Link>
 
@@ -59,7 +62,7 @@ export function SiteNav() {
               <a
                 key={item.href}
                 href={item.href}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground link-underline transition-colors"
               >
                 {item.label}
               </a>
@@ -67,14 +70,22 @@ export function SiteNav() {
           </div>
 
           <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Button
-              asChild
-              size="sm"
-              className="hidden sm:inline-flex bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <a href="#contact">Start a project</a>
-            </Button>
+            <Magnetic strength={0.3}>
+              <Button
+                asChild
+                size="sm"
+                className="hidden sm:inline-flex bg-[#5865F2] hover:bg-[#4752C4] text-white border-0 pulse-glow"
+              >
+                <a
+                  href="https://discord.gg/VhKgEetwr8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle className="mr-1.5 h-4 w-4" />
+                  Join Discord
+                </a>
+              </Button>
+            </Magnetic>
             <button
               className="md:hidden inline-flex h-9 w-9 items-center justify-center border border-border rounded-md hover:bg-muted"
               onClick={() => setOpen((v) => !v)}
@@ -88,7 +99,7 @@ export function SiteNav() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl">
           <div className="mx-auto max-w-6xl px-5 py-3 flex flex-col gap-1">
             {NAV.map((item) => (
               <a
@@ -103,10 +114,16 @@ export function SiteNav() {
             <Button
               asChild
               size="sm"
-              className="mt-2 bg-primary text-primary-foreground"
+              className="mt-2 bg-[#5865F2] hover:bg-[#4752C4] text-white"
             >
-              <a href="#contact" onClick={() => setOpen(false)}>
-                Start a project
+              <a
+                href="https://discord.gg/VhKgEetwr8"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+              >
+                <MessageCircle className="mr-1.5 h-4 w-4" />
+                Join Discord
               </a>
             </Button>
           </div>

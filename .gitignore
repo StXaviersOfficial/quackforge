@@ -64,3 +64,6 @@ download/*.png
 # Database
 db/*.db
 db/*.db-journal
+
+# Secrets
+.secure/
