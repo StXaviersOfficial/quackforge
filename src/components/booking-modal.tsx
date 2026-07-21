@@ -99,16 +99,21 @@ export function BookingModal() {
       setMode(isMaintenance ? "maintenance" : "project");
 
       // Smart defaults (UX psychology: pre-select most common)
-      if (isMaintenance) {
-        setProjectType("maintenance");
-        const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "request-a-fix";
-        setBudget(pb);
-      } else {
-        const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth";
-        setBudget(pb);
-        setProjectType("web-app");
-      }
-      setTimeline("1-month");
+      // Use setTimeout to ensure state is set after Select components mount
+      const timer = setTimeout(() => {
+        if (isMaintenance) {
+          setProjectType("maintenance");
+          const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "request-a-fix";
+          setBudget(pb);
+        } else {
+          const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth";
+          setBudget(pb);
+          setProjectType("web-app");
+        }
+        setTimeline("1-month");
+      }, 50);
+
+      return () => clearTimeout(timer);
     }
   }, [open, preset]);
 
@@ -521,7 +526,7 @@ export function BookingModal() {
                         What do you want built?
                       </Label>
                       <Select
-                        key={`pt-${mode}`}
+                        key={`pt-${mode}-${step}`}
                         value={projectType}
                         onValueChange={setProjectType}
                       >
@@ -542,7 +547,7 @@ export function BookingModal() {
                           Budget tier
                         </Label>
                         <Select
-                          key={`bd-${mode}`}
+                          key={`bd-${mode}-${step}`}
                           value={budget}
                           onValueChange={setBudget}
                         >
@@ -561,7 +566,7 @@ export function BookingModal() {
                         <Label className="text-sm font-medium text-foreground/90 mb-2 block">
                           Timeline
                         </Label>
-                        <Select value={timeline} onValueChange={setTimeline}>
+                        <Select key={`tl-${step}`} value={timeline} onValueChange={setTimeline}>
                           <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
                             <SelectValue placeholder="Pick one" />
                           </SelectTrigger>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   StaggerGroup,

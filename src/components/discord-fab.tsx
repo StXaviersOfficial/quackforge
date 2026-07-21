@@ -146,16 +146,19 @@ export function DiscordFab() {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               aria-label="Book a Project"
-              className="absolute top-0 right-0 flex items-center justify-center h-12 w-12 rounded-full"
+              className="absolute top-0 right-0 flex items-center justify-center h-12 w-12 rounded-full overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #22D3EE, #38BDF8)",
                 boxShadow:
                   "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
               }}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="#0A1830" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              <img
+                src="/quackforge-logo.png"
+                alt=""
+                className="h-9 w-9 rounded-full object-cover"
+                draggable={false}
+              />
             </motion.button>
           )}
         </AnimatePresence>

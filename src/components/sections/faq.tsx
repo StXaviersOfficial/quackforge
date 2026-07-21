@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Mail, MessageCircle } from "lucide-react";
+import { ChevronDown, Mail } from "lucide-react";
 import { StaggerGroup, FadeUp } from "@/components/motion-primitives";
 import { motion, AnimatePresence } from "framer-motion";
 import { DiscordLogo } from "@/components/discord-fab";
