@@ -124,8 +124,8 @@ export function DiscordFab() {
               whileTap={{ scale: 0.95 }}
               className="absolute top-0 right-0 flex items-center gap-2 px-4 h-12 rounded-full whitespace-nowrap"
               style={{
-                background: "linear-gradient(135deg, #22D3EE, #38BDF8)",
-                color: "#0A1830",
+                background: "linear-gradient(135deg, #22D3EE, #0E7490)",
+                color: "#071E24",
                 fontWeight: 700,
                 fontSize: "13px",
                 boxShadow:
@@ -148,7 +148,7 @@ export function DiscordFab() {
               aria-label="Book a Project"
               className="absolute top-0 right-0 flex items-center justify-center h-12 w-12 rounded-full overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, #22D3EE, #38BDF8)",
+                background: "linear-gradient(135deg, #22D3EE, #0E7490)",
                 boxShadow:
                   "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
               }}

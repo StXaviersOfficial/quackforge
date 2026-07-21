@@ -63,7 +63,7 @@ function ChipBody() {
       <mesh position={[0, 0.22, 0]}>
         <boxGeometry args={[0.7, 0.02, 0.7]} />
         <meshStandardMaterial
-          color="#0A1830"
+          color="#071E24"
           emissive="#22D3EE"
           emissiveIntensity={0.7}
           metalness={0.4}
@@ -156,7 +156,7 @@ export function CpuDiagram3D() {
           <linearGradient id="power-gradient-3d" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#22D3EE" />
             <stop offset="50%" stopColor="#67E8F9" />
-            <stop offset="100%" stopColor="#38BDF8" />
+            <stop offset="100%" stopColor="#0E7490" />
           </linearGradient>
           <filter id="glow-filter">
             <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -224,7 +224,7 @@ export function CpuDiagram3D() {
           shadow-mapSize={[1024, 1024]}
         />
         <pointLight position={[-5, 3, -5]} intensity={1.2} color="#22D3EE" />
-        <pointLight position={[3, -2, 3]} intensity={0.8} color="#38BDF8" />
+        <pointLight position={[3, -2, 3]} intensity={0.8} color="#0E7490" />
         <spotLight
           position={[0, 6, 0]}
           angle={0.5}

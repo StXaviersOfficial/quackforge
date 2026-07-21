@@ -48,28 +48,19 @@ export function Services() {
         </div>
       </div>
 
-      {/* Tech strip — dual-direction marquee, cool design */}
+      {/* Tech strip — single smooth marquee */}
       <div className="relative overflow-hidden py-6 border-y border-cyan-400/20 bg-card/30">
         {/* Edge gradients */}
         <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, #0A1830, transparent)" }} />
+          style={{ background: "linear-gradient(to right, #071E24, transparent)" }} />
         <div className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, #0A1830, transparent)" }} />
+          style={{ background: "linear-gradient(to left, #071E24, transparent)" }} />
 
-        {/* Row 1 — scrolling left */}
+        {/* Single row — scrolling left, smooth linear loop */}
         <div className="relative py-2">
-          <Marquee speed={40} direction="left">
+          <Marquee speed={45} direction="left">
             {TECH_STACK.map((tech, i) => (
               <TechChip key={`r1-${i}`} tech={tech} />
-            ))}
-          </Marquee>
-        </div>
-
-        {/* Row 2 — scrolling right (offset items) */}
-        <div className="relative py-2">
-          <Marquee speed={35} direction="right">
-            {[...TECH_STACK].reverse().map((tech, i) => (
-              <TechChip key={`r2-${i}`} tech={tech} variant="alt" />
             ))}
           </Marquee>
         </div>

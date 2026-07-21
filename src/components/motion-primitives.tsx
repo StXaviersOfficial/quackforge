@@ -655,9 +655,10 @@ export function Marquee({
   direction?: "left" | "right"
 }) {
   return (
-    <div className={`overflow-hidden ${className ?? ""}`}>
+    <div className={`overflow-hidden ${className ?? ""}`} style={{ transform: "translateZ(0)" }}>
       <motion.div
         className="flex w-max"
+        style={{ willChange: "transform", backfaceVisibility: "hidden" }}
         animate={{
           x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"],
         }}
@@ -665,6 +666,7 @@ export function Marquee({
           duration: speed,
           repeat: Infinity,
           ease: "linear",
+          repeatType: "loop",
         }}
       >
         <div className="flex">{children}</div>
