@@ -344,19 +344,44 @@ export function Pricing() {
           <div className="card-stack">
             {TIERS.map((tier, i) => {
               const diff = i - activeMobile;
-              let cls = "far-right";
-              if (diff === 0) cls = "active";
-              else if (diff === -1) cls = "behind-left";
-              else if (diff === 1) cls = "behind-right";
-              else if (diff < -1) cls = "far-left";
-
               const price =
                 tier.usdPrice === -1 ? "Custom" : tier.usdPrice === 0 ? "Free" : format(tier.usdPrice, tier.id);
 
+              // Compute transform based on diff — spring-animated for 60fps
+              let transform: string;
+              let opacity = 0;
+              let zIndex = 0;
+              let boxShadow = "0 10px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(34,211,238,0.15)";
+              if (diff === 0) {
+                transform = "translateX(0px) translateZ(40px) rotateY(0deg) scale(1)";
+                opacity = 1;
+                zIndex = 10;
+                boxShadow = "0 20px 60px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(34,211,238,0.6), 0 0 60px -8px rgba(34,211,238,0.6)";
+              } else if (diff === -1) {
+                transform = "translateX(-110px) translateZ(-30px) rotateY(18deg) scale(0.92)";
+                opacity = 0.7;
+                zIndex = 5;
+              } else if (diff === 1) {
+                transform = "translateX(110px) translateZ(-30px) rotateY(-18deg) scale(0.92)";
+                opacity = 0.7;
+                zIndex = 5;
+              } else if (diff < -1) {
+                transform = "translateX(-180px) translateZ(-60px) rotateY(28deg) scale(0.82)";
+                opacity = 0.35;
+                zIndex = 1;
+              } else {
+                transform = "translateX(180px) translateZ(-60px) rotateY(-28deg) scale(0.82)";
+                opacity = 0.35;
+                zIndex = 1;
+              }
+
               return (
-                <div
+                <motion.div
                   key={tier.id}
-                  className={`playing-card ${cls}`}
+                  className="playing-card"
+                  style={{ zIndex }}
+                  animate={{ transform, opacity, boxShadow }}
+                  transition={{ type: "spring", stiffness: 400, damping: 35, mass: 0.8 }}
                   onClick={() => setActiveMobile(i)}
                 >
                   {tier.bestValue && (
@@ -421,7 +446,7 @@ export function Pricing() {
                     Choose {tier.name}
                     <ArrowRight className="ml-2 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </Button>
-                </div>
+                </motion.div>
               );
             })}
           </div>

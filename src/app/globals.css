@@ -346,9 +346,12 @@ html, body {
     0 10px 40px -10px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(34, 211, 238, 0.15);
   padding: 20px;
-  transition: transform 0.4s var(--ease-brand), opacity 0.4s var(--ease-brand), box-shadow 0.4s var(--ease-brand);
   cursor: pointer;
   overflow: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* No CSS transition — Framer Motion handles this with spring physics for 60fps */
 }
 .playing-card.active {
   z-index: 10;
