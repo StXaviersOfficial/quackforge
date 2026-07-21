@@ -116,9 +116,11 @@ export function Maintenance() {
             transition={{ delay: 0.16, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             className="mt-3 text-muted-foreground text-base sm:text-lg leading-relaxed"
           >
-            Keeps what's already built running smoothly — not new development.{" "}
+            Keeps your existing site running smoothly — this is not new
+            development.{" "}
             <span className="text-foreground/80">
-              Request a Fix is the one exception: one specific scoped improvement.
+              Request a Fix is the only exception: we'll make one specific
+              improvement to your site.
             </span>
           </motion.p>
         </div>

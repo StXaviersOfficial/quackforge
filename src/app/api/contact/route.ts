@@ -10,6 +10,7 @@ const PROJECT_TYPES = [
   'api-integration',
   'custom-domain',
   'other',
+  'maintenance',
 ] as const
 
 const BUDGETS = [
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
-    if (!PROJECT_TYPES.includes(projectType as (typeof PROJECT_TYPES)[number])) {
+    if (!projectType && mode !== 'maintenance') {
       return NextResponse.json(
         { ok: false, error: 'Pick a project type' },
         { status: 400 }

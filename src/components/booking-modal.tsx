@@ -303,10 +303,10 @@ export function BookingModal() {
                   >
                     <div className="text-center py-8">
                       <p className="text-lg text-muted-foreground mb-2">
-                        Free demo in 48 hours. Code you own from day one.
+                        Your free demo is ready in 48 hours. No payment needed to start.
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Takes ~2 minutes. No commitment until you approve the brief.
+                        Takes about 2 minutes. You're in control the whole way.
                       </p>
                     </div>
 

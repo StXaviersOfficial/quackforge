@@ -46,10 +46,10 @@ export function Hero() {
 
             <FadeUp>
               <p className="text-lg text-foreground/80 max-w-xl leading-relaxed">
-                Independent studio shipping web apps, Android apps, SEO wins,
-                and custom-domain deploys.{" "}
+                We build websites, mobile apps, and SEO systems that help your
+                business grow.{" "}
                 <span className="text-cyan-200 font-medium">
-                  Free demos in 48 hours. Code you own from day one.
+                  Your first demo is free and ready in 48 hours.
                 </span>
               </p>
             </FadeUp>

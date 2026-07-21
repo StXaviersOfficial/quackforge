@@ -42,9 +42,9 @@ export function Contact() {
             </FadeUp>
             <FadeUp>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg">
-                Pick a plan, share a brief, and our team replies within 24
-                hours with a written cost range and demo timeline. Free demos
-                ship in 48 hours — see it before you pay.
+                Pick a plan, share your idea, and our team will get back to you
+                within 24 hours with a clear cost range and timeline. Your first
+                demo is free — see it before you pay.
               </p>
             </FadeUp>
 
@@ -93,11 +93,11 @@ export function Contact() {
                       </Floating>
                       <div className="flex-1">
                         <p className="text-sm font-mono text-[#7984F5] mb-1">
-                          Fastest response
+                          Quickest way to reach us
                         </p>
                         <p className="text-base font-semibold">Join our Discord server</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Talk to the team directly · usually replies in minutes
+                          Chat with us directly · typically replies within minutes
                         </p>
                       </div>
                       <ArrowRight className="h-5 w-5 text-[#7984F5] group-hover:translate-x-1 transition-transform" />
@@ -134,7 +134,7 @@ export function Contact() {
                         </p>
                         <p className="text-base font-semibold">quackforgeofficial@gmail.com</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Opens your mail app with subject pre-filled
+                          Tap to send us a message
                         </p>
                       </div>
                       <ArrowRight className="h-5 w-5 text-cyan-300 group-hover:translate-x-1 transition-transform" />

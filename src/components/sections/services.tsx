@@ -43,7 +43,8 @@ export function Services() {
             transition={{ delay: 0.16, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             className="mt-3 text-muted-foreground text-base sm:text-lg"
           >
-            Web apps, static sites, Android, SEO, custom domains, mods, Discord/Telegram/WhatsApp bots, AI integrations, automation. Pick the project — we bring the right tools.
+            Websites, apps, SEO, custom domains, automation, and more. Whatever
+            your project needs, we have the tools and experience to deliver.
           </motion.p>
         </div>
       </div>

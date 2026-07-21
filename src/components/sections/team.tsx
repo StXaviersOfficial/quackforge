@@ -54,8 +54,9 @@ export function Team() {
           </FadeUp>
           <FadeUp>
             <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              QuackForge runs on defined roles, not a fixed roster — the right
-              people are on your project based on what it needs.
+              QuackForge brings together the right people for each project —
+              not a fixed team. Your project gets the specialists it actually
+              needs, no more, no less.
             </p>
           </FadeUp>
         </StaggerGroup>
@@ -89,9 +90,9 @@ export function Team() {
 
         <FadeUp delay={0.2}>
           <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
-            Small projects move fast with a tight loop. Larger builds bring in
-            the right specialists as scope demands — you get the team size the
-            work actually needs, not a fixed headcount padding the invoice.
+            Smaller projects move fast with a tight team. Larger projects bring
+            in additional specialists as needed — you get the right team size
+            for the work, not extra people inflating the cost.
           </p>
         </FadeUp>
       </div>

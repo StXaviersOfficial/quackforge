@@ -495,9 +495,9 @@ export function Pricing() {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="mt-8 text-xs text-muted-foreground text-center max-w-2xl mx-auto"
         >
-          Prices scale with the size and complexity of the build. The tier you
-          pick is a starting point — final scope is locked in the discovery
-          call before any payment.
+          Prices scale with the size and complexity of your project. The tier
+          you pick is a starting point — we'll lock in the final scope together
+          before any payment is due.
         </motion.p>
       </div>
     </section>
