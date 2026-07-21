@@ -2,17 +2,15 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Loader2, CheckCircle2, Mail } from "lucide-react";
+import {
+  X, ArrowRight, ArrowLeft, Loader2, CheckCircle2, Mail, Check,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useBooking } from "@/hooks/use-booking";
 import { toast } from "sonner";
@@ -59,51 +57,61 @@ const TIMELINES = [
   { value: "flexible", label: "Flexible" },
 ];
 
-type Errors = Partial<Record<"name" | "email" | "projectType" | "budget" | "message" | "timeline", string>>;
+// Step definitions
+// Step 0: Welcome (Discord + email options)
+// Step 1: Name + Email (progress 20%)
+// Step 2: Mode (Book a Project / Maintenance) (progress 40%)
+// Step 3: Project type + Budget + Timeline (progress 70%)
+// Step 4: Brief (progress 90% → 100% on submit)
+// Step 5: Done (progress 100%)
+const STEPS = [
+  { id: 0, name: "Start", progress: 0 },
+  { id: 1, name: "Contact", progress: 20 },
+  { id: 2, name: "Project type", progress: 40 },
+  { id: 3, name: "Details", progress: 70 },
+  { id: 4, name: "Brief", progress: 90 },
+  { id: 5, name: "Done", progress: 100 },
+];
 
 export function BookingModal() {
   const { open, preset, closeBooking } = useBooking();
+  const [step, setStep] = React.useState(0);
   const [submitting, setSubmitting] = React.useState(false);
-  const [done, setDone] = React.useState(false);
 
-  // Mode: "project" (default) or "maintenance"
+  // Form state
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [mode, setMode] = React.useState<"project" | "maintenance">("project");
   const [projectType, setProjectType] = React.useState("");
   const [budget, setBudget] = React.useState("");
   const [timeline, setTimeline] = React.useState("");
-  const [touched, setTouched] = React.useState<Record<string, boolean>>({});
-  const [errors, setErrors] = React.useState<Errors>({});
+  const [brief, setBrief] = React.useState("");
 
-  // Apply preset + auto-fill smart defaults when modal opens
+  // Apply preset when modal opens + reset state
   React.useEffect(() => {
     if (open) {
-      setDone(false);
-      // Determine mode from preset
+      setStep(0);
+      setName("");
+      setEmail("");
+      setBrief("");
+
       const isMaintenance = preset.projectType === "maintenance" || preset.budget === "maintenance";
-      const newMode = isMaintenance ? "maintenance" : "project";
-      setMode(newMode);
+      setMode(isMaintenance ? "maintenance" : "project");
 
-      // Auto-fill smart defaults with a slight delay to ensure Select components are mounted
-      const timer = setTimeout(() => {
-        if (isMaintenance) {
-          setProjectType("maintenance");
-          const presetBudget = preset.budget && preset.budget !== "maintenance" ? preset.budget : "request-a-fix";
-          setBudget(presetBudget);
-        } else {
-          const presetBudget = preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth";
-          setBudget(presetBudget);
-          setProjectType("web-app");
-        }
-        setTimeline("1-month");
-        setTouched({});
-        setErrors({});
-      }, 50);
-
-      return () => clearTimeout(timer);
+      // Smart defaults (UX psychology: pre-select most common)
+      if (isMaintenance) {
+        setProjectType("maintenance");
+        const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "request-a-fix";
+        setBudget(pb);
+      } else {
+        const pb = preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth";
+        setBudget(pb);
+        setProjectType("web-app");
+      }
+      setTimeline("1-month");
     }
   }, [open, preset]);
 
-  // Escape to close
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -113,67 +121,59 @@ export function BookingModal() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, submitting, closeBooking]);
 
-  function validate(): Errors {
-    const e: Errors = {};
-    const name = (document.getElementById("bk-name") as HTMLInputElement)?.value || "";
-    const email = (document.getElementById("bk-email") as HTMLInputElement)?.value || "";
-    const message = (document.getElementById("bk-message") as HTMLTextAreaElement)?.value || "";
-    if (!name || name.trim().length < 2) e.name = "Your name is required";
-    if (!email) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email";
-    if (!projectType) e.projectType = "Pick what you want built";
-    if (!budget) e.budget = "Pick a budget tier";
-    if (!message || message.trim().length < 10) e.message = "Tell us a bit more — at least 10 characters";
-    if (!timeline) e.timeline = "Pick a timeline";
-    return e;
+  const currentProgress = STEPS[step].progress;
+
+  function canProceed(): boolean {
+    if (step === 1) {
+      // Name + Email required
+      if (!name || name.trim().length < 2) return false;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
+    }
+    if (step === 3) {
+      if (!projectType) return false;
+      if (!budget) return false;
+      if (!timeline) return false;
+    }
+    if (step === 4) {
+      if (!brief || brief.trim().length < 10) return false;
+    }
+    return true;
   }
 
-  function onBlur(field: string) {
-    setTouched((t) => ({ ...t, [field]: true }));
-    setErrors(validate());
-  }
-
-  async function onSubmit(ev: React.FormEvent<HTMLFormElement>) {
-    ev.preventDefault();
-    const v = validate();
-    setErrors(v);
-    setTouched({ name: true, email: true, projectType: true, budget: true, message: true, timeline: true });
-    if (Object.keys(v).length > 0) {
-      toast.error("Please fix the highlighted fields");
+  function nextStep() {
+    if (!canProceed()) {
+      toast.error("Please complete the required fields first");
       return;
     }
-    if (submitting || done) return;
+    setStep((s) => Math.min(5, s + 1));
+  }
 
-    const form = ev.currentTarget;
-    const fd = new FormData(form);
-    const payload = {
-      name: String(fd.get("name") ?? ""),
-      email: String(fd.get("email") ?? ""),
-      project_type: projectType,
-      budget,
-      timeline,
-      mode,
-      message: String(fd.get("message") ?? ""),
-      source: "quackforge-booking-modal",
-    };
+  function prevStep() {
+    setStep((s) => Math.max(0, s - 1));
+  }
+
+  async function submitEnquiry() {
+    if (submitting) return;
+    if (!canProceed()) {
+      toast.error("Please write a brief (at least 10 characters)");
+      return;
+    }
 
     setSubmitting(true);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          name, email, project_type: projectType, budget, timeline, mode,
+          message: brief,
+          source: "quackforge-booking-wizard",
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) throw new Error(data.error || "Submit failed");
-      setDone(true);
+      setStep(5); // Done
       toast.success("Project enquiry received — we'll reply within 24 hours.");
-      form.reset();
-      setProjectType("");
-      setBudget("");
-      setTimeline("");
-      setErrors({});
-      setTouched({});
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Submit failed";
       toast.error(msg);
@@ -188,6 +188,7 @@ export function BookingModal() {
     <AnimatePresence>
       {open && (
         <>
+          {/* Backdrop */}
           <motion.div
             className="booking-modal-backdrop"
             initial={{ opacity: 0 }}
@@ -196,6 +197,7 @@ export function BookingModal() {
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             onClick={() => !submitting && closeBooking()}
           />
+          {/* Full-screen modal */}
           <motion.div
             className="booking-modal"
             initial={{ opacity: 0, y: 30 }}
@@ -206,14 +208,19 @@ export function BookingModal() {
               if (e.target === e.currentTarget && !submitting) closeBooking();
             }}
           >
-            <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-cyan-400/20 px-5 sm:px-8 py-8">
-              {/* Header — sticky */}
-              <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-5 bg-card/95 border-b border-cyan-400/20 z-10 mb-6">
-                <div className="flex items-center justify-between">
+            <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-cyan-400/20 px-5 sm:px-8 py-6">
+              {/* Header with progress bar — sticky */}
+              <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-4 bg-card/95 border-b border-cyan-400/20 z-10 mb-6">
+                <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="eyebrow text-cyan-300 mb-1">Project Booking</p>
-                    <h2 className="text-2xl font-semibold tracking-tight">
-                      {done ? "All set." : mode === "maintenance" ? "Book a maintenance plan." : "Build your project."}
+                    <p className="eyebrow text-cyan-300 mb-0.5">Project Booking</p>
+                    <h2 className="text-xl font-semibold tracking-tight">
+                      {step === 0 && "Let's start."}
+                      {step === 1 && "How can we reach you?"}
+                      {step === 2 && "What are you booking?"}
+                      {step === 3 && "Project details"}
+                      {step === 4 && "Project brief"}
+                      {step === 5 && "All set."}
                     </h2>
                   </div>
                   <button
@@ -225,357 +232,455 @@ export function BookingModal() {
                     <X className="h-5 w-5" />
                   </button>
                 </div>
+
+                {/* Progress bar — never 0% (always shows something) */}
+                {step > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+                      <span>Step {step} of {STEPS.length - 1}</span>
+                      <span className="font-mono text-cyan-300 font-semibold">{currentProgress}%</span>
+                    </div>
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-cyan-400 to-blue-400"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${currentProgress}%` }}
+                        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                        style={{ boxShadow: "0 0 8px rgba(34,211,238,0.6)" }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Body */}
-              {done ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  className="flex flex-col items-center justify-center text-center py-16"
-                >
+              {/* Step content */}
+              <AnimatePresence mode="wait">
+                {/* STEP 0: Welcome */}
+                {step === 0 && (
                   <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 mb-4 glow-cyan"
+                    key="step-0"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-6"
                   >
-                    <CheckCircle2 className="h-8 w-8" />
-                  </motion.div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    Thanks — we'll reply within 24 hours.
-                  </h3>
-                  <p className="text-muted-foreground mb-6 max-w-md">
-                    Your enquiry is in. The team will follow up with a written brief, cost range, and demo timeline.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
-                    <Button
-                      asChild
-                      className="flex-1 bg-[#5865F2] hover:bg-[#4752C4] text-white border-0"
-                    >
-                      <a href="https://discord.gg/VhKgEetwr8" target="_blank" rel="noopener noreferrer">
-                        <DiscordLogo className="mr-2 h-4 w-4" />
-                        Join Discord
-                      </a>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setDone(false);
-                        closeBooking();
-                      }}
-                      className="flex-1 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10"
-                    >
-                      Close
-                    </Button>
-                  </div>
-                </motion.div>
-              ) : (
-                <form onSubmit={onSubmit} className="space-y-5 pb-12">
-                  {/* Preset display */}
-                  {(preset.plan || preset.price) && (
-                    <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3 flex items-center justify-between">
-                      <div>
-                        <p className="text-[11px] font-mono uppercase text-cyan-300 mb-0.5">
-                          Selected plan
-                        </p>
-                        <p className="text-sm font-semibold">
-                          {preset.plan}
-                          {preset.price ? ` · ${preset.price}` : ""}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 underline"
-                        onClick={() => {
-                          setBudget("");
-                          setProjectType("");
-                        }}
-                      >
-                        Change
-                      </button>
+                    <div className="text-center py-8">
+                      <p className="text-lg text-muted-foreground mb-2">
+                        Free demo in 48 hours. Code you own from day one.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Takes ~2 minutes. No commitment until you approve the brief.
+                      </p>
                     </div>
-                  )}
 
-                  {/* Quick contact row */}
-                  <div className="flex flex-wrap gap-2 pb-2">
-                    <a
-                      href="https://discord.gg/VhKgEetwr8"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#5865F2]/40 bg-[#5865F2]/10 text-xs text-[#7984F5] hover:bg-[#5865F2]/20 transition-colors"
-                    >
-                      <DiscordLogo className="h-3.5 w-3.5" />
-                      Faster on Discord
-                    </a>
-                    <a
-                      href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-cyan-400/30 bg-cyan-400/5 text-xs text-cyan-300 hover:bg-cyan-400/15 transition-colors"
-                    >
-                      <Mail className="h-3.5 w-3.5" />
-                      Email us instead
-                    </a>
-                  </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <a
+                        href="https://discord.gg/VhKgEetwr8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-4 rounded-xl border border-[#5865F2]/40 bg-[#5865F2]/5 hover:bg-[#5865F2]/10 hover:border-[#5865F2] transition-colors group"
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#5865F2] text-white">
+                          <DiscordLogo className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">Faster on Discord</p>
+                          <p className="text-xs text-muted-foreground">Usually replies in minutes</p>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-[#7984F5] group-hover:translate-x-1 transition-transform" />
+                      </a>
+                      <a
+                        href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
+                        className="flex items-center gap-3 px-4 py-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5 hover:bg-cyan-400/10 hover:border-cyan-400 transition-colors group"
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/15 border border-cyan-400/30 text-cyan-300">
+                          <Mail className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">Email us instead</p>
+                          <p className="text-xs text-muted-foreground">quackforgeofficial@gmail.com</p>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-cyan-300 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    </div>
 
-                  {/* Name + Email (no placeholder fillers) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Field label="Your name" htmlFor="bk-name" error={touched.name ? errors.name : undefined}>
+                    {preset.plan && (
+                      <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3 flex items-center justify-between">
+                        <div>
+                          <p className="text-[11px] font-mono uppercase text-cyan-300 mb-0.5">Selected plan</p>
+                          <p className="text-sm font-semibold">
+                            {preset.plan}{preset.price ? ` · ${preset.price}` : ""}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={() => setStep(1)}
+                      className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12"
+                      size="lg"
+                    >
+                      Continue
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                    <p className="text-center text-xs text-muted-foreground">
+                      Prefer to talk first? Use Discord or email above.
+                    </p>
+                  </motion.div>
+                )}
+
+                {/* STEP 1: Name + Email */}
+                {step === 1 && (
+                  <motion.div
+                    key="step-1"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-5 pb-12"
+                  >
+                    <div>
+                      <Label htmlFor="bk-name" className="text-sm font-medium text-foreground/90 mb-2 block">
+                        Your name
+                      </Label>
                       <Input
                         id="bk-name"
-                        name="name"
-                        autoComplete="name"
-                        onBlur={() => onBlur("name")}
-                        className={cn(
-                          "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                          touched.name && errors.name && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                        )}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
+                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
                       />
-                    </Field>
-                    <Field label="Email" htmlFor="bk-email" error={touched.email ? errors.email : undefined}>
+                    </div>
+                    <div>
+                      <Label htmlFor="bk-email" className="text-sm font-medium text-foreground/90 mb-2 block">
+                        Email
+                      </Label>
                       <Input
                         id="bk-email"
-                        name="email"
                         type="email"
-                        autoComplete="email"
-                        onBlur={() => onBlur("email")}
-                        className={cn(
-                          "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                          touched.email && errors.email && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                        )}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
+                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
                       />
-                    </Field>
-                  </div>
+                    </div>
 
-                  {/* Mode toggle: Maintenance | Book a Project */}
-                  <div>
-                    <Label className="text-sm font-medium text-foreground/90 mb-2 block">
-                      What are you booking?
-                    </Label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={prevStep}
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={nextStep}
+                        disabled={!canProceed()}
+                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                      >
+                        Continue
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* STEP 2: Mode (Project vs Maintenance) */}
+                {step === 2 && (
+                  <motion.div
+                    key="step-2"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-5 pb-12"
+                  >
+                    <p className="text-sm text-muted-foreground">
+                      Pick what you're booking — you can change it later.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => {
                           setMode("project");
-                          // Switch to project budget + project type defaults
+                          // Smart defaults: pick Growth (best value) for project
                           setBudget(preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth");
                           setProjectType(preset.projectType && preset.projectType !== "maintenance" ? preset.projectType : "web-app");
-                          setTouched({});
-                          setErrors({});
                         }}
                         className={cn(
-                          "px-4 py-3 rounded-lg border text-sm font-medium transition-all",
+                          "px-4 py-6 rounded-xl border text-left transition-all",
                           mode === "project"
-                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-200 glow-cyan"
-                            : "border-border bg-background text-muted-foreground hover:border-cyan-400/40"
+                            ? "border-cyan-400 bg-cyan-400/15 glow-cyan"
+                            : "border-border bg-background hover:border-cyan-400/40"
                         )}
                       >
-                        Book a Project
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-base font-semibold">Book a Project</h3>
+                          {mode === "project" && (
+                            <div className="h-5 w-5 rounded-full bg-cyan-400 flex items-center justify-center">
+                              <Check className="h-3 w-3 text-background" />
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Web apps, sites, Android apps, SEO, mods, bots, AI, automation.
+                        </p>
                       </button>
                       <button
                         type="button"
                         onClick={() => {
                           setMode("maintenance");
-                          // Switch to maintenance budget + maintenance type
                           setBudget("request-a-fix");
                           setProjectType("maintenance");
-                          setTouched({});
-                          setErrors({});
                         }}
                         className={cn(
-                          "px-4 py-3 rounded-lg border text-sm font-medium transition-all",
+                          "px-4 py-6 rounded-xl border text-left transition-all",
                           mode === "maintenance"
-                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-200 glow-cyan"
-                            : "border-border bg-background text-muted-foreground hover:border-cyan-400/40"
+                            ? "border-cyan-400 bg-cyan-400/15 glow-cyan"
+                            : "border-border bg-background hover:border-cyan-400/40"
                         )}
                       >
-                        Maintenance
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-base font-semibold">Maintenance</h3>
+                          {mode === "maintenance" && (
+                            <div className="h-5 w-5 rounded-full bg-cyan-400 flex items-center justify-center">
+                              <Check className="h-3 w-3 text-background" />
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Request a Fix, Care Basic, or Care Complete plans.
+                        </p>
                       </button>
                     </div>
-                  </div>
 
-                  {/* Project type */}
-                  <Field
-                    label="What do you want built?"
-                    htmlFor="bk-project-type"
-                    error={touched.projectType ? errors.projectType : undefined}
-                  >
-                    <Select
-                      value={projectType}
-                      onValueChange={(v) => {
-                        setProjectType(v);
-                        setTouched((t) => ({ ...t, projectType: true }));
-                        setTimeout(() => setErrors(validate()), 0);
-                      }}
-                    >
-                      <SelectTrigger
-                        id="bk-project-type"
-                        className={cn(
-                          "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                          touched.projectType && errors.projectType && "border-destructive"
-                        )}
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={prevStep}
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
                       >
-                        <SelectValue placeholder="Pick one" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
-                        {PROJECT_TYPES.map((pt) => (
-                          <SelectItem key={pt.value} value={pt.value}>
-                            {pt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-
-                  {/* Budget + Timeline */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Field
-                      label="Budget tier"
-                      htmlFor="bk-budget"
-                      error={touched.budget ? errors.budget : undefined}
-                    >
-                      <Select
-                        key={`budget-${mode}`}
-                        value={budget}
-                        onValueChange={(v) => {
-                          setBudget(v);
-                          setTouched((t) => ({ ...t, budget: true }));
-                          setTimeout(() => setErrors(validate()), 0);
-                        }}
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={nextStep}
+                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12"
                       >
-                        <SelectTrigger
-                          id="bk-budget"
-                          className={cn(
-                            "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                            touched.budget && errors.budget && "border-destructive"
-                          )}
-                        >
-                          <SelectValue placeholder="Pick one" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
-                          {budgetOptions.map((b) => (
-                            <SelectItem key={b.value} value={b.value}>
-                              {b.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-
-                    <Field
-                      label="Timeline"
-                      htmlFor="bk-timeline"
-                      error={touched.timeline ? errors.timeline : undefined}
-                    >
-                      <Select
-                        value={timeline}
-                        onValueChange={(v) => {
-                          setTimeline(v);
-                          setTouched((t) => ({ ...t, timeline: true }));
-                          setTimeout(() => setErrors(validate()), 0);
-                        }}
-                      >
-                        <SelectTrigger
-                          id="bk-timeline"
-                          className={cn(
-                            "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                            touched.timeline && errors.timeline && "border-destructive"
-                          )}
-                        >
-                          <SelectValue placeholder="Pick one" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
-                          {TIMELINES.map((t) => (
-                            <SelectItem key={t.value} value={t.value}>
-                              {t.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  </div>
-
-                  {/* Message */}
-                  <Field
-                    label="Project brief"
-                    htmlFor="bk-message"
-                    error={touched.message ? errors.message : undefined}
-                  >
-                    <Textarea
-                      id="bk-message"
-                      name="message"
-                      rows={5}
-                      placeholder="Describe your project briefly"
-                      onBlur={() => onBlur("message")}
-                      className={cn(
-                        "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none",
-                        touched.message && errors.message && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                      )}
-                    />
-                  </Field>
-
-                  <Button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group"
-                    size="lg"
-                  >
-                    {submitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending
-                      </>
-                    ) : (
-                      <>
-                        Send project enquiry
+                        Continue
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </>
-                    )}
-                  </Button>
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
 
-                  <p className="text-[11px] text-muted-foreground text-center">
-                    By submitting you agree to a one-off follow-up email. No newsletters, ever.
-                  </p>
-                </form>
-              )}
+                {/* STEP 3: Project type + Budget + Timeline */}
+                {step === 3 && (
+                  <motion.div
+                    key="step-3"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-5 pb-12"
+                  >
+                    <div>
+                      <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                        What do you want built?
+                      </Label>
+                      <Select
+                        key={`pt-${mode}`}
+                        value={projectType}
+                        onValueChange={setProjectType}
+                      >
+                        <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                          <SelectValue placeholder="Pick one" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
+                          {PROJECT_TYPES.map((pt) => (
+                            <SelectItem key={pt.value} value={pt.value}>{pt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                          Budget tier
+                        </Label>
+                        <Select
+                          key={`bd-${mode}`}
+                          value={budget}
+                          onValueChange={setBudget}
+                        >
+                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                            <SelectValue placeholder="Pick one" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                            {budgetOptions.map((b) => (
+                              <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                          Timeline
+                        </Label>
+                        <Select value={timeline} onValueChange={setTimeline}>
+                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                            <SelectValue placeholder="Pick one" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                            {TIMELINES.map((t) => (
+                              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={prevStep}
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={nextStep}
+                        disabled={!canProceed()}
+                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                      >
+                        Continue
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* STEP 4: Brief */}
+                {step === 4 && (
+                  <motion.div
+                    key="step-4"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-5 pb-12"
+                  >
+                    <div>
+                      <Label htmlFor="bk-brief" className="text-sm font-medium text-foreground/90 mb-2 block">
+                        Describe your project briefly
+                      </Label>
+                      <Textarea
+                        id="bk-brief"
+                        value={brief}
+                        onChange={(e) => setBrief(e.target.value)}
+                        rows={6}
+                        placeholder="What it is, who it's for, deadline if any, links to references."
+                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none"
+                      />
+                      <p className="text-[11px] text-muted-foreground mt-1.5">
+                        {brief.length} characters · minimum 10
+                      </p>
+                    </div>
+
+                    {/* Summary card — IKEA effect: user sees what they've built */}
+                    <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-4">
+                      <p className="text-[11px] font-mono uppercase text-cyan-300 mb-2">Your booking summary</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div><span className="text-muted-foreground">Name:</span> {name}</div>
+                        <div><span className="text-muted-foreground">Email:</span> {email}</div>
+                        <div><span className="text-muted-foreground">Type:</span> {mode === "maintenance" ? "Maintenance" : "Project"}</div>
+                        <div><span className="text-muted-foreground">Tier:</span> {budgetOptions.find(b => b.value === budget)?.label}</div>
+                        <div><span className="text-muted-foreground">Timeline:</span> {TIMELINES.find(t => t.value === timeline)?.label}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={prevStep}
+                        disabled={submitting}
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={submitEnquiry}
+                        disabled={!canProceed() || submitting}
+                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                      >
+                        {submitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending
+                          </>
+                        ) : (
+                          <>
+                            Send Project Enquiry
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* STEP 5: Done */}
+                {step === 5 && (
+                  <motion.div
+                    key="step-5"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                    className="flex flex-col items-center justify-center text-center py-16"
+                  >
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
+                      className="flex h-20 w-20 items-center justify-center rounded-full bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 mb-6 glow-cyan-strong"
+                    >
+                      <CheckCircle2 className="h-10 w-10" />
+                    </motion.div>
+                    <h3 className="text-2xl font-semibold mb-2">Thanks — we'll reply within 24 hours.</h3>
+                    <p className="text-muted-foreground mb-8 max-w-md">
+                      Your enquiry is in, {name}. The team will follow up with a written brief, cost range, and demo timeline.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+                      <Button
+                        asChild
+                        className="flex-1 bg-[#5865F2] hover:bg-[#4752C4] text-white border-0"
+                      >
+                        <a href="https://discord.gg/VhKgEetwr8" target="_blank" rel="noopener noreferrer">
+                          <DiscordLogo className="mr-2 h-4 w-4" />
+                          Join Discord
+                        </a>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={closeBooking}
+                        className="flex-1 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10"
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </>
       )}
     </AnimatePresence>
-  );
-}
-
-function Field({
-  label,
-  htmlFor,
-  error,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={htmlFor} className="text-sm font-medium text-foreground/90">
-        {label}
-      </Label>
-      {children}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="text-[11px] text-destructive"
-          >
-            {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
   );
 }

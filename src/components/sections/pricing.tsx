@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, X, ArrowRight, Star } from "lucide-react";
+import { Check, X, ArrowRight, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -51,7 +51,7 @@ const TIERS: Tier[] = [
     features: [
       { text: "Up to 3 pages", included: true },
       { text: "Shared backend for contact form", included: true },
-      { text: "Subdomain hosting (yourname.quackforge.app)", included: true },
+      { text: "Subdomain hosting", included: true },
       { text: "SSL certificate", included: true },
       { text: "Basic SEO meta + sitemap", included: true },
       { text: "Mobile responsive", included: true },
@@ -59,10 +59,10 @@ const TIERS: Tier[] = [
       { text: "Source code handover", included: true },
     ],
     excluded: [
-      "No custom domain (use quackforge.app subdomain)",
+      "No custom domain",
       "No CMS or admin dashboard",
       "No Google OAuth login",
-      "No edge logic / Cloudflare Workers",
+      "No edge logic / Workers",
     ],
   },
   {
@@ -74,7 +74,7 @@ const TIERS: Tier[] = [
     features: [
       { text: "Up to 5 pages", included: true },
       { text: "Custom domain (yours.com)", included: true },
-      { text: "Dedicated hosting (not shared)", included: true },
+      { text: "Dedicated hosting", included: true },
       { text: "CMS / admin dashboard", included: true },
       { text: "Google OAuth login", included: true },
       { text: "Firestore / Prisma backend", included: true },
@@ -100,7 +100,7 @@ const TIERS: Tier[] = [
       { text: "Full web app OR Android MVP", included: true },
       { text: "Dedicated backend infrastructure", included: true },
       { text: "Cloudflare Workers edge logic", included: true },
-      { text: "Auth + payments + admin dashboard", included: true },
+      { text: "Auth + payments + admin", included: true },
       { text: "Custom domain + deploys", included: true },
       { text: "Technical SEO audit + fixes", included: true },
       { text: "Analytics + monitoring setup", included: true },
@@ -109,7 +109,7 @@ const TIERS: Tier[] = [
       { text: "Source code + docs handover", included: true },
     ],
     excluded: [
-      "No fully dedicated infrastructure (shared pool)",
+      "No fully dedicated infrastructure",
       "No custom UI design system",
       "No ad campaign setup",
     ],
@@ -127,10 +127,10 @@ const TIERS: Tier[] = [
       { text: "Priority team access", included: true },
       { text: "Everything in Pro", included: true },
       { text: "Dedicated deployment pipeline", included: true },
-      { text: "Custom integrations (CRM, ERP, etc.)", included: true },
+      { text: "Custom integrations", included: true },
       { text: "Brand identity refresh", included: true },
       { text: "180-day post-launch support", included: true },
-      { text: "Source + docs + handover doc", included: true },
+      { text: "Source + docs + handover", included: true },
     ],
     excluded: [
       "No retainer engagement (see Enterprise)",
@@ -151,7 +151,7 @@ const TIERS: Tier[] = [
       { text: "Quarterly strategy reviews", included: true },
       { text: "Custom SLA + uptime guarantees", included: true },
       { text: "On-call engineering access", included: true },
-      { text: "Source + docs + handover doc", included: true },
+      { text: "Source + docs + handover", included: true },
     ],
     excluded: [],
   },
@@ -161,6 +161,7 @@ export function Pricing() {
   const { currency, setCurrency, toggle, mounted, format, countryName } = useCurrency();
   const { openBooking } = useBooking();
   const [pickerOpen, setPickerOpen] = React.useState(false);
+  const [activeMobile, setActiveMobile] = React.useState(0);
   const holdTimer = React.useRef<NodeJS.Timeout | null>(null);
   const pickerWrapRef = React.useRef<HTMLDivElement>(null);
 
@@ -175,12 +176,10 @@ export function Pricing() {
     }
   };
   const onClick = () => {
-    // If picker is open, just close it. Otherwise cycle.
     if (pickerOpen) {
       setPickerOpen(false);
       return;
     }
-    // Only cycle if hold didn't fire (timer still alive)
     if (holdTimer.current) {
       clearTimeout(holdTimer.current);
       holdTimer.current = null;
@@ -188,7 +187,6 @@ export function Pricing() {
     }
   };
 
-  // Close picker on outside click
   React.useEffect(() => {
     if (!pickerOpen) return;
     const onDoc = (e: MouseEvent) => {
@@ -200,10 +198,37 @@ export function Pricing() {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [pickerOpen]);
 
+  // Mobile swipe handler — scroll wheel moves between cards
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+  const onWheel = (e: React.WheelEvent) => {
+    // Only handle horizontal scroll intent
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      if (e.deltaX > 0 && activeMobile < TIERS.length - 1) {
+        setActiveMobile((v) => v + 1);
+      } else if (e.deltaX < 0 && activeMobile > 0) {
+        setActiveMobile((v) => v - 1);
+      }
+    }
+  };
+
+  // Touch swipe for mobile
+  const touchStartX = React.useRef(0);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (delta < -40 && activeMobile < TIERS.length - 1) {
+      setActiveMobile((v) => v + 1);
+    } else if (delta > 40 && activeMobile > 0) {
+      setActiveMobile((v) => v - 1);
+    }
+  };
+
   return (
     <section id="pricing" className="scroll-mt-16 py-16 sm:py-20 relative">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="max-w-2xl mb-8 sm:mb-10">
+        <div className="max-w-2xl mb-8">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -223,7 +248,6 @@ export function Pricing() {
             Six tiers. <span className="text-gradient-cyan">Pick your fit.</span>
           </motion.h2>
 
-          {/* Currency display with hold-to-open picker */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -288,8 +312,8 @@ export function Pricing() {
           </motion.div>
         </div>
 
-        {/* Desktop: 6 wide cards */}
-        <div className="hidden lg:grid lg:grid-cols-6 gap-3">
+        {/* Desktop: 6 wide cards in grid — all same size, content fully visible (no scroll) */}
+        <div className="hidden lg:grid lg:grid-cols-6 gap-3 items-stretch">
           {TIERS.map((tier, i) => (
             <TierCard
               key={tier.id}
@@ -300,10 +324,8 @@ export function Pricing() {
                 openBooking({
                   plan: tier.name,
                   price:
-                    tier.usdPrice === 0
-                      ? "Free"
-                      : tier.usdPrice === -1
-                      ? "Custom"
+                    tier.usdPrice === 0 ? "Free"
+                      : tier.usdPrice === -1 ? "Custom"
                       : format(tier.usdPrice, tier.id),
                   budget: tier.id,
                 })
@@ -312,24 +334,80 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* Mobile: playing-card stack */}
-        <div className="lg:hidden">
-          <CardStack
-            tiers={TIERS}
-            formatPrice={(usd, tierId) => format(usd, tierId)}
-            onChoose={(tier) =>
-              openBooking({
-                plan: tier.name,
-                price:
-                  tier.usdPrice === 0
-                    ? "Free"
-                    : tier.usdPrice === -1
-                    ? "Custom"
-                    : format(tier.usdPrice, tier.id),
-                budget: tier.id,
-              })
-            }
-          />
+        {/* Mobile: full-width carousel with swipe + scroll */}
+        <div
+          className="lg:hidden relative"
+          onWheel={onWheel}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          {/* Active card — full width, content visible */}
+          <div className="overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeMobile}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <MobileTierCard
+                  tier={TIERS[activeMobile]}
+                  formatPrice={(usd) => format(usd, TIERS[activeMobile].id)}
+                  onChoose={() =>
+                    openBooking({
+                      plan: TIERS[activeMobile].name,
+                      price:
+                        TIERS[activeMobile].usdPrice === 0 ? "Free"
+                          : TIERS[activeMobile].usdPrice === -1 ? "Custom"
+                          : format(TIERS[activeMobile].usdPrice, TIERS[activeMobile].id),
+                      budget: TIERS[activeMobile].id,
+                    })
+                  }
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Nav arrows */}
+          <div className="flex items-center justify-between mt-4">
+            <button
+              onClick={() => setActiveMobile((v) => Math.max(0, v - 1))}
+              disabled={activeMobile === 0}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-card text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400 transition-colors"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            {/* Dots */}
+            <div className="flex gap-1.5">
+              {TIERS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveMobile(i)}
+                  aria-label={`Go to tier ${i + 1}`}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all",
+                    i === activeMobile ? "w-6 bg-cyan-400" : "w-1.5 bg-muted-foreground/40"
+                  )}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => setActiveMobile((v) => Math.min(TIERS.length - 1, v + 1))}
+              disabled={activeMobile === TIERS.length - 1}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-card text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400 transition-colors"
+              aria-label="Next"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground mt-2">
+            Swipe left/right or use arrows · {activeMobile + 1} of {TIERS.length}
+          </p>
         </div>
 
         <motion.p
@@ -370,7 +448,7 @@ function TierCard({
       transition={{ delay: index * 0.05, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       whileHover={{ y: -6, scale: 1.02 }}
       className={cn(
-        "pricing-card-wide relative rounded-xl border bg-card p-5 transition-colors flex flex-col",
+        "relative rounded-xl border bg-card p-4 transition-colors flex flex-col h-full",
         tier.bestValue
           ? "border-cyan-400/60 glow-cyan-strong"
           : "border-border hover:border-cyan-400/40"
@@ -385,33 +463,34 @@ function TierCard({
         </div>
       )}
 
-      <h3 className="text-base font-semibold tracking-tight mb-1">{tier.name}</h3>
+      <h3 className="text-sm font-semibold tracking-tight mb-1">{tier.name}</h3>
       <div className="flex items-baseline gap-1 mb-1">
-        <span className="text-2xl font-bold tracking-tight font-mono text-gradient-cyan">
+        <span className="text-xl font-bold tracking-tight font-mono text-gradient-cyan">
           {price}
         </span>
       </div>
-      <p className="text-[10px] font-mono text-muted-foreground mb-3">{tier.cadence}</p>
+      <p className="text-[9px] font-mono text-muted-foreground mb-3">{tier.cadence}</p>
 
-      <p className="text-[11px] text-muted-foreground leading-relaxed mb-4 min-h-[60px]">
+      <p className="text-[10px] text-muted-foreground leading-relaxed mb-3">
         {tier.blurb}
       </p>
 
-      <div className="feat-list mb-3 flex-1">
+      {/* Included features — fully visible, no scroll */}
+      <div className="feat-list mb-2 flex-1">
         {tier.features.map((f, i) => (
           <div key={i} className="feat-row">
-            <Check className="feat-tick h-3.5 w-3.5" />
-            <span className="feat-text">{f.text}</span>
+            <Check className="feat-tick h-3 w-3" />
+            <span className="feat-text text-[10px]">{f.text}</span>
           </div>
         ))}
       </div>
 
       {tier.excluded.length > 0 && (
-        <div className="feat-list mb-4 pt-3 border-t border-border/50">
+        <div className="feat-list mb-3 pt-2 border-t border-border/50">
           {tier.excluded.map((ex, i) => (
             <div key={i} className="feat-row">
-              <X className="feat-cross h-3.5 w-3.5" />
-              <span className="feat-text muted text-[11px]">{ex}</span>
+              <X className="feat-cross h-3 w-3" />
+              <span className="feat-text muted text-[9px]">{ex}</span>
             </div>
           ))}
         </div>
@@ -421,7 +500,7 @@ function TierCard({
         onClick={onChoose}
         variant={tier.bestValue ? "default" : "outline"}
         className={cn(
-          "w-full group text-xs h-9 mt-auto",
+          "w-full group text-[11px] h-8 mt-auto",
           tier.bestValue
             ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
             : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
@@ -434,115 +513,79 @@ function TierCard({
   );
 }
 
-function CardStack({
-  tiers,
+function MobileTierCard({
+  tier,
   formatPrice,
   onChoose,
 }: {
-  tiers: Tier[];
-  formatPrice: (usd: number, tierId: string) => string;
-  onChoose: (tier: Tier) => void;
+  tier: Tier;
+  formatPrice: (usd: number) => string;
+  onChoose: () => void;
 }) {
-  const [active, setActive] = React.useState(0);
-
-  const getClass = (i: number) => {
-    const diff = i - active;
-    if (diff === 0) return "active";
-    if (diff === -1) return "behind-left";
-    if (diff === 1) return "behind-right";
-    if (diff < -1) return "far-left";
-    return "far-right";
-  };
+  const price =
+    tier.usdPrice === -1 ? "Custom" : tier.usdPrice === 0 ? "Free" : formatPrice(tier.usdPrice);
 
   return (
-    <div className="card-stack">
-      {tiers.map((tier, i) => {
-        const cls = getClass(i);
-        const price =
-          tier.usdPrice === -1
-            ? "Custom"
-            : tier.usdPrice === 0
-            ? "Free"
-            : formatPrice(tier.usdPrice, tier.id);
+    <div
+      className={cn(
+        "relative rounded-2xl border bg-card p-6 flex flex-col",
+        tier.bestValue
+          ? "border-cyan-400/60 glow-cyan-strong"
+          : "border-border"
+      )}
+    >
+      {tier.bestValue && (
+        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
+          <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-400 text-background whitespace-nowrap">
+            <Star className="h-3 w-3 fill-current" />
+            Best Value
+          </span>
+        </div>
+      )}
 
-        return (
-          <div
-            key={tier.id}
-            className={`playing-card ${cls}`}
-            onClick={() => setActive(i)}
-          >
-            {tier.bestValue && (
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-400 text-background">
-                  <Star className="h-2 w-2 fill-current" />
-                  Best Value
-                </span>
-              </div>
-            )}
+      <h3 className="text-2xl font-semibold tracking-tight mb-1">{tier.name}</h3>
+      <div className="flex items-baseline gap-2 mb-1">
+        <span className="text-4xl font-bold tracking-tight font-mono text-gradient-cyan">
+          {price}
+        </span>
+        <span className="text-[11px] font-mono text-muted-foreground">{tier.cadence}</span>
+      </div>
 
-            <h3 className="text-xl font-semibold tracking-tight mb-1">{tier.name}</h3>
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-3xl font-bold tracking-tight font-mono text-gradient-cyan">
-                {price}
-              </span>
-              <span className="text-[10px] font-mono text-muted-foreground">{tier.cadence}</span>
-            </div>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{tier.blurb}</p>
 
-            <p className="text-xs text-muted-foreground leading-relaxed mb-4">{tier.blurb}</p>
-
-            <div className="feat-list mb-3">
-              {tier.features.map((f, fi) => (
-                <div key={fi} className="feat-row">
-                  <Check className="feat-tick h-3.5 w-3.5" />
-                  <span className="feat-text">{f.text}</span>
-                </div>
-              ))}
-            </div>
-
-            {tier.excluded.length > 0 && (
-              <div className="feat-list mb-4 pt-3 border-t border-border/50">
-                {tier.excluded.map((ex, ei) => (
-                  <div key={ei} className="feat-row">
-                    <X className="feat-cross h-3.5 w-3.5" />
-                    <span className="feat-text muted">{ex}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                onChoose(tier);
-              }}
-              variant={tier.bestValue ? "default" : "outline"}
-              className={cn(
-                "w-full group text-sm h-10",
-                tier.bestValue
-                  ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
-                  : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
-              )}
-            >
-              Choose {tier.name}
-              <ArrowRight className="ml-2 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-            </Button>
+      <div className="feat-list mb-4">
+        {tier.features.map((f, i) => (
+          <div key={i} className="feat-row">
+            <Check className="feat-tick h-4 w-4" />
+            <span className="feat-text text-sm">{f.text}</span>
           </div>
-        );
-      })}
-
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-        {tiers.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            aria-label={`Go to tier ${i + 1}`}
-            className={cn(
-              "h-1.5 rounded-full transition-all",
-              i === active ? "w-6 bg-cyan-400" : "w-1.5 bg-muted-foreground/40"
-            )}
-          />
         ))}
       </div>
+
+      {tier.excluded.length > 0 && (
+        <div className="feat-list mb-5 pt-4 border-t border-border/50">
+          {tier.excluded.map((ex, i) => (
+            <div key={i} className="feat-row">
+              <X className="feat-cross h-4 w-4" />
+              <span className="feat-text muted text-sm">{ex}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Button
+        onClick={onChoose}
+        variant={tier.bestValue ? "default" : "outline"}
+        className={cn(
+          "w-full group text-base h-12 mt-auto",
+          tier.bestValue
+            ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
+            : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+        )}
+      >
+        Choose {tier.name}
+        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </Button>
     </div>
   );
 }

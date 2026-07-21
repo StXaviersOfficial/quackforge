@@ -36,7 +36,7 @@ export function DiscordFab() {
 
   return (
     <>
-      {/* Blur-lock popup — locks background until user clicks anywhere */}
+      {/* Blur-lock popup — bottom-right next to Discord logo, smaller, no dismiss text */}
       <AnimatePresence>
         {showPopup && (
           <motion.div
@@ -49,40 +49,34 @@ export function DiscordFab() {
           >
             <motion.div
               className="discord-fab-popup-text"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, x: 20, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.9 }}
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              onClick={(e) => e.stopPropagation()}
             >
               <button
-                onClick={dismissPopup}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dismissPopup();
+                }}
                 aria-label="Dismiss"
                 className="discord-fab-popup-x"
               >
-                <X className="h-3 w-3" />
+                <X className="h-2.5 w-2.5" />
               </button>
 
-              <div className="flex justify-center mb-3">
-                <DiscordLogo className="h-10 w-10 text-[#7984F5]" />
-              </div>
-
-              <p className="text-sm text-foreground leading-relaxed mb-4">
+              <p className="text-xs text-foreground leading-relaxed">
                 Want more info or want to book demos or book projects?{" "}
                 <a
                   href="https://discord.gg/VhKgEetwr8"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#7984F5] hover:text-[#8E99F5] font-semibold underline-offset-2 underline"
+                  className="text-cyan-300 hover:text-cyan-200 font-semibold underline-offset-2 underline"
                   onClick={dismissPopup}
                 >
                   Join our Discord server
                 </a>{" "}
                 for the fastest response.
-              </p>
-
-              <p className="text-[10px] text-muted-foreground text-center">
-                Click anywhere to dismiss
               </p>
             </motion.div>
           </motion.div>

@@ -9,7 +9,7 @@ import {
   TextReveal,
   Counter,
 } from "@/components/motion-primitives";
-import { CpuDiagram } from "@/components/cpu-diagram";
+import { CpuDiagram3D } from "@/components/cpu-diagram-3d";
 import { useBooking } from "@/hooks/use-booking";
 
 export function Hero() {
@@ -90,7 +90,7 @@ export function Hero() {
 
           {/* Right: 3D CPU diagram */}
           <FadeUp delay={0.4}>
-            <CpuDiagram />
+            <CpuDiagram3D />
           </FadeUp>
         </div>
       </div>

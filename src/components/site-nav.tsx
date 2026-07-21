@@ -121,21 +121,29 @@ export function SiteNav() {
         </div>
       </header>
 
-      {/* Mobile menu — full-screen overlay from very top, overrides logo */}
+      {/* Mobile menu — half-screen from very top, overrides logo */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-0 z-50 bg-background/98 flex flex-col"
-          >
-            {/* Top bar with close button (no logo) */}
-            <div className="flex items-center justify-between px-5 sm:px-8 h-20 border-b border-border">
-              <span className="text-2xl font-semibold tracking-tight">
-                Quack<span className="text-gradient-cyan">Forge</span>
-              </span>
+          <>
+            {/* Backdrop to catch outside clicks */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 z-40 bg-background/40"
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
+              initial={{ y: "-100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-100%" }}
+              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+              className="fixed top-0 left-0 right-0 z-50 bg-background/98 border-b border-cyan-400/30 shadow-2xl"
+              style={{ height: "100vh", maxHeight: "65vh" }}
+            >
+            {/* Top bar with close button — no logo, just close */}
+            <div className="flex items-center justify-end px-5 sm:px-8 h-16 border-b border-border">
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -145,15 +153,15 @@ export function SiteNav() {
               </button>
             </div>
 
-            {/* Menu items — full-screen clickable area to close */}
+            {/* Menu items */}
             <div
-              className="flex-1 flex flex-col px-5 sm:px-8 py-8"
+              className="px-5 sm:px-8 py-6 flex flex-col gap-1 overflow-y-auto"
+              style={{ height: "calc(100% - 4rem)" }}
               onClick={(e) => {
-                // Close if user clicks anywhere not on a link/button
                 if (e.target === e.currentTarget) setOpen(false);
               }}
             >
-              <nav className="flex flex-col gap-2">
+              <nav className="flex flex-col gap-1">
                 {NAV.map((item, i) => (
                   <motion.a
                     key={item.href}
@@ -161,8 +169,8 @@ export function SiteNav() {
                     onClick={() => setOpen(false)}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 * i, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                    className="px-4 py-4 text-2xl font-semibold tracking-tight text-foreground hover:text-cyan-300 transition-colors border-b border-border"
+                    transition={{ delay: 0.05 * i + 0.1, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="px-4 py-3 text-xl font-semibold tracking-tight text-foreground hover:text-cyan-300 transition-colors border-b border-border/50"
                   >
                     {item.label}
                   </motion.a>
@@ -172,8 +180,8 @@ export function SiteNav() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="mt-8 flex flex-col gap-3"
+                transition={{ delay: 0.35, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                className="mt-6 flex flex-col gap-3"
               >
                 <Button
                   onClick={() => {
@@ -195,19 +203,9 @@ export function SiteNav() {
                   Join Discord
                 </a>
               </motion.div>
-
-              {/* Email at bottom */}
-              <motion.a
-                href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.4 }}
-                className="mt-auto pt-8 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
-              >
-                quackforgeofficial@gmail.com
-              </motion.a>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

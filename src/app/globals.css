@@ -425,37 +425,38 @@ html, body {
 }
 .discord-fab-btn:hover { transform: scale(1.08); }
 
-/* The popup text — locks background when visible */
+/* The popup text — bottom-right, next to Discord logo, smaller, blur-locks background */
 .discord-fab-popup {
   position: fixed;
   inset: 0;
   z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(2, 6, 15, 0.7);
-  backdrop-filter: none;
+  background: rgba(2, 6, 15, 0.92);
+  /* Full blur-lock — no interaction with site until dismissed */
+  pointer-events: auto;
   cursor: pointer;
 }
 .discord-fab-popup-text {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
   background: #0F2147;
-  border: 1px solid rgba(88, 101, 242, 0.5);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 360px;
-  text-align: center;
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  border-radius: 12px;
+  padding: 14px 16px;
+  max-width: 280px;
   box-shadow:
     0 0 0 1px rgba(34, 211, 238, 0.3),
-    0 0 60px -8px rgba(34, 211, 238, 0.5),
-    0 20px 60px -10px rgba(0, 0, 0, 0.9);
+    0 0 40px -8px rgba(34, 211, 238, 0.5),
+    0 12px 40px -10px rgba(0, 0, 0, 0.9);
   cursor: default;
+  pointer-events: none; /* let the backdrop catch clicks */
 }
 .discord-fab-popup-x {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 24px;
-  height: 24px;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -463,8 +464,9 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 10px;
   color: white;
+  pointer-events: auto;
 }
 
 .book-project-btn {

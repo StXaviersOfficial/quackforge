@@ -14,12 +14,12 @@ const PROJECT_TYPES = [
 
 const BUDGETS = [
   'demo',
-  '99',
-  '249',
-  '599',
-  '1499',
-  'custom',
-  'maintenance',
+  'starter', '99',
+  'growth', '249',
+  'pro', '599',
+  'elite', '1499',
+  'enterprise', 'custom',
+  'request-a-fix', 'care-basic', 'care-complete', 'maintenance',
   'undecided',
 ] as const
 
