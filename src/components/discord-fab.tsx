@@ -122,8 +122,10 @@ export function DiscordFab() {
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center h-16 w-16 rounded-full overflow-hidden"
+              className="flex items-center justify-center rounded-full overflow-hidden"
               style={{
+                width: "64px",
+                height: "64px",
                 background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
                 color: "#0A1830",
                 fontWeight: 700,
@@ -147,8 +149,10 @@ export function DiscordFab() {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               aria-label="Book a Project"
-              className="flex items-center justify-center h-16 w-16 rounded-full overflow-hidden"
+              className="flex items-center justify-center rounded-full overflow-hidden"
               style={{
+                width: "64px",
+                height: "64px",
                 background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
                 boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
               }}
