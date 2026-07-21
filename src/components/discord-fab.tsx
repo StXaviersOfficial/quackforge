@@ -8,6 +8,7 @@ import { useBooking } from "@/hooks/use-booking";
 export function DiscordFab() {
   const [showPopup, setShowPopup] = React.useState(false);
   const [dismissed, setDismissed] = React.useState(false);
+  const [bookExpanded, setBookExpanded] = React.useState(false);
   const { openBooking } = useBooking();
 
   // After 3s, show the blur-lock popup
@@ -29,6 +30,30 @@ export function DiscordFab() {
     };
   }, [showPopup]);
 
+  // Book a Project button cycling animation:
+  // Default: compact QuackForge logo (64px circle)
+  // Every 25s: expands to "Book a Project" text for 3s, then shrinks back
+  React.useEffect(() => {
+    let expandTimer: ReturnType<typeof setTimeout>;
+    let collapseTimer: ReturnType<typeof setTimeout>;
+
+    const cycle = () => {
+      setBookExpanded(true);
+      collapseTimer = setTimeout(() => {
+        setBookExpanded(false);
+        expandTimer = setTimeout(cycle, 25000);
+      }, 3000);
+    };
+
+    // Start first cycle after 5s
+    expandTimer = setTimeout(cycle, 5000);
+
+    return () => {
+      clearTimeout(expandTimer);
+      clearTimeout(collapseTimer);
+    };
+  }, []);
+
   const dismissPopup = () => {
     setShowPopup(false);
     setDismissed(true);
@@ -36,7 +61,7 @@ export function DiscordFab() {
 
   return (
     <>
-      {/* Blur-lock popup — bottom-right next to Discord logo, smaller, no dismiss text */}
+      {/* Blur-lock popup */}
       <AnimatePresence>
         {showPopup && (
           <motion.div
@@ -83,33 +108,64 @@ export function DiscordFab() {
         )}
       </AnimatePresence>
 
-      {/* FAB — two buttons stacked vertically, both 64px wide, centered */}
+      {/* FAB — two buttons stacked vertically, both 64px, centered */}
       <div className="discord-fab" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-        {/* Book a Project button — always expanded text, 64px wide like Discord */}
-        <motion.button
-          onClick={() => openBooking({})}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Book a Project"
-          className="flex items-center justify-center rounded-full overflow-hidden"
-          style={{
-            width: "64px",
-            height: "64px",
-            background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
-            color: "#0A1830",
-            fontWeight: 700,
-            fontSize: "10px",
-            textAlign: "center",
-            lineHeight: "1.1",
-            padding: "6px",
-            boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
-          }}
-        >
-          Book a Project
-        </motion.button>
+        {/* Book a Project button — cycles between compact logo and expanded text */}
+        <AnimatePresence mode="wait">
+          {bookExpanded ? (
+            <motion.button
+              key="expanded"
+              onClick={() => openBooking({})}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center rounded-full overflow-hidden"
+              style={{
+                width: "64px",
+                height: "64px",
+                background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
+                color: "#0A1830",
+                fontWeight: 700,
+                fontSize: "10px",
+                textAlign: "center",
+                lineHeight: "1.1",
+                padding: "6px",
+                boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+              }}
+            >
+              Book a Project
+            </motion.button>
+          ) : (
+            <motion.button
+              key="compact"
+              onClick={() => openBooking({})}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Book a Project"
+              className="flex items-center justify-center rounded-full overflow-hidden"
+              style={{
+                width: "64px",
+                height: "64px",
+                background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
+                boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+              }}
+            >
+              <img
+                src="/quackforge-logo.png"
+                alt="Book a Project"
+                className="h-12 w-12 rounded-full object-cover"
+                draggable={false}
+              />
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         {/* Discord button — same 64px, centered below */}
         <motion.a

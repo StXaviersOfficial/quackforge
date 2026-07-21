@@ -135,9 +135,10 @@ export function BookingModal() {
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
     }
     if (step === 3) {
-      if (!projectType) return false;
       if (!budget) return false;
-      if (!timeline) return false;
+      if (mode === "project" && !projectType) return false;
+      if (mode === "project" && !timeline) return false;
+      // Maintenance mode: only budget is required, no project type or timeline
     }
     if (step === 4) {
       if (!brief || brief.trim().length < 10) return false;
@@ -223,8 +224,8 @@ export function BookingModal() {
                       {step === 0 && "Let's start."}
                       {step === 1 && "How can we reach you?"}
                       {step === 2 && "What are you booking?"}
-                      {step === 3 && "Project details"}
-                      {step === 4 && "Project brief"}
+                      {step === 3 && (mode === "maintenance" ? "Maintenance plan" : "Project details")}
+                      {step === 4 && (mode === "maintenance" ? "Describe the issue" : "Project brief")}
                       {step === 5 && "All set."}
                     </h2>
                   </div>
@@ -513,7 +514,7 @@ export function BookingModal() {
                   </motion.div>
                 )}
 
-                {/* STEP 3: Project type + Budget + Timeline */}
+                {/* STEP 3: Project type + Budget + Timeline (project mode) OR Budget only (maintenance mode) */}
                 {step === 3 && (
                   <motion.div
                     key="step-3"
@@ -523,30 +524,34 @@ export function BookingModal() {
                     transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                     className="space-y-5 pb-12"
                   >
-                    <div>
-                      <Label className="text-sm font-medium text-foreground/90 mb-2 block">
-                        What do you want built?
-                      </Label>
-                      <Select
-                        key={`pt-${mode}-${step}`}
-                        value={projectType}
-                        onValueChange={setProjectType}
-                      >
-                        <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
-                          <SelectValue placeholder="Pick one" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
-                          {PROJECT_TYPES.map((pt) => (
-                            <SelectItem key={pt.value} value={pt.value}>{pt.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Project type — only for project mode, NOT maintenance */}
+                    {mode === "project" && (
                       <div>
                         <Label className="text-sm font-medium text-foreground/90 mb-2 block">
-                          Budget tier
+                          What do you want built?
+                        </Label>
+                        <Select
+                          key={`pt-${mode}-${step}`}
+                          value={projectType}
+                          onValueChange={setProjectType}
+                        >
+                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                            <SelectValue placeholder="Pick one" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
+                            {PROJECT_TYPES.map((pt) => (
+                              <SelectItem key={pt.value} value={pt.value}>{pt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {/* Budget tier — shown in both modes, full width in maintenance mode */}
+                    <div className={mode === "maintenance" ? "" : "grid grid-cols-1 sm:grid-cols-2 gap-4"}>
+                      <div>
+                        <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                          {mode === "maintenance" ? "Maintenance plan" : "Budget tier"}
                         </Label>
                         <Select
                           key={`bd-${mode}-${step}`}
@@ -564,21 +569,24 @@ export function BookingModal() {
                         </Select>
                       </div>
 
-                      <div>
-                        <Label className="text-sm font-medium text-foreground/90 mb-2 block">
-                          Timeline
-                        </Label>
-                        <Select key={`tl-${step}`} value={timeline} onValueChange={setTimeline}>
-                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
-                            <SelectValue placeholder="Pick one" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
-                            {TIMELINES.map((t) => (
-                              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      {/* Timeline — only for project mode, NOT maintenance */}
+                      {mode === "project" && (
+                        <div>
+                          <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                            Timeline
+                          </Label>
+                          <Select key={`tl-${step}`} value={timeline} onValueChange={setTimeline}>
+                            <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                              <SelectValue placeholder="Pick one" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                              {TIMELINES.map((t) => (
+                                <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex gap-3 pt-4">
@@ -621,7 +629,7 @@ export function BookingModal() {
                         value={brief}
                         onChange={(e) => setBrief(e.target.value)}
                         rows={6}
-                        placeholder="Describe your project briefly"
+                        placeholder={mode === "maintenance" ? "Describe the issue or what you need maintained" : "Describe your project briefly"}
                         className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none"
                       />
                       <p className="text-[11px] text-muted-foreground mt-1.5">
@@ -636,8 +644,10 @@ export function BookingModal() {
                         <div><span className="text-muted-foreground">Name:</span> {name}</div>
                         <div><span className="text-muted-foreground">Email:</span> {email}</div>
                         <div><span className="text-muted-foreground">Type:</span> {mode === "maintenance" ? "Maintenance" : "Project"}</div>
-                        <div><span className="text-muted-foreground">Tier:</span> {budgetOptions.find(b => b.value === budget)?.label}</div>
-                        <div><span className="text-muted-foreground">Timeline:</span> {TIMELINES.find(t => t.value === timeline)?.label}</div>
+                        <div><span className="text-muted-foreground">{mode === "maintenance" ? "Plan:" : "Tier:"}</span> {budgetOptions.find(b => b.value === budget)?.label}</div>
+                        {mode === "project" && timeline && (
+                          <div><span className="text-muted-foreground">Timeline:</span> {TIMELINES.find(t => t.value === timeline)?.label}</div>
+                        )}
                       </div>
                     </div>
 
@@ -663,7 +673,7 @@ export function BookingModal() {
                           </>
                         ) : (
                           <>
-                            Send Project Enquiry
+                            {mode === "maintenance" ? "Send Maintenance Enquiry" : "Send Project Enquiry"}
                             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                           </>
                         )}
