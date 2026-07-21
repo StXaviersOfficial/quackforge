@@ -384,6 +384,7 @@ export function BookingModal() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
+                        autoComplete="name"
                         className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
                       />
                     </div>
@@ -397,6 +398,7 @@ export function BookingModal() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
+                        autoComplete="email"
                         className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
                       />
                     </div>
