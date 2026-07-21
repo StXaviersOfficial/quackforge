@@ -4,8 +4,8 @@
   "description": "Independent dev studio. Web, Android, SEO, custom-domain deploys.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#050A14",
-  "theme_color": "#00E5FF",
+  "background_color": "#0A1830",
+  "theme_color": "#22D3EE",
   "icons": [
     {
       "src": "/quackforge-logo.png",
