@@ -209,7 +209,7 @@ export function BookingModal() {
             }}
           >
             <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-cyan-400/20 px-5 sm:px-8 py-6">
-              {/* Header with progress bar — sticky */}
+              {/* Header with progress bar + step indicators — sticky */}
               <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-4 bg-card/95 border-b border-cyan-400/20 z-10 mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -232,6 +232,36 @@ export function BookingModal() {
                     <X className="h-5 w-5" />
                   </button>
                 </div>
+
+                {/* Step indicators — numbered circles */}
+                {step > 0 && step < 5 && (
+                  <div className="flex items-center justify-between mb-3 px-1">
+                    {[1, 2, 3, 4].map((s) => (
+                      <div key={s} className="flex items-center flex-1">
+                        <div
+                          className={cn(
+                            "flex h-7 w-7 items-center justify-center rounded-full text-xs font-mono font-bold transition-all shrink-0",
+                            step >= s
+                              ? "bg-cyan-400 text-background glow-cyan"
+                              : "bg-muted text-muted-foreground border border-border"
+                          )}
+                        >
+                          {step > s ? <Check className="h-3 w-3" /> : s}
+                        </div>
+                        {s < 4 && (
+                          <div className="flex-1 h-0.5 mx-1.5 bg-muted rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full bg-cyan-400"
+                              initial={{ width: 0 }}
+                              animate={{ width: step > s ? "100%" : "0%" }}
+                              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Progress bar — never 0% (always shows something) */}
                 {step > 0 && (
@@ -321,7 +351,7 @@ export function BookingModal() {
                       className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12"
                       size="lg"
                     >
-                      Continue
+                      Or Continue on Web
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
                     <p className="text-center text-xs text-muted-foreground">

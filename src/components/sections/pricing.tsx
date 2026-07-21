@@ -334,42 +334,99 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* Mobile: full-width carousel with swipe + scroll */}
+        {/* Mobile: playing-card stack with tilted peeking cards */}
         <div
           className="lg:hidden relative"
           onWheel={onWheel}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          {/* Active card — full width, content visible */}
-          <div className="overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeMobile}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              >
-                <MobileTierCard
-                  tier={TIERS[activeMobile]}
-                  formatPrice={(usd) => format(usd, TIERS[activeMobile].id)}
-                  onChoose={() =>
-                    openBooking({
-                      plan: TIERS[activeMobile].name,
-                      price:
-                        TIERS[activeMobile].usdPrice === 0 ? "Free"
-                          : TIERS[activeMobile].usdPrice === -1 ? "Custom"
-                          : format(TIERS[activeMobile].usdPrice, TIERS[activeMobile].id),
-                      budget: TIERS[activeMobile].id,
-                    })
-                  }
-                />
-              </motion.div>
-            </AnimatePresence>
+          <div className="card-stack">
+            {TIERS.map((tier, i) => {
+              const diff = i - activeMobile;
+              let cls = "far-right";
+              if (diff === 0) cls = "active";
+              else if (diff === -1) cls = "behind-left";
+              else if (diff === 1) cls = "behind-right";
+              else if (diff < -1) cls = "far-left";
+
+              const price =
+                tier.usdPrice === -1 ? "Custom" : tier.usdPrice === 0 ? "Free" : format(tier.usdPrice, tier.id);
+
+              return (
+                <div
+                  key={tier.id}
+                  className={`playing-card ${cls}`}
+                  onClick={() => setActiveMobile(i)}
+                >
+                  {tier.bestValue && (
+                    <div className="absolute top-3 right-3 z-20">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-400 text-background">
+                        <Star className="h-2 w-2 fill-current" />
+                        Best Value
+                      </span>
+                    </div>
+                  )}
+
+                  <h3 className="text-xl font-semibold tracking-tight mb-1">{tier.name}</h3>
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-3xl font-bold tracking-tight font-mono text-gradient-cyan">
+                      {price}
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground">{tier.cadence}</span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">{tier.blurb}</p>
+
+                  <div className="feat-list mb-3">
+                    {tier.features.map((f, fi) => (
+                      <div key={fi} className="feat-row">
+                        <Check className="feat-tick h-3.5 w-3.5" />
+                        <span className="feat-text text-xs">{f.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {tier.excluded.length > 0 && (
+                    <div className="feat-list mb-4 pt-3 border-t border-border/50">
+                      {tier.excluded.map((ex, ei) => (
+                        <div key={ei} className="feat-row">
+                          <X className="feat-cross h-3.5 w-3.5" />
+                          <span className="feat-text muted text-xs">{ex}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openBooking({
+                        plan: tier.name,
+                        price:
+                          tier.usdPrice === 0 ? "Free"
+                            : tier.usdPrice === -1 ? "Custom"
+                            : format(tier.usdPrice, tier.id),
+                        budget: tier.id,
+                      });
+                    }}
+                    variant={tier.bestValue ? "default" : "outline"}
+                    className={cn(
+                      "w-full group text-sm h-10 mt-auto",
+                      tier.bestValue
+                        ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
+                        : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+                    )}
+                  >
+                    Choose {tier.name}
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Nav arrows */}
+          {/* Nav arrows + dots */}
           <div className="flex items-center justify-between mt-4">
             <button
               onClick={() => setActiveMobile((v) => Math.max(0, v - 1))}
@@ -379,8 +436,6 @@ export function Pricing() {
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-
-            {/* Dots */}
             <div className="flex gap-1.5">
               {TIERS.map((_, i) => (
                 <button
@@ -394,7 +449,6 @@ export function Pricing() {
                 />
               ))}
             </div>
-
             <button
               onClick={() => setActiveMobile((v) => Math.min(TIERS.length - 1, v + 1))}
               disabled={activeMobile === TIERS.length - 1}
@@ -404,7 +458,6 @@ export function Pricing() {
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
-
           <p className="text-center text-xs text-muted-foreground mt-2">
             Swipe left/right or use arrows · {activeMobile + 1} of {TIERS.length}
           </p>

@@ -8,6 +8,7 @@ import { useBooking } from "@/hooks/use-booking";
 export function DiscordFab() {
   const [showPopup, setShowPopup] = React.useState(false);
   const [dismissed, setDismissed] = React.useState(false);
+  const [bookExpanded, setBookExpanded] = React.useState(false);
   const { openBooking } = useBooking();
 
   // After 3s, show the blur-lock popup
@@ -28,6 +29,30 @@ export function DiscordFab() {
       document.body.style.overflow = "";
     };
   }, [showPopup]);
+
+  // Book a Project button cycling animation:
+  // Default: compact icon
+  // Every 25s: expand to text for 3s, then shrink back
+  React.useEffect(() => {
+    let expandTimer: NodeJS.Timeout;
+    let collapseTimer: NodeJS.Timeout;
+
+    const cycle = () => {
+      setBookExpanded(true);
+      collapseTimer = setTimeout(() => {
+        setBookExpanded(false);
+        expandTimer = setTimeout(cycle, 25000);
+      }, 3000);
+    };
+
+    // Start first cycle after 5s
+    expandTimer = setTimeout(cycle, 5000);
+
+    return () => {
+      clearTimeout(expandTimer);
+      clearTimeout(collapseTimer);
+    };
+  }, []);
 
   const dismissPopup = () => {
     setShowPopup(false);
@@ -83,29 +108,66 @@ export function DiscordFab() {
         )}
       </AnimatePresence>
 
-      {/* FAB button + Book a Project */}
+      {/* FAB button + cycling Book a Project */}
       <div className="discord-fab">
-        <AnimatePresence>
-          {(dismissed || !showPopup) && (
+        {/* Book a Project button — cycles between compact icon and expanded text */}
+        <AnimatePresence mode="wait">
+          {bookExpanded ? (
             <motion.button
+              key="expanded"
               onClick={() => openBooking({})}
-              className="book-project-btn"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
+              initial={{ opacity: 0, scale: 0.7, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.7, y: 10 }}
+              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute top-0 right-0 flex items-center gap-2 px-4 h-12 rounded-full whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, #22D3EE, #38BDF8)",
+                color: "#0A1830",
+                fontWeight: 700,
+                fontSize: "13px",
+                boxShadow:
+                  "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+              }}
             >
               Book a Project
-              <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
+            </motion.button>
+          ) : (
+            <motion.button
+              key="compact"
+              onClick={() => openBooking({})}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Book a Project"
+              className="absolute top-0 right-0 flex items-center justify-center h-12 w-12 rounded-full"
+              style={{
+                background: "linear-gradient(135deg, #22D3EE, #38BDF8)",
+                boxShadow:
+                  "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0A1830" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
             </motion.button>
           )}
         </AnimatePresence>
 
+        {/* Discord button — positioned below Book a Project */}
         <motion.a
           href="https://discord.gg/VhKgEetwr8"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Join our Discord server"
           className="discord-fab-btn block"
+          style={{ marginTop: "76px" }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 12 }}

@@ -330,23 +330,23 @@ html, body {
 /* ===== Playing-card stack (mobile pricing) ===== */
 .card-stack {
   position: relative;
-  height: 580px;
+  height: 620px;
   perspective: 1200px;
 }
 .playing-card {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 320px;
-  height: 540px;
-  margin-left: -160px;
+  width: 280px;
+  height: 580px;
+  margin-left: -140px;
   border-radius: 18px;
   background: linear-gradient(135deg, #0F2147 0%, #142B53 100%);
   border: 1px solid rgba(34, 211, 238, 0.35);
   box-shadow:
     0 10px 40px -10px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(34, 211, 238, 0.15);
-  padding: 24px;
+  padding: 20px;
   transition: transform 0.5s var(--ease-brand), opacity 0.5s var(--ease-brand), box-shadow 0.5s var(--ease-brand);
   cursor: pointer;
   overflow-y: auto;
@@ -362,23 +362,23 @@ html, body {
 }
 .playing-card.behind-left {
   z-index: 5;
-  transform: translateX(-95px) translateZ(-30px) rotateY(15deg) scale(0.93);
-  opacity: 0.65;
+  transform: translateX(-110px) translateZ(-30px) rotateY(18deg) scale(0.92);
+  opacity: 0.7;
 }
 .playing-card.behind-right {
   z-index: 5;
-  transform: translateX(95px) translateZ(-30px) rotateY(-15deg) scale(0.93);
-  opacity: 0.65;
+  transform: translateX(110px) translateZ(-30px) rotateY(-18deg) scale(0.92);
+  opacity: 0.7;
 }
 .playing-card.far-left {
   z-index: 1;
-  transform: translateX(-160px) translateZ(-60px) rotateY(25deg) scale(0.82);
-  opacity: 0.3;
+  transform: translateX(-180px) translateZ(-60px) rotateY(28deg) scale(0.82);
+  opacity: 0.35;
 }
 .playing-card.far-right {
   z-index: 1;
-  transform: translateX(160px) translateZ(-60px) rotateY(-25deg) scale(0.82);
-  opacity: 0.3;
+  transform: translateX(180px) translateZ(-60px) rotateY(-28deg) scale(0.82);
+  opacity: 0.35;
 }
 
 /* ===== Booking modal — FULL SCREEN ===== */

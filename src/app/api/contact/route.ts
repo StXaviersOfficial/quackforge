@@ -85,6 +85,8 @@ export async function POST(req: NextRequest) {
     try {
       const db = getDb()
       const ref = await db.collection('enquiries').add(doc)
+      // Fire-and-forget ntfy notification (server-side only, topic is secret)
+      sendNtfyNotification(doc).catch(() => {})
       return NextResponse.json({
         ok: true,
         id: ref.id,
@@ -93,6 +95,8 @@ export async function POST(req: NextRequest) {
     } catch (fbErr) {
       console.error('[contact] Firebase write failed:', fbErr)
       console.log('[contact] Would have saved:', doc)
+      // Still send ntfy notification even if Firestore fails
+      sendNtfyNotification(doc).catch(() => {})
       return NextResponse.json(
         {
           ok: true,
@@ -117,4 +121,44 @@ export async function GET() {
     endpoint: 'quackforge-contact',
     method: 'POST',
   })
+}
+
+/**
+ * Send a push notification to ntfy.sh when a new enquiry arrives.
+ * Topic is read from NTFY_TOPIC env var (set on Vercel) — never exposed to client.
+ */
+async function sendNtfyNotification(doc: EnquiryDoc) {
+  const topic = process.env.NTFY_TOPIC
+  if (!topic) {
+    console.log('[ntfy] NTFY_TOPIC not set, skipping notification')
+    return
+  }
+
+  const title = `New enquiry: ${doc.name} (${doc.email})`
+  const body = [
+    `Project type: ${doc.project_type}`,
+    `Budget: ${doc.budget}`,
+    ``,
+    `Message:`,
+    doc.message,
+    ``,
+    `Source: ${doc.source}`,
+    `Reply to: ${doc.email}`,
+  ].join('\n')
+
+  try {
+    await fetch(`https://ntfy.sh/${topic}`, {
+      method: 'POST',
+      headers: {
+        'Title': title,
+        'Tags': 'incoming_envelope, blue_heart',
+        'Priority': 'high',
+        'Content-Type': 'text/plain',
+      },
+      body,
+    })
+    console.log('[ntfy] Notification sent to topic:', topic)
+  } catch (err) {
+    console.error('[ntfy] Failed to send notification:', err)
+  }
 }

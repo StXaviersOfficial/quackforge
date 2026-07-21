@@ -144,36 +144,89 @@ export function Maintenance() {
           ))}
         </div>
 
-        {/* Mobile: carousel with swipe/scroll */}
+        {/* Mobile: playing-card stack with tilted peeking cards */}
         <div
           className="md:hidden relative"
           onWheel={onWheel}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <div className="overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeMobile}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              >
-                <MobilePlanCard
-                  plan={PLANS[activeMobile]}
-                  formatPrice={(usd) => format(usd, PLANS[activeMobile].id, { perMonth: PLANS[activeMobile].cadence.includes("month") })}
-                  onChoose={() =>
-                    openBooking({
-                      plan: PLANS[activeMobile].name,
-                      price: format(PLANS[activeMobile].usdPrice, PLANS[activeMobile].id, { perMonth: PLANS[activeMobile].cadence.includes("month") }),
-                      budget: "maintenance",
-                      projectType: "maintenance",
-                    })
-                  }
-                />
-              </motion.div>
-            </AnimatePresence>
+          <div className="card-stack" style={{ height: "560px" }}>
+            {PLANS.map((plan, i) => {
+              const diff = i - activeMobile;
+              let cls = "far-right";
+              if (diff === 0) cls = "active";
+              else if (diff === -1) cls = "behind-left";
+              else if (diff === 1) cls = "behind-right";
+              else if (diff < -1) cls = "far-left";
+
+              const priceLabel = format(plan.usdPrice, plan.id, { perMonth: plan.cadence.includes("month") });
+
+              return (
+                <div
+                  key={plan.id}
+                  className={`playing-card ${cls}`}
+                  style={{ height: "520px" }}
+                  onClick={() => setActiveMobile(i)}
+                >
+                  {plan.bestCoverage && (
+                    <div className="absolute top-3 right-3 z-20">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-400 text-background">
+                        <Wrench className="h-2 w-2" />
+                        Most Coverage
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
+                      <Wrench className="h-4 w-4" />
+                    </div>
+                    <h3 className="text-lg font-semibold tracking-tight">{plan.name}</h3>
+                  </div>
+
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-3xl font-bold tracking-tight font-mono text-gradient-cyan">
+                      {priceLabel}
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground">{plan.cadence}</span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">{plan.blurb}</p>
+
+                  <div className="feat-list mb-4">
+                    {plan.features.map((f, fi) => (
+                      <div key={fi} className="feat-row">
+                        <Check className="feat-tick h-3.5 w-3.5" />
+                        <span className="feat-text text-xs">{f.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openBooking({
+                        plan: plan.name,
+                        price: priceLabel,
+                        budget: "maintenance",
+                        projectType: "maintenance",
+                      });
+                    }}
+                    variant={plan.bestCoverage ? "default" : "outline"}
+                    className={cn(
+                      "w-full group text-sm h-10 mt-auto",
+                      plan.bestCoverage
+                        ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
+                        : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+                    )}
+                  >
+                    Choose {plan.name}
+                    <ArrowRight className="ml-2 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex items-center justify-between mt-4">

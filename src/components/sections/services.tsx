@@ -1,42 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Marquee } from "@/components/motion-primitives";
 
-// Just the tech-stack chips — no cards.
-// Each chip is clickable → opens booking modal with that service pre-selected.
 const TECH_STACK = [
-  { name: "Next.js 16", category: "Web apps" },
-  { name: "TypeScript", category: "Web apps" },
-  { name: "HTML5", category: "Static sites" },
-  { name: "CSS3", category: "Static sites" },
-  { name: "Tailwind 4", category: "Web apps" },
-  { name: "Kotlin", category: "Android" },
-  { name: "Java", category: "Android" },
-  { name: "Gradle", category: "Android" },
-  { name: "Material 3", category: "Android" },
-  { name: "Python", category: "Automation" },
-  { name: "Node.js", category: "Backend" },
-  { name: "Firebase", category: "Backend" },
-  { name: "Prisma", category: "Backend" },
-  { name: "Cloudflare Workers", category: "Edge" },
-  { name: "Google OAuth", category: "Auth" },
-  { name: "Stripe", category: "Payments" },
-  { name: "REST APIs", category: "Integrations" },
-  { name: "Discord.js", category: "Bots" },
-  { name: "Telegraf", category: "Bots" },
-  { name: "WhatsApp API", category: "Bots" },
-  { name: "OpenAI", category: "AI" },
-  { name: "Claude", category: "AI" },
-  { name: "Gemini", category: "AI" },
-  { name: "Forge", category: "Minecraft" },
-  { name: "Fabric", category: "Minecraft" },
-  { name: "Bukkit", category: "Minecraft" },
-  { name: "Lighthouse", category: "SEO" },
-  { name: "Schema.org", category: "SEO" },
-  { name: "GA4", category: "SEO" },
-  { name: "Search Console", category: "SEO" },
-  { name: "Vercel", category: "Deploy" },
-  { name: "Caddy", category: "Deploy" },
+  "Next.js 16", "TypeScript", "HTML5", "CSS3", "Tailwind 4",
+  "Kotlin", "Java", "Gradle", "Material 3", "Python",
+  "Node.js", "Firebase", "Prisma", "Cloudflare Workers", "Google OAuth",
+  "Stripe", "REST APIs", "Discord.js", "Telegraf", "WhatsApp API",
+  "OpenAI", "Claude", "Gemini", "Forge", "Fabric",
+  "Bukkit", "Lighthouse", "Schema.org", "GA4", "Search Console",
+  "Vercel", "Caddy",
 ];
 
 export function Services() {
@@ -72,38 +46,64 @@ export function Services() {
             Web apps, static sites, Android, SEO, custom domains, mods, Discord/Telegram/WhatsApp bots, AI integrations, automation. Pick the project — we bring the right tools.
           </motion.p>
         </div>
+      </div>
 
-        {/* Just the tech-stack chips — no cards */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.025 } },
+      {/* Tech strip — dual-direction marquee, cool design */}
+      <div className="relative overflow-hidden py-6 border-y border-cyan-400/20 bg-card/30">
+        {/* Edge gradients */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to right, #0A1830, transparent)" }} />
+        <div className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to left, #0A1830, transparent)" }} />
+
+        {/* Row 1 — scrolling left */}
+        <div className="relative py-2">
+          <Marquee speed={40} direction="left">
+            {TECH_STACK.map((tech, i) => (
+              <TechChip key={`r1-${i}`} tech={tech} />
+            ))}
+          </Marquee>
+        </div>
+
+        {/* Row 2 — scrolling right (offset items) */}
+        <div className="relative py-2">
+          <Marquee speed={35} direction="right">
+            {[...TECH_STACK].reverse().map((tech, i) => (
+              <TechChip key={`r2-${i}`} tech={tech} variant="alt" />
+            ))}
+          </Marquee>
+        </div>
+
+        {/* Center glow accent */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 pointer-events-none rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(34,211,238,0.08), transparent 70%)",
           }}
-          className="flex flex-wrap gap-2.5"
-        >
-          {TECH_STACK.map((tech) => (
-            <motion.span
-              key={tech.name}
-              variants={{
-                hidden: { opacity: 0, y: 12 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              className="group inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-cyan-400/25 bg-card hover:border-cyan-400/60 hover:bg-cyan-400/5 transition-colors cursor-default"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 group-hover:shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-shadow" />
-              <span className="text-sm font-mono text-foreground/90">{tech.name}</span>
-              <span className="text-[10px] font-mono text-muted-foreground/70 hidden sm:inline">
-                · {tech.category}
-              </span>
-            </motion.span>
-          ))}
-        </motion.div>
+        />
       </div>
     </section>
+  );
+}
+
+function TechChip({ tech, variant = "default" }: { tech: string; variant?: "default" | "alt" }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.1, y: -2 }}
+      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+      className={`group inline-flex items-center gap-2.5 mx-2 px-4 py-2.5 rounded-xl border transition-colors cursor-default ${
+        variant === "alt"
+          ? "border-cyan-400/20 bg-background/60 hover:border-cyan-400/50 hover:bg-cyan-400/5"
+          : "border-cyan-400/25 bg-card hover:border-cyan-400/60 hover:bg-cyan-400/5"
+      }`}
+    >
+      {/* Animated dot */}
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+      </span>
+      <span className="text-sm font-mono text-foreground/90 whitespace-nowrap">{tech}</span>
+    </motion.div>
   );
 }
