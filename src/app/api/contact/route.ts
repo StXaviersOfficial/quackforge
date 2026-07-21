@@ -98,7 +98,8 @@ export async function POST(req: NextRequest) {
         message: 'Enquiry received. Response within 24h.',
       })
     } catch (fbErr) {
-      console.error('[contact] Firebase write failed:', fbErr.message)
+      const errMsg = fbErr instanceof Error ? fbErr.message : 'Unknown error'
+      console.error('[contact] Firebase write failed:', errMsg)
       // Still send ntfy notification even if Firestore fails
       sendNtfyNotification(doc).catch(() => {})
       return NextResponse.json(
@@ -111,7 +112,8 @@ export async function POST(req: NextRequest) {
       )
     }
   } catch (err) {
-    console.error('[contact] Unexpected error:', err)
+    const errMsg = err instanceof Error ? err.message : 'Unknown error'
+    console.error('[contact] Unexpected error:', errMsg)
     return NextResponse.json(
       { ok: false, error: 'Server error. Try email instead.' },
       { status: 500 }
@@ -155,6 +157,7 @@ async function sendNtfyNotification(doc: EnquiryDoc) {
     })
     console.log('[ntfy] Notification sent')
   } catch (err) {
-    console.error('[ntfy] Failed to send notification:', err.message)
+    const errMsg = err instanceof Error ? err.message : 'Unknown error'
+    console.error('[ntfy] Failed to send notification:', errMsg)
   }
 }
