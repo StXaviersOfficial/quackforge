@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Check, ArrowRight, Wrench, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/hooks/use-currency";
 import { useBooking } from "@/hooks/use-booking";

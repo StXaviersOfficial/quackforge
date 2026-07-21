@@ -33,11 +33,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const name = String(body.name ?? '').trim()
-    const email = String(body.email ?? '').trim()
-    const projectType = String(body.project_type ?? '').trim()
-    const budget = String(body.budget ?? '').trim()
-    const message = String(body.message ?? '').trim()
+    const name = String(body.name ?? '').trim().slice(0, 200)
+    const email = String(body.email ?? '').trim().slice(0, 320)
+    const projectType = String(body.project_type ?? '').trim().slice(0, 50)
+    const budget = String(body.budget ?? '').trim().slice(0, 50)
+    const message = String(body.message ?? '').trim().slice(0, 5000)
 
     if (!name || name.length < 2) {
       return NextResponse.json(
@@ -93,8 +93,7 @@ export async function POST(req: NextRequest) {
         message: 'Enquiry received. Response within 24h.',
       })
     } catch (fbErr) {
-      console.error('[contact] Firebase write failed:', fbErr)
-      console.log('[contact] Would have saved:', doc)
+      console.error('[contact] Firebase write failed:', fbErr.message)
       // Still send ntfy notification even if Firestore fails
       sendNtfyNotification(doc).catch(() => {})
       return NextResponse.json(
@@ -157,8 +156,8 @@ async function sendNtfyNotification(doc: EnquiryDoc) {
       },
       body,
     })
-    console.log('[ntfy] Notification sent to topic:', topic)
+    console.log('[ntfy] Notification sent')
   } catch (err) {
-    console.error('[ntfy] Failed to send notification:', err)
+    console.error('[ntfy] Failed to send notification:', err.message)
   }
 }
