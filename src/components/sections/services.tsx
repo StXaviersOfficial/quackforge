@@ -52,9 +52,9 @@ export function Services() {
       <div className="relative overflow-hidden py-6 border-y border-cyan-400/20 bg-card/30">
         {/* Edge gradients */}
         <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, #071E24, transparent)" }} />
+          style={{ background: "linear-gradient(to right, #0A1830, transparent)" }} />
         <div className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, #071E24, transparent)" }} />
+          style={{ background: "linear-gradient(to left, #0A1830, transparent)" }} />
 
         {/* Single row — scrolling left, smooth linear loop */}
         <div className="relative py-2">

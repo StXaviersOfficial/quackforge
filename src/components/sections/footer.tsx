@@ -72,14 +72,14 @@ export function Footer() {
           <FooterCol title="Reach us">
             <a
               href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+              className="flex items-start gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors min-w-0"
             >
-              <Mail className="h-3.5 w-3.5" />
-              quackforgeofficial@gmail.com
+              <Mail className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+              <span className="break-all">quackforgeofficial@gmail.com</span>
             </a>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5" />
-              India · UTC+5:30 · Remote worldwide
+            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+              <span>India · UTC+5:30 · Remote worldwide</span>
             </div>
           </FooterCol>
           <FooterCol title="Social">

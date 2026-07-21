@@ -50,43 +50,43 @@
   --ease-brand: cubic-bezier(0.4, 0, 0.2, 1);
   --radius: 0.5rem;
 
-  /* Fully cyan family — no sky-blue hues anywhere */
+  /* Cyan-dominant with blue gradient mixing */
   --brand-cyan: #22D3EE;
   --brand-cyan-bright: #67E8F9;
   --brand-cyan-deep: #06B6D4;
   --brand-cyan-glow: #A5F3FC;
-  --brand-blue: #0E7490;
-  --brand-blue-bright: #67E8F9;
+  --brand-blue: #3B82F6;
+  --brand-blue-bright: #60A5FA;
 
-  /* Dark cyan-teal base instead of navy — cyan reads as the dominant hue */
-  --background: #071E24;
+  /* Navy base so cyan pops */
+  --background: #0A1830;
   --foreground: #E6FBFF;
-  --card: #0A2B33;
+  --card: #0F2147;
   --card-foreground: #E6FBFF;
-  --popover: #0A2B33;
+  --popover: #0F2147;
   --popover-foreground: #E6FBFF;
   --primary: #22D3EE;
-  --primary-foreground: #071E24;
-  --secondary: #0D3540;
+  --primary-foreground: #0A1830;
+  --secondary: #142B53;
   --secondary-foreground: #E6FBFF;
-  --muted: #0D3540;
-  --muted-foreground: #7FC4D4;
+  --muted: #142B53;
+  --muted-foreground: #7AA5CC;
   --accent: #22D3EE;
-  --accent-foreground: #071E24;
+  --accent-foreground: #0A1830;
   --destructive: #FF4D6D;
   --border: rgba(34, 211, 238, 0.25);
   --input: rgba(34, 211, 238, 0.12);
   --ring: #22D3EE;
   --chart-1: #22D3EE;
-  --chart-2: #0E7490;
+  --chart-2: #3B82F6;
   --chart-3: #06B6D4;
   --chart-4: #67E8F9;
   --chart-5: #A5F3FC;
-  --sidebar: #071E24;
+  --sidebar: #0A1830;
   --sidebar-foreground: #E6FBFF;
   --sidebar-primary: #22D3EE;
-  --sidebar-primary-foreground: #071E24;
-  --sidebar-accent: #0D3540;
+  --sidebar-primary-foreground: #0A1830;
+  --sidebar-accent: #142B53;
   --sidebar-accent-foreground: #E6FBFF;
   --sidebar-border: rgba(34, 211, 238, 0.25);
   --sidebar-ring: #22D3EE;
@@ -113,7 +113,6 @@ html, body {
       radial-gradient(ellipse 60% 35% at 25% 70%, rgba(103, 232, 249, 0.24), transparent 55%),
       radial-gradient(ellipse 75% 50% at 80% 90%, rgba(6, 182, 212, 0.30), transparent 70%);
     background-size: 220% 220%;
-    background-attachment: fixed;
     animation: bg-mix 22s ease-in-out infinite;
   }
   ::selection {
@@ -121,9 +120,9 @@ html, body {
     color: var(--background);
   }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #071E24; }
+  ::-webkit-scrollbar-track { background: #0A1830; }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #22D3EE, #0E7490);
+    background: linear-gradient(180deg, #22D3EE, #3B82F6);
     border-radius: 4px;
   }
 }
@@ -146,7 +145,7 @@ html, body {
 }
 
 .text-gradient-cyan {
-  background: linear-gradient(135deg, #A5F3FC 0%, #22D3EE 30%, #0E7490 70%, #06B6D4 100%);
+  background: linear-gradient(135deg, #A5F3FC 0%, #22D3EE 30%, #3B82F6 70%, #06B6D4 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -170,7 +169,7 @@ html, body {
   left: 0;
   width: 0;
   height: 1.5px;
-  background: linear-gradient(90deg, #22D3EE, #0E7490);
+  background: linear-gradient(90deg, #22D3EE, #3B82F6);
   transition: width 0.3s var(--ease-brand);
 }
 .link-underline:hover::after { width: 100%; }
@@ -180,7 +179,7 @@ html, body {
   top: 0;
   left: 0;
   height: 2px;
-  background: linear-gradient(90deg, #22D3EE, #0E7490, #22D3EE);
+  background: linear-gradient(90deg, #22D3EE, #3B82F6, #22D3EE);
   background-size: 200% 100%;
   animation: scroll-progress-shimmer 2s linear infinite;
   z-index: 60;
@@ -317,7 +316,7 @@ html, body {
   height: 100%;
   border-radius: 16px;
   border: 1px solid rgba(34, 211, 238, 0.3);
-  background: linear-gradient(135deg, #0A2B33 0%, #0D3540 100%);
+  background: linear-gradient(135deg, #0F2147 0%, #142B53 100%);
   padding: 20px;
   box-shadow:
     0 8px 32px -8px rgba(0, 0, 0, 0.8),
@@ -332,7 +331,6 @@ html, body {
   position: relative;
   height: 620px;
   perspective: 1200px;
-  transform-style: preserve-3d;
 }
 .playing-card {
   position: absolute;
@@ -342,23 +340,19 @@ html, body {
   height: 580px;
   margin-left: -140px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #0A2B33 0%, #0D3540 100%);
+  background: linear-gradient(135deg, #0F2147 0%, #142B53 100%);
   border: 1px solid rgba(34, 211, 238, 0.35);
   box-shadow:
     0 10px 40px -10px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(34, 211, 238, 0.15);
   padding: 20px;
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s var(--ease-brand), box-shadow 0.32s var(--ease-brand);
+  transition: transform 0.4s var(--ease-brand), opacity 0.4s var(--ease-brand), box-shadow 0.4s var(--ease-brand);
   cursor: pointer;
-  overflow-x: hidden;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  overflow: hidden;
 }
 .playing-card.active {
   z-index: 10;
   transform: translateX(0) translateZ(40px) rotateY(0deg);
-  overflow-y: auto;
   box-shadow:
     0 20px 60px -10px rgba(0, 0, 0, 0.9),
     0 0 0 1px rgba(34, 211, 238, 0.6),
@@ -368,25 +362,21 @@ html, body {
   z-index: 5;
   transform: translateX(-110px) translateZ(-30px) rotateY(18deg) scale(0.92);
   opacity: 0.7;
-  overflow-y: hidden;
 }
 .playing-card.behind-right {
   z-index: 5;
   transform: translateX(110px) translateZ(-30px) rotateY(-18deg) scale(0.92);
   opacity: 0.7;
-  overflow-y: hidden;
 }
 .playing-card.far-left {
   z-index: 1;
   transform: translateX(-180px) translateZ(-60px) rotateY(28deg) scale(0.82);
   opacity: 0.35;
-  overflow-y: hidden;
 }
 .playing-card.far-right {
   z-index: 1;
   transform: translateX(180px) translateZ(-60px) rotateY(-28deg) scale(0.82);
   opacity: 0.35;
-  overflow-y: hidden;
 }
 
 /* ===== Booking modal — FULL SCREEN ===== */
@@ -431,7 +421,6 @@ html, body {
   transition: transform 0.3s var(--ease-brand);
   cursor: pointer;
 }
-.discord-fab-btn:hover { transform: scale(1.08); }
 
 /* The popup text — bottom-right, next to Discord logo, smaller, blur-locks background */
 .discord-fab-popup {
@@ -447,7 +436,7 @@ html, body {
   position: fixed;
   bottom: 100px;
   right: 24px;
-  background: #0A2B33;
+  background: #0F2147;
   border: 1px solid rgba(34, 211, 238, 0.5);
   border-radius: 12px;
   padding: 14px 16px;
@@ -481,8 +470,8 @@ html, body {
   position: absolute;
   top: -68px;
   right: 0;
-  background: linear-gradient(135deg, #22D3EE, #0E7490);
-  color: #071E24;
+  background: linear-gradient(135deg, #22D3EE, #3B82F6);
+  color: #0A1830;
   font-weight: 700;
   padding: 12px 22px;
   border-radius: 12px;
@@ -533,7 +522,7 @@ html, body {
   position: absolute;
   bottom: calc(100% + 8px);
   right: 0;
-  background: #0A2B33;
+  background: #0F2147;
   border: 1px solid rgba(34, 211, 238, 0.4);
   border-radius: 12px;
   padding: 8px;

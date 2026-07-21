@@ -27,7 +27,7 @@ export function CpuDiagram() {
           <linearGradient id="power-gradient" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#22D3EE" />
             <stop offset="50%" stopColor="#67E8F9" />
-            <stop offset="100%" stopColor="#0E7490" />
+            <stop offset="100%" stopColor="#3B82F6" />
           </linearGradient>
           <radialGradient id="chip-aura" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="rgba(34,211,238,0.45)" />

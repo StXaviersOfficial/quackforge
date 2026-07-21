@@ -151,7 +151,7 @@ export function Maintenance() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <div className="card-stack" style={{ height: "560px" }}>
+          <div className="card-stack" style={{ height: "620px" }}>
             {PLANS.map((plan, i) => {
               const diff = i - activeMobile;
               let cls = "far-right";
@@ -166,7 +166,7 @@ export function Maintenance() {
                 <div
                   key={plan.id}
                   className={`playing-card ${cls}`}
-                  style={{ height: "520px" }}
+                  style={{ height: "580px" }}
                   onClick={() => setActiveMobile(i)}
                 >
                   {plan.bestCoverage && (

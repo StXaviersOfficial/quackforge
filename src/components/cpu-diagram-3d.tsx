@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Environment, ContactShadows, Sparkles } from "@react-three/drei";
+import { Float } from "@react-three/drei";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
 
@@ -42,19 +42,19 @@ function ChipBody() {
   return (
     <group ref={groupRef}>
       {/* Bottom substrate (PCB) */}
-      <mesh position={[0, -0.05, 0]} castShadow receiveShadow>
+      <mesh position={[0, -0.05, 0]}>
         <boxGeometry args={[1.6, 0.06, 1.6]} />
         <meshStandardMaterial color="#0A2818" metalness={0.3} roughness={0.7} />
       </mesh>
 
       {/* Chip ceramic body */}
-      <mesh position={[0, 0.08, 0]} castShadow receiveShadow>
+      <mesh position={[0, 0.08, 0]}>
         <boxGeometry args={[1.4, 0.18, 1.4]} />
         <meshStandardMaterial color="#1A1F2E" metalness={0.5} roughness={0.4} />
       </mesh>
 
       {/* Heatspreader (metal lid) */}
-      <mesh position={[0, 0.18, 0]} castShadow>
+      <mesh position={[0, 0.18, 0]}>
         <boxGeometry args={[1.2, 0.04, 1.2]} />
         <meshStandardMaterial color="#3A4250" metalness={0.95} roughness={0.15} />
       </mesh>
@@ -63,7 +63,7 @@ function ChipBody() {
       <mesh position={[0, 0.22, 0]}>
         <boxGeometry args={[0.7, 0.02, 0.7]} />
         <meshStandardMaterial
-          color="#071E24"
+          color="#0A1830"
           emissive="#22D3EE"
           emissiveIntensity={0.7}
           metalness={0.4}
@@ -103,7 +103,7 @@ function ChipBody() {
           key={pin.key}
           position={pin.pos}
           rotation={pin.rot}
-          castShadow
+         
         >
           <cylinderGeometry args={[0.018, 0.018, 0.18, 8]} />
           <meshStandardMaterial
@@ -129,15 +129,7 @@ function ChipBody() {
         </mesh>
       ))}
 
-      {/* Electric signal particles — sparkles around the chip */}
-      <Sparkles
-        count={40}
-        scale={3}
-        size={3}
-        speed={0.6}
-        opacity={0.8}
-        color="#22D3EE"
-      />
+
     </group>
   );
 }
@@ -156,7 +148,7 @@ export function CpuDiagram3D() {
           <linearGradient id="power-gradient-3d" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#22D3EE" />
             <stop offset="50%" stopColor="#67E8F9" />
-            <stop offset="100%" stopColor="#0E7490" />
+            <stop offset="100%" stopColor="#3B82F6" />
           </linearGradient>
           <filter id="glow-filter">
             <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
@@ -211,20 +203,19 @@ export function CpuDiagram3D() {
       {/* 3D Canvas */}
       <Canvas
         camera={{ position: [2.2, 1.8, 2.2], fov: 38 }}
-        shadows
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight
           position={[5, 8, 5]}
           intensity={1.5}
-          castShadow
-          shadow-mapSize={[1024, 1024]}
+         
+
         />
         <pointLight position={[-5, 3, -5]} intensity={1.2} color="#22D3EE" />
-        <pointLight position={[3, -2, 3]} intensity={0.8} color="#0E7490" />
+        <pointLight position={[3, -2, 3]} intensity={0.8} color="#3B82F6" />
         <spotLight
           position={[0, 6, 0]}
           angle={0.5}
@@ -236,17 +227,6 @@ export function CpuDiagram3D() {
         <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
           <ChipBody />
         </Float>
-
-        <ContactShadows
-          position={[0, -1.5, 0]}
-          opacity={0.5}
-          scale={6}
-          blur={2.5}
-          far={4}
-          color="#22D3EE"
-        />
-
-        <Environment preset="city" />
       </Canvas>
     </div>
   );
