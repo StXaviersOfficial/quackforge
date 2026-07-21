@@ -621,7 +621,7 @@ export function BookingModal() {
                         value={brief}
                         onChange={(e) => setBrief(e.target.value)}
                         rows={6}
-                        placeholder="What it is, who it's for, deadline if any, links to references."
+                        placeholder="Describe your project briefly"
                         className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none"
                       />
                       <p className="text-[11px] text-muted-foreground mt-1.5">
