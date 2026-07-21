@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
     const projectType = String(body.project_type ?? '').trim().slice(0, 50)
     const budget = String(body.budget ?? '').trim().slice(0, 50)
     const message = String(body.message ?? '').trim().slice(0, 5000)
+    const timeline = String(body.timeline ?? '').trim().slice(0, 50)
+    const mode = String(body.mode ?? '').trim().slice(0, 20)
+    const source = String(body.source ?? 'quackforge.web.app').trim().slice(0, 100)
 
     if (!name || name.length < 2) {
       return NextResponse.json(
@@ -76,7 +79,9 @@ export async function POST(req: NextRequest) {
       project_type: projectType,
       budget,
       message,
-      source: 'quackforge.web.app',
+      source,
+      timeline: timeline || undefined,
+      mode: mode || undefined,
       created_at: Date.now(),
       ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
       user_agent: req.headers.get('user-agent') ?? undefined,
@@ -112,14 +117,6 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-export async function GET() {
-  return NextResponse.json({
-    ok: true,
-    endpoint: 'quackforge-contact',
-    method: 'POST',
-  })
 }
 
 /**

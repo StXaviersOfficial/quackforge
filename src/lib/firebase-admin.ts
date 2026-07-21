@@ -46,6 +46,8 @@ export interface EnquiryDoc {
   budget: string
   message: string
   source: string
+  timeline?: string
+  mode?: string
   created_at: number
   ip?: string
   user_agent?: string
