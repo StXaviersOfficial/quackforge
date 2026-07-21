@@ -3,20 +3,17 @@
 import * as React from "react";
 import { Check, X, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/hooks/use-currency";
 import { useBooking } from "@/hooks/use-booking";
 
-type Feature = {
-  text: string;
-  included: boolean;
-};
+type Feature = { text: string; included: boolean };
 
 type Tier = {
   id: string;
   name: string;
-  usdPrice: number; // 0 means free, -1 means custom
+  usdPrice: number;
   cadence: string;
   blurb: string;
   features: Feature[];
@@ -161,8 +158,47 @@ const TIERS: Tier[] = [
 ];
 
 export function Pricing() {
-  const { currency, toggle, mounted, format } = useCurrency();
+  const { currency, setCurrency, toggle, mounted, format, countryName } = useCurrency();
   const { openBooking } = useBooking();
+  const [pickerOpen, setPickerOpen] = React.useState(false);
+  const holdTimer = React.useRef<NodeJS.Timeout | null>(null);
+  const pickerWrapRef = React.useRef<HTMLDivElement>(null);
+
+  // Hold for 2s → opens full picker
+  const onMouseDown = () => {
+    holdTimer.current = setTimeout(() => setPickerOpen(true), 2000);
+  };
+  const onMouseUp = () => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+    }
+  };
+  const onClick = () => {
+    // If picker is open, just close it. Otherwise cycle.
+    if (pickerOpen) {
+      setPickerOpen(false);
+      return;
+    }
+    // Only cycle if hold didn't fire (timer still alive)
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+      toggle();
+    }
+  };
+
+  // Close picker on outside click
+  React.useEffect(() => {
+    if (!pickerOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (pickerWrapRef.current && !pickerWrapRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [pickerOpen]);
 
   return (
     <section id="pricing" className="scroll-mt-16 py-16 sm:py-20 relative">
@@ -186,34 +222,80 @@ export function Pricing() {
           >
             Six tiers. <span className="text-gradient-cyan">Pick your fit.</span>
           </motion.h2>
+
+          {/* Currency display with hold-to-open picker */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ delay: 0.16, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="mt-3 flex items-center gap-2 text-muted-foreground text-base"
+            className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground"
           >
-            <span>Showing prices in</span>
-            <button
-              onClick={toggle}
-              className="font-mono text-cyan-300 hover:text-cyan-200 underline-offset-4 underline font-semibold"
-            >
-              {mounted ? currency.code : "USD"}
-            </button>
-            <span>· tap to switch</span>
+            <span>Prices in</span>
+            <div ref={pickerWrapRef} className="relative inline-block">
+              <button
+                onClick={onClick}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
+                onMouseLeave={onMouseUp}
+                onTouchStart={onMouseDown}
+                onTouchEnd={onMouseUp}
+                className="font-mono text-cyan-300 hover:text-cyan-200 underline-offset-4 underline font-semibold select-none cursor-pointer"
+                title="Click to cycle · Hold 2s to open picker"
+              >
+                {mounted ? currency.code : "USD"} {currency.symbol}
+              </button>
+              <AnimatePresence>
+                {pickerOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                    className="currency-picker"
+                  >
+                    {[
+                      { code: "USD", label: "USD — US Dollar", symbol: "$" },
+                      { code: "INR", label: "INR — Indian Rupee", symbol: "₹" },
+                      { code: "EUR", label: "EUR — Euro", symbol: "€" },
+                      { code: "GBP", label: "GBP — British Pound", symbol: "£" },
+                      { code: "CAD", label: "CAD — Canadian Dollar", symbol: "C$" },
+                      { code: "AUD", label: "AUD — Australian Dollar", symbol: "A$" },
+                    ].map((c) => (
+                      <button
+                        key={c.code}
+                        onClick={() => {
+                          setCurrency(c.code);
+                          setPickerOpen(false);
+                        }}
+                        className={cn(currency.code === c.code && "active")}
+                      >
+                        {c.label} ({c.symbol})
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            {countryName && (
+              <span className="text-xs text-muted-foreground/80">
+                · estimated from: {countryName}
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground/70 hidden sm:inline">
+              · click to cycle, hold 2s to open picker
+            </span>
           </motion.div>
         </div>
 
-        {/* Desktop: 6 cards in horizontal row, wide cards */}
-        {/* Mobile: playing-card stack */}
+        {/* Desktop: 6 wide cards */}
         <div className="hidden lg:grid lg:grid-cols-6 gap-3">
           {TIERS.map((tier, i) => (
             <TierCard
               key={tier.id}
               tier={tier}
               index={i}
-              formatPrice={(usd) => format(usd)}
-              currencySymbol={currency.symbol}
+              formatPrice={(usd) => format(usd, tier.id)}
               onChoose={() =>
                 openBooking({
                   plan: tier.name,
@@ -222,7 +304,7 @@ export function Pricing() {
                       ? "Free"
                       : tier.usdPrice === -1
                       ? "Custom"
-                      : format(tier.usdPrice),
+                      : format(tier.usdPrice, tier.id),
                   budget: tier.id,
                 })
               }
@@ -234,8 +316,7 @@ export function Pricing() {
         <div className="lg:hidden">
           <CardStack
             tiers={TIERS}
-            formatPrice={(usd) => format(usd)}
-            currencySymbol={currency.symbol}
+            formatPrice={(usd, tierId) => format(usd, tierId)}
             onChoose={(tier) =>
               openBooking({
                 plan: tier.name,
@@ -244,7 +325,7 @@ export function Pricing() {
                     ? "Free"
                     : tier.usdPrice === -1
                     ? "Custom"
-                    : format(tier.usdPrice),
+                    : format(tier.usdPrice, tier.id),
                 budget: tier.id,
               })
             }
@@ -271,13 +352,11 @@ function TierCard({
   tier,
   index,
   formatPrice,
-  currencySymbol,
   onChoose,
 }: {
   tier: Tier;
   index: number;
   formatPrice: (usd: number) => string;
-  currencySymbol: string;
   onChoose: () => void;
 }) {
   const price =
@@ -318,7 +397,6 @@ function TierCard({
         {tier.blurb}
       </p>
 
-      {/* Included features */}
       <div className="feat-list mb-3 flex-1">
         {tier.features.map((f, i) => (
           <div key={i} className="feat-row">
@@ -328,7 +406,6 @@ function TierCard({
         ))}
       </div>
 
-      {/* Excluded (not in demo — only paid tiers) */}
       {tier.excluded.length > 0 && (
         <div className="feat-list mb-4 pt-3 border-t border-border/50">
           {tier.excluded.map((ex, i) => (
@@ -357,16 +434,13 @@ function TierCard({
   );
 }
 
-/* Mobile playing-card stack — 1 active, others peek behind */
 function CardStack({
   tiers,
   formatPrice,
-  currencySymbol,
   onChoose,
 }: {
   tiers: Tier[];
-  formatPrice: (usd: number) => string;
-  currencySymbol: string;
+  formatPrice: (usd: number, tierId: string) => string;
   onChoose: (tier: Tier) => void;
 }) {
   const [active, setActive] = React.useState(0);
@@ -389,7 +463,7 @@ function CardStack({
             ? "Custom"
             : tier.usdPrice === 0
             ? "Free"
-            : formatPrice(tier.usdPrice);
+            : formatPrice(tier.usdPrice, tier.id);
 
         return (
           <div
@@ -456,7 +530,6 @@ function CardStack({
         );
       })}
 
-      {/* Navigation dots */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
         {tiers.map((_, i) => (
           <button

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Loader2, CheckCircle2, Mail, MessageCircle } from "lucide-react";
+import { X, ArrowRight, Loader2, CheckCircle2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,7 @@ import {
 import { useBooking } from "@/hooks/use-booking";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { DiscordLogo } from "@/components/discord-fab";
 
 const PROJECT_TYPES = [
   { value: "web-app", label: "Web app (Next.js / React)" },
@@ -34,21 +35,27 @@ const PROJECT_TYPES = [
   { value: "other", label: "Something else" },
 ];
 
-const BUDGET_TIERS = [
+const PROJECT_BUDGETS = [
   { value: "demo", label: "Free Demo — $0" },
   { value: "starter", label: "Starter — $99" },
   { value: "growth", label: "Growth — $249" },
   { value: "pro", label: "Pro — $599" },
   { value: "elite", label: "Elite — $1,499" },
   { value: "enterprise", label: "Enterprise — Custom quote" },
-  { value: "maintenance", label: "Maintenance plan" },
+  { value: "undecided", label: "Not sure yet" },
+];
+
+const MAINTENANCE_BUDGETS = [
+  { value: "request-a-fix", label: "Request a Fix — $39" },
+  { value: "care-basic", label: "Care Basic — $49/mo" },
+  { value: "care-complete", label: "Care Complete — $149/mo" },
   { value: "undecided", label: "Not sure yet" },
 ];
 
 const TIMELINES = [
+  { value: "1-month", label: "Within 1 month" },
   { value: "asap", label: "ASAP — within 1 week" },
   { value: "2-weeks", label: "Within 2 weeks" },
-  { value: "1-month", label: "Within 1 month" },
   { value: "flexible", label: "Flexible" },
 ];
 
@@ -58,21 +65,41 @@ export function BookingModal() {
   const { open, preset, closeBooking } = useBooking();
   const [submitting, setSubmitting] = React.useState(false);
   const [done, setDone] = React.useState(false);
+
+  // Mode: "project" (default) or "maintenance"
+  const [mode, setMode] = React.useState<"project" | "maintenance">("project");
   const [projectType, setProjectType] = React.useState("");
   const [budget, setBudget] = React.useState("");
   const [timeline, setTimeline] = React.useState("");
   const [touched, setTouched] = React.useState<Record<string, boolean>>({});
   const [errors, setErrors] = React.useState<Errors>({});
 
-  // Apply preset when modal opens
+  // Apply preset + auto-fill smart defaults when modal opens
   React.useEffect(() => {
     if (open) {
       setDone(false);
-      setProjectType(preset.projectType || "");
-      setBudget(preset.budget || "");
-      setTimeline("");
-      setTouched({});
-      setErrors({});
+      // Determine mode from preset
+      const isMaintenance = preset.projectType === "maintenance" || preset.budget === "maintenance";
+      const newMode = isMaintenance ? "maintenance" : "project";
+      setMode(newMode);
+
+      // Auto-fill smart defaults with a slight delay to ensure Select components are mounted
+      const timer = setTimeout(() => {
+        if (isMaintenance) {
+          setProjectType("maintenance");
+          const presetBudget = preset.budget && preset.budget !== "maintenance" ? preset.budget : "request-a-fix";
+          setBudget(presetBudget);
+        } else {
+          const presetBudget = preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth";
+          setBudget(presetBudget);
+          setProjectType("web-app");
+        }
+        setTimeline("1-month");
+        setTouched({});
+        setErrors({});
+      }, 50);
+
+      return () => clearTimeout(timer);
     }
   }, [open, preset]);
 
@@ -96,8 +123,7 @@ export function BookingModal() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email";
     if (!projectType) e.projectType = "Pick what you want built";
     if (!budget) e.budget = "Pick a budget tier";
-    if (!message || message.trim().length < 10)
-      e.message = "Tell us a bit more — at least 10 characters";
+    if (!message || message.trim().length < 10) e.message = "Tell us a bit more — at least 10 characters";
     if (!timeline) e.timeline = "Pick a timeline";
     return e;
   }
@@ -126,6 +152,7 @@ export function BookingModal() {
       project_type: projectType,
       budget,
       timeline,
+      mode,
       message: String(fd.get("message") ?? ""),
       source: "quackforge-booking-modal",
     };
@@ -155,6 +182,8 @@ export function BookingModal() {
     }
   }
 
+  const budgetOptions = mode === "maintenance" ? MAINTENANCE_BUDGETS : PROJECT_BUDGETS;
+
   return (
     <AnimatePresence>
       {open && (
@@ -173,294 +202,342 @@ export function BookingModal() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget && !submitting) closeBooking();
+            }}
           >
-            <div className="relative w-full max-w-2xl my-8 rounded-2xl border border-cyan-400/30 bg-card glow-cyan-strong overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-cyan-400/20 px-6 py-5 bg-background/40">
-                <div>
-                  <p className="eyebrow text-cyan-300 mb-1">Project Booking</p>
-                  <h2 className="text-2xl font-semibold tracking-tight">
-                    {done ? "All set." : "Build your project."}
-                  </h2>
+            <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-cyan-400/20 px-5 sm:px-8 py-8">
+              {/* Header — sticky */}
+              <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-5 bg-card/95 border-b border-cyan-400/20 z-10 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="eyebrow text-cyan-300 mb-1">Project Booking</p>
+                    <h2 className="text-2xl font-semibold tracking-tight">
+                      {done ? "All set." : mode === "maintenance" ? "Book a maintenance plan." : "Build your project."}
+                    </h2>
+                  </div>
+                  <button
+                    onClick={closeBooking}
+                    disabled={submitting}
+                    aria-label="Close"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-cyan-400 transition-colors disabled:opacity-50"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
                 </div>
-                <button
-                  onClick={closeBooking}
-                  disabled={submitting}
-                  aria-label="Close"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-cyan-400 transition-colors disabled:opacity-50"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
 
               {/* Body */}
-              <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
-                {done ? (
+              {done ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  className="flex flex-col items-center justify-center text-center py-16"
+                >
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                    className="flex flex-col items-center justify-center text-center py-12"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 mb-4 glow-cyan"
                   >
-                    <motion.div
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
-                      className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 mb-4 glow-cyan"
-                    >
-                      <CheckCircle2 className="h-8 w-8" />
-                    </motion.div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Thanks — we'll reply within 24 hours.
-                    </h3>
-                    <p className="text-muted-foreground mb-6 max-w-md">
-                      Your enquiry is in. The team will follow up with a written brief, cost range, and demo timeline.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
-                      <Button
-                        asChild
-                        className="flex-1 bg-[#5865F2] hover:bg-[#4752C4] text-white border-0"
-                      >
-                        <a
-                          href="https://discord.gg/VhKgEetwr8"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <MessageCircle className="mr-2 h-4 w-4" />
-                          Join Discord
-                        </a>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setDone(false);
-                          closeBooking();
-                        }}
-                        className="flex-1 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10"
-                      >
-                        Close
-                      </Button>
-                    </div>
+                    <CheckCircle2 className="h-8 w-8" />
                   </motion.div>
-                ) : (
-                  <form onSubmit={onSubmit} className="space-y-5">
-                    {/* Preset display */}
-                    {(preset.plan || preset.price) && (
-                      <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3 flex items-center justify-between">
-                        <div>
-                          <p className="text-[11px] font-mono uppercase text-cyan-300 mb-0.5">
-                            Selected plan
-                          </p>
-                          <p className="text-sm font-semibold">
-                            {preset.plan}
-                            {preset.price ? ` · ${preset.price}` : ""}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 underline"
-                          onClick={() => setBudget("")}
-                        >
-                          Change
-                        </button>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Thanks — we'll reply within 24 hours.
+                  </h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    Your enquiry is in. The team will follow up with a written brief, cost range, and demo timeline.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+                    <Button
+                      asChild
+                      className="flex-1 bg-[#5865F2] hover:bg-[#4752C4] text-white border-0"
+                    >
+                      <a href="https://discord.gg/VhKgEetwr8" target="_blank" rel="noopener noreferrer">
+                        <DiscordLogo className="mr-2 h-4 w-4" />
+                        Join Discord
+                      </a>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setDone(false);
+                        closeBooking();
+                      }}
+                      className="flex-1 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : (
+                <form onSubmit={onSubmit} className="space-y-5 pb-12">
+                  {/* Preset display */}
+                  {(preset.plan || preset.price) && (
+                    <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3 flex items-center justify-between">
+                      <div>
+                        <p className="text-[11px] font-mono uppercase text-cyan-300 mb-0.5">
+                          Selected plan
+                        </p>
+                        <p className="text-sm font-semibold">
+                          {preset.plan}
+                          {preset.price ? ` · ${preset.price}` : ""}
+                        </p>
                       </div>
-                    )}
-
-                    {/* Quick contact row */}
-                    <div className="flex flex-wrap gap-2 pb-2">
-                      <a
-                        href="https://discord.gg/VhKgEetwr8"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#5865F2]/40 bg-[#5865F2]/10 text-xs text-[#7984F5] hover:bg-[#5865F2]/20 transition-colors"
+                      <button
+                        type="button"
+                        className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 underline"
+                        onClick={() => {
+                          setBudget("");
+                          setProjectType("");
+                        }}
                       >
-                        <MessageCircle className="h-3 w-3" />
-                        Faster on Discord
-                      </a>
-                      <a
-                        href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-cyan-400/30 bg-cyan-400/5 text-xs text-cyan-300 hover:bg-cyan-400/15 transition-colors"
+                        Change
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Quick contact row */}
+                  <div className="flex flex-wrap gap-2 pb-2">
+                    <a
+                      href="https://discord.gg/VhKgEetwr8"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#5865F2]/40 bg-[#5865F2]/10 text-xs text-[#7984F5] hover:bg-[#5865F2]/20 transition-colors"
+                    >
+                      <DiscordLogo className="h-3.5 w-3.5" />
+                      Faster on Discord
+                    </a>
+                    <a
+                      href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-cyan-400/30 bg-cyan-400/5 text-xs text-cyan-300 hover:bg-cyan-400/15 transition-colors"
+                    >
+                      <Mail className="h-3.5 w-3.5" />
+                      Email us instead
+                    </a>
+                  </div>
+
+                  {/* Name + Email (no placeholder fillers) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="Your name" htmlFor="bk-name" error={touched.name ? errors.name : undefined}>
+                      <Input
+                        id="bk-name"
+                        name="name"
+                        autoComplete="name"
+                        onBlur={() => onBlur("name")}
+                        className={cn(
+                          "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
+                          touched.name && errors.name && "border-destructive focus:border-destructive focus:ring-destructive/30"
+                        )}
+                      />
+                    </Field>
+                    <Field label="Email" htmlFor="bk-email" error={touched.email ? errors.email : undefined}>
+                      <Input
+                        id="bk-email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        onBlur={() => onBlur("email")}
+                        className={cn(
+                          "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
+                          touched.email && errors.email && "border-destructive focus:border-destructive focus:ring-destructive/30"
+                        )}
+                      />
+                    </Field>
+                  </div>
+
+                  {/* Mode toggle: Maintenance | Book a Project */}
+                  <div>
+                    <Label className="text-sm font-medium text-foreground/90 mb-2 block">
+                      What are you booking?
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMode("project");
+                          // Switch to project budget + project type defaults
+                          setBudget(preset.budget && preset.budget !== "maintenance" ? preset.budget : "growth");
+                          setProjectType(preset.projectType && preset.projectType !== "maintenance" ? preset.projectType : "web-app");
+                          setTouched({});
+                          setErrors({});
+                        }}
+                        className={cn(
+                          "px-4 py-3 rounded-lg border text-sm font-medium transition-all",
+                          mode === "project"
+                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-200 glow-cyan"
+                            : "border-border bg-background text-muted-foreground hover:border-cyan-400/40"
+                        )}
                       >
-                        <Mail className="h-3 w-3" />
-                        Email us instead
-                      </a>
+                        Book a Project
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMode("maintenance");
+                          // Switch to maintenance budget + maintenance type
+                          setBudget("request-a-fix");
+                          setProjectType("maintenance");
+                          setTouched({});
+                          setErrors({});
+                        }}
+                        className={cn(
+                          "px-4 py-3 rounded-lg border text-sm font-medium transition-all",
+                          mode === "maintenance"
+                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-200 glow-cyan"
+                            : "border-border bg-background text-muted-foreground hover:border-cyan-400/40"
+                        )}
+                      >
+                        Maintenance
+                      </button>
                     </div>
+                  </div>
 
-                    {/* Name + Email */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Field label="Your name" htmlFor="bk-name" error={touched.name ? errors.name : undefined}>
-                        <Input
-                          id="bk-name"
-                          name="name"
-                          placeholder="Jane Doe"
-                          autoComplete="name"
-                          onBlur={() => onBlur("name")}
-                          className={cn(
-                            "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                            touched.name && errors.name && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                          )}
-                        />
-                      </Field>
-                      <Field label="Email" htmlFor="bk-email" error={touched.email ? errors.email : undefined}>
-                        <Input
-                          id="bk-email"
-                          name="email"
-                          type="email"
-                          placeholder="you@brand.com"
-                          autoComplete="email"
-                          onBlur={() => onBlur("email")}
-                          className={cn(
-                            "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                            touched.email && errors.email && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                          )}
-                        />
-                      </Field>
-                    </div>
+                  {/* Project type */}
+                  <Field
+                    label="What do you want built?"
+                    htmlFor="bk-project-type"
+                    error={touched.projectType ? errors.projectType : undefined}
+                  >
+                    <Select
+                      value={projectType}
+                      onValueChange={(v) => {
+                        setProjectType(v);
+                        setTouched((t) => ({ ...t, projectType: true }));
+                        setTimeout(() => setErrors(validate()), 0);
+                      }}
+                    >
+                      <SelectTrigger
+                        id="bk-project-type"
+                        className={cn(
+                          "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
+                          touched.projectType && errors.projectType && "border-destructive"
+                        )}
+                      >
+                        <SelectValue placeholder="Pick one" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
+                        {PROJECT_TYPES.map((pt) => (
+                          <SelectItem key={pt.value} value={pt.value}>
+                            {pt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
 
-                    {/* Project type */}
+                  {/* Budget + Timeline */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field
-                      label="What do you want built?"
-                      htmlFor="bk-project-type"
-                      error={touched.projectType ? errors.projectType : undefined}
+                      label="Budget tier"
+                      htmlFor="bk-budget"
+                      error={touched.budget ? errors.budget : undefined}
                     >
                       <Select
-                        value={projectType}
+                        key={`budget-${mode}`}
+                        value={budget}
                         onValueChange={(v) => {
-                          setProjectType(v);
-                          setTouched((t) => ({ ...t, projectType: true }));
-                          setErrors(validate());
+                          setBudget(v);
+                          setTouched((t) => ({ ...t, budget: true }));
+                          setTimeout(() => setErrors(validate()), 0);
                         }}
                       >
                         <SelectTrigger
-                          id="bk-project-type"
+                          id="bk-budget"
                           className={cn(
                             "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                            touched.projectType && errors.projectType && "border-destructive"
+                            touched.budget && errors.budget && "border-destructive"
                           )}
                         >
                           <SelectValue placeholder="Pick one" />
                         </SelectTrigger>
-                        <SelectContent className="bg-card border-cyan-400/30 max-h-72">
-                          {PROJECT_TYPES.map((pt) => (
-                            <SelectItem key={pt.value} value={pt.value}>
-                              {pt.label}
+                        <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                          {budgetOptions.map((b) => (
+                            <SelectItem key={b.value} value={b.value}>
+                              {b.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </Field>
 
-                    {/* Budget + Timeline */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Field
-                        label="Budget tier"
-                        htmlFor="bk-budget"
-                        error={touched.budget ? errors.budget : undefined}
-                      >
-                        <Select
-                          value={budget}
-                          onValueChange={(v) => {
-                            setBudget(v);
-                            setTouched((t) => ({ ...t, budget: true }));
-                            setErrors(validate());
-                          }}
-                        >
-                          <SelectTrigger
-                            id="bk-budget"
-                            className={cn(
-                              "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                              touched.budget && errors.budget && "border-destructive"
-                            )}
-                          >
-                            <SelectValue placeholder="Pick one" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card border-cyan-400/30">
-                            {BUDGET_TIERS.map((b) => (
-                              <SelectItem key={b.value} value={b.value}>
-                                {b.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-
-                      <Field
-                        label="Timeline"
-                        htmlFor="bk-timeline"
-                        error={touched.timeline ? errors.timeline : undefined}
-                      >
-                        <Select
-                          value={timeline}
-                          onValueChange={(v) => {
-                            setTimeline(v);
-                            setTouched((t) => ({ ...t, timeline: true }));
-                            setErrors(validate());
-                          }}
-                        >
-                          <SelectTrigger
-                            id="bk-timeline"
-                            className={cn(
-                              "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
-                              touched.timeline && errors.timeline && "border-destructive"
-                            )}
-                          >
-                            <SelectValue placeholder="Pick one" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card border-cyan-400/30">
-                            {TIMELINES.map((t) => (
-                              <SelectItem key={t.value} value={t.value}>
-                                {t.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                    </div>
-
-                    {/* Message */}
                     <Field
-                      label="Project brief"
-                      htmlFor="bk-message"
-                      error={touched.message ? errors.message : undefined}
+                      label="Timeline"
+                      htmlFor="bk-timeline"
+                      error={touched.timeline ? errors.timeline : undefined}
                     >
-                      <Textarea
-                        id="bk-message"
-                        name="message"
-                        rows={5}
-                        placeholder="What it is, who it's for, deadline if any, links to references, anything else we should know."
-                        onBlur={() => onBlur("message")}
-                        className={cn(
-                          "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none",
-                          touched.message && errors.message && "border-destructive focus:border-destructive focus:ring-destructive/30"
-                        )}
-                      />
+                      <Select
+                        value={timeline}
+                        onValueChange={(v) => {
+                          setTimeline(v);
+                          setTouched((t) => ({ ...t, timeline: true }));
+                          setTimeout(() => setErrors(validate()), 0);
+                        }}
+                      >
+                        <SelectTrigger
+                          id="bk-timeline"
+                          className={cn(
+                            "w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30",
+                            touched.timeline && errors.timeline && "border-destructive"
+                          )}
+                        >
+                          <SelectValue placeholder="Pick one" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                          {TIMELINES.map((t) => (
+                            <SelectItem key={t.value} value={t.value}>
+                              {t.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </Field>
+                  </div>
 
-                    <Button
-                      type="submit"
-                      disabled={submitting}
-                      className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group"
-                      size="lg"
-                    >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending
-                        </>
-                      ) : (
-                        <>
-                          Send project enquiry
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </>
+                  {/* Message */}
+                  <Field
+                    label="Project brief"
+                    htmlFor="bk-message"
+                    error={touched.message ? errors.message : undefined}
+                  >
+                    <Textarea
+                      id="bk-message"
+                      name="message"
+                      rows={5}
+                      placeholder="Describe your project briefly"
+                      onBlur={() => onBlur("message")}
+                      className={cn(
+                        "bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none",
+                        touched.message && errors.message && "border-destructive focus:border-destructive focus:ring-destructive/30"
                       )}
-                    </Button>
+                    />
+                  </Field>
 
-                    <p className="text-[11px] text-muted-foreground text-center">
-                      By submitting you agree to a one-off follow-up email. No newsletters, ever.
-                    </p>
-                  </form>
-                )}
-              </div>
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group"
+                    size="lg"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending
+                      </>
+                    ) : (
+                      <>
+                        Send project enquiry
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
+                  </Button>
+
+                  <p className="text-[11px] text-muted-foreground text-center">
+                    By submitting you agree to a one-off follow-up email. No newsletters, ever.
+                  </p>
+                </form>
+              )}
             </div>
           </motion.div>
         </>

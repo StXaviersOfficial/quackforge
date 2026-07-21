@@ -1,67 +1,80 @@
 "use client";
 
 import * as React from "react";
-import { useBooking } from "@/hooks/use-booking";
 
 type Currency = {
   code: "USD" | "INR" | "EUR" | "GBP" | "CAD" | "AUD";
   symbol: string;
   label: string;
-  // Multiplier from USD base
-  rate: number;
+  rate: number; // multiplier from USD
 };
 
 const CURRENCIES: Currency[] = [
-  { code: "USD", symbol: "$", label: "USD", rate: 1 },
-  { code: "INR", symbol: "₹", label: "INR", rate: 83 },
-  { code: "EUR", symbol: "€", label: "EUR", rate: 0.92 },
-  { code: "GBP", symbol: "£", label: "GBP", rate: 0.79 },
-  { code: "CAD", symbol: "C$", label: "CAD", rate: 1.37 },
-  { code: "AUD", symbol: "A$", label: "AUD", rate: 1.52 },
+  { code: "USD", symbol: "$", label: "USD — US Dollar", rate: 1 },
+  { code: "INR", symbol: "₹", label: "INR — Indian Rupee", rate: 83 },
+  { code: "EUR", symbol: "€", label: "EUR — Euro", rate: 0.92 },
+  { code: "GBP", symbol: "£", label: "GBP — British Pound", rate: 0.79 },
+  { code: "CAD", symbol: "C$", label: "CAD — Canadian Dollar", rate: 1.37 },
+  { code: "AUD", symbol: "A$", label: "AUD — Australian Dollar", rate: 1.52 },
 ];
+
+// Fixed INR prices per tier (NOT converted from USD)
+// These are the original Indian-market prices.
+const INR_FIXED: Record<string, number> = {
+  demo: 0,
+  starter: 4999,
+  growth: 12999,
+  pro: 29999,
+  elite: 79999,
+  // Maintenance
+  "request-a-fix": 2499,
+  "care-basic": 2999,
+  "care-complete": 8999,
+};
 
 export function useCurrency() {
   const [currency, setCurrency] = React.useState<Currency>(CURRENCIES[0]);
+  const [countryName, setCountryName] = React.useState<string>("");
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    // First, try client-side detection as fast fallback
     const lang = (navigator.language || "").toLowerCase();
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    let picked: Currency = CURRENCIES[0];
 
-    let picked: Currency = CURRENCIES[0]; // default USD
-
-    // INR — India
     if (lang.startsWith("hi") || lang.includes("-in") || tz === "Asia/Kolkata") {
       picked = CURRENCIES.find((c) => c.code === "INR")!;
-    }
-    // EUR — Eurozone (rough by language prefix or timezone)
-    else if (
-      ["de-", "fr-", "es-", "it-", "nl-", "pt-", "at-", "be-", "fi-", "ie-", "el-", "sk-"].some(
-        (p) => lang.startsWith(p)
-      ) ||
-      [
-        "Europe/Berlin", "Europe/Paris", "Europe/Madrid", "Europe/Rome",
-        "Europe/Amsterdam", "Europe/Lisbon", "Europe/Vienna", "Europe/Brussels",
-        "Europe/Helsinki", "Europe/Dublin", "Europe/Athens", "Europe/Bratislava",
-      ].includes(tz)
-    ) {
+    } else if (["de-", "fr-", "es-", "it-", "nl-", "pt-", "at-", "be-", "fi-", "ie-", "el-", "sk-"].some((p) => lang.startsWith(p)) ||
+      ["Europe/Berlin", "Europe/Paris", "Europe/Madrid", "Europe/Rome", "Europe/Amsterdam", "Europe/Lisbon", "Europe/Vienna", "Europe/Brussels", "Europe/Helsinki", "Europe/Dublin", "Europe/Athens", "Europe/Bratislava"].includes(tz)) {
       picked = CURRENCIES.find((c) => c.code === "EUR")!;
-    }
-    // GBP — UK
-    else if (lang.startsWith("en-gb") || tz === "Europe/London") {
+    } else if (lang.startsWith("en-gb") || tz === "Europe/London") {
       picked = CURRENCIES.find((c) => c.code === "GBP")!;
-    }
-    // CAD — Canada
-    else if (lang.startsWith("en-ca") || lang.startsWith("fr-ca") || tz === "America/Toronto" || tz === "America/Vancouver" || tz === "America/Halifax" || tz === "America/Edmonton") {
+    } else if (lang.startsWith("en-ca") || lang.startsWith("fr-ca") || ["America/Toronto", "America/Vancouver", "America/Halifax", "America/Edmonton"].includes(tz)) {
       picked = CURRENCIES.find((c) => c.code === "CAD")!;
-    }
-    // AUD — Australia
-    else if (lang.startsWith("en-au") || tz === "Australia/Sydney" || tz === "Australia/Melbourne" || tz === "Australia/Brisbane" || tz === "Australia/Perth") {
+    } else if (lang.startsWith("en-au") || ["Australia/Sydney", "Australia/Melbourne", "Australia/Brisbane", "Australia/Perth"].includes(tz)) {
       picked = CURRENCIES.find((c) => c.code === "AUD")!;
     }
 
     setCurrency(picked);
     setMounted(true);
+
+    // Then fetch server-side geo for accuracy
+    fetch("/api/geo")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.currency) {
+          const server = CURRENCIES.find((c) => c.code === data.currency);
+          if (server) setCurrency(server);
+        }
+        if (data?.countryName) setCountryName(data.countryName);
+      })
+      .catch(() => {});
+  }, []);
+
+  const setByCode = React.useCallback((code: string) => {
+    const c = CURRENCIES.find((c) => c.code === code);
+    if (c) setCurrency(c);
   }, []);
 
   const toggle = React.useCallback(() => {
@@ -71,21 +84,34 @@ export function useCurrency() {
     });
   }, []);
 
-  // Format a USD base price to current currency
+  // Format price. If INR, use FIXED prices (not USD conversion).
+  // usd param is the USD base price. tierId is used to look up fixed INR price.
   const format = React.useCallback(
-    (usd: number, opts?: { showCode?: boolean }) => {
-      const converted = Math.round(usd * currency.rate);
-      // Round INR to nearest 99 (Indian pricing convention)
-      const rounded =
-        currency.code === "INR"
-          ? Math.round(converted / 100) * 100 - 1
-          : converted;
-      const formatted = rounded.toLocaleString("en-US");
-      const suffix = opts?.showCode ? ` ${currency.code}` : "";
+    (usd: number, tierId?: string, opts?: { perMonth?: boolean }) => {
+      let amount: number;
+      if (currency.code === "INR" && tierId && tierId in INR_FIXED) {
+        amount = INR_FIXED[tierId];
+      } else {
+        amount = Math.round(usd * currency.rate);
+        // INR rounding convention only when not using fixed
+        if (currency.code === "INR") {
+          amount = Math.round(amount / 100) * 100 - 1;
+        }
+      }
+      const formatted = amount.toLocaleString("en-US");
+      const suffix = opts?.perMonth ? "/mo" : "";
       return `${currency.symbol}${formatted}${suffix}`;
     },
     [currency]
   );
 
-  return { currency, toggle, mounted, format, currencies: CURRENCIES };
+  return {
+    currency,
+    setCurrency: setByCode,
+    toggle,
+    mounted,
+    format,
+    currencies: CURRENCIES,
+    countryName,
+  };
 }

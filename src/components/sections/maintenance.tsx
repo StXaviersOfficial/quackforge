@@ -69,7 +69,7 @@ const PLANS: Plan[] = [
 ];
 
 export function Maintenance() {
-  const { currency, format } = useCurrency();
+  const { format, currency } = useCurrency();
   const { openBooking } = useBooking();
 
   return (
@@ -108,41 +108,23 @@ export function Maintenance() {
           </motion.p>
         </div>
 
-        {/* Desktop: 3 wide cards */}
-        <div className="hidden md:grid md:grid-cols-3 gap-4">
+        {/* 3 wide cards — desktop grid, mobile vertical stack */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan, i) => (
             <PlanCard
               key={plan.id}
               plan={plan}
               index={i}
-              formatPrice={(usd) => format(usd)}
+              formatPrice={(usd) => format(usd, plan.id, { perMonth: plan.cadence.includes("month") })}
+              currencyCode={currency.code}
               onChoose={() =>
                 openBooking({
                   plan: plan.name,
-                  price: format(plan.usdPrice) + (plan.cadence.includes("month") ? "/mo" : ""),
+                  price: format(plan.usdPrice, plan.id, { perMonth: plan.cadence.includes("month") }),
                   budget: "maintenance",
+                  projectType: "maintenance",
                 })
               }
-            />
-          ))}
-        </div>
-
-        {/* Mobile: vertical stack */}
-        <div className="md:hidden flex flex-col gap-4">
-          {PLANS.map((plan, i) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              index={i}
-              formatPrice={(usd) => format(usd)}
-              onChoose={() =>
-                openBooking({
-                  plan: plan.name,
-                  price: format(plan.usdPrice) + (plan.cadence.includes("month") ? "/mo" : ""),
-                  budget: "maintenance",
-                })
-              }
-              mobile
             />
           ))}
         </div>
@@ -155,16 +137,16 @@ function PlanCard({
   plan,
   index,
   formatPrice,
+  currencyCode,
   onChoose,
-  mobile,
 }: {
   plan: Plan;
   index: number;
   formatPrice: (usd: number) => string;
+  currencyCode: string;
   onChoose: () => void;
-  mobile?: boolean;
 }) {
-  const priceLabel = formatPrice(plan.usdPrice) + (plan.cadence.includes("month") ? "/mo" : "");
+  const priceLabel = formatPrice(plan.usdPrice);
 
   return (
     <motion.div
@@ -174,11 +156,10 @@ function PlanCard({
       transition={{ delay: index * 0.08, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       whileHover={{ y: -4, scale: 1.02 }}
       className={cn(
-        "relative rounded-xl border bg-card p-6 flex flex-col transition-colors",
+        "relative rounded-xl border bg-card p-6 flex flex-col transition-colors min-h-[480px]",
         plan.bestCoverage
           ? "border-cyan-400/60 glow-cyan-strong"
-          : "border-border hover:border-cyan-400/40",
-        mobile ? "min-h-[400px]" : "min-h-[440px]"
+          : "border-border hover:border-cyan-400/40"
       )}
     >
       {plan.bestCoverage && (
@@ -190,8 +171,10 @@ function PlanCard({
         </div>
       )}
 
-      <div className="flex items-center gap-2 mb-2">
-        <Wrench className="h-4 w-4 text-cyan-300" />
+      <div className="flex items-center gap-2 mb-3">
+        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
+          <Wrench className="h-5 w-5" />
+        </div>
         <h3 className="text-lg font-semibold tracking-tight">{plan.name}</h3>
       </div>
 
@@ -202,7 +185,7 @@ function PlanCard({
       </div>
       <p className="text-[11px] font-mono text-muted-foreground mb-4">{plan.cadence}</p>
 
-      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{plan.blurb}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5 min-h-[80px]">{plan.blurb}</p>
 
       <div className="feat-list mb-6 flex-1">
         {plan.features.map((f, i) => (

@@ -2,92 +2,130 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, MessageCircle, ArrowRight } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 import { useBooking } from "@/hooks/use-booking";
 
 export function DiscordFab() {
-  const [showText, setShowText] = React.useState(false);
+  const [showPopup, setShowPopup] = React.useState(false);
   const [dismissed, setDismissed] = React.useState(false);
   const { openBooking } = useBooking();
 
-  // After 3s, show the helper text bubble
+  // After 3s, show the blur-lock popup
   React.useEffect(() => {
-    const t = setTimeout(() => setShowText(true), 3000);
+    if (dismissed) return;
+    const t = setTimeout(() => setShowPopup(true), 3000);
     return () => clearTimeout(t);
-  }, []);
+  }, [dismissed]);
+
+  // Lock body scroll when popup is visible
+  React.useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showPopup]);
+
+  const dismissPopup = () => {
+    setShowPopup(false);
+    setDismissed(true);
+  };
 
   return (
-    <div className="discord-fab">
-      {/* Helper text bubble */}
+    <>
+      {/* Blur-lock popup — locks background until user clicks anywhere */}
       <AnimatePresence>
-        {showText && !dismissed && (
+        {showPopup && (
           <motion.div
-            className="discord-fab-text"
-            initial={{ opacity: 0, x: 20, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 20, scale: 0.9 }}
+            className="discord-fab-popup"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            onClick={dismissPopup}
           >
-            <button
-              onClick={() => setDismissed(true)}
-              aria-label="Dismiss"
-              className="discord-fab-dismiss"
+            <motion.div
+              className="discord-fab-popup-text"
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="h-2.5 w-2.5" />
-            </button>
-            <p className="text-xs text-foreground leading-relaxed">
-              Want more info or to book a project?
-              <br />
-              <a
-                href="https://discord.gg/VhKgEetwr8"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#7984F5] font-semibold underline-offset-2 hover:underline"
+              <button
+                onClick={dismissPopup}
+                aria-label="Dismiss"
+                className="discord-fab-popup-x"
               >
-                Join our Discord server
-              </a>{" "}
-              for the fastest response.
-            </p>
+                <X className="h-3 w-3" />
+              </button>
+
+              <div className="flex justify-center mb-3">
+                <DiscordLogo className="h-10 w-10 text-[#7984F5]" />
+              </div>
+
+              <p className="text-sm text-foreground leading-relaxed mb-4">
+                Want more info or want to book demos or book projects?{" "}
+                <a
+                  href="https://discord.gg/VhKgEetwr8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#7984F5] hover:text-[#8E99F5] font-semibold underline-offset-2 underline"
+                  onClick={dismissPopup}
+                >
+                  Join our Discord server
+                </a>{" "}
+                for the fastest response.
+              </p>
+
+              <p className="text-[10px] text-muted-foreground text-center">
+                Click anywhere to dismiss
+              </p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Book a Project button (appears above Discord after dismiss or always) */}
-      <AnimatePresence>
-        {(dismissed || showText) && (
-          <motion.button
-            onClick={() => openBooking({})}
-            className="book-project-btn"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
-          >
-            Book a Project
-            <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* FAB button + Book a Project */}
+      <div className="discord-fab">
+        <AnimatePresence>
+          {(dismissed || !showPopup) && (
+            <motion.button
+              onClick={() => openBooking({})}
+              className="book-project-btn"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
+            >
+              Book a Project
+              <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5" />
+            </motion.button>
+          )}
+        </AnimatePresence>
 
-      {/* Discord button itself */}
-      <motion.a
-        href="https://discord.gg/VhKgEetwr8"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Join our Discord server"
-        className="discord-fab-btn block"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 12 }}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <DiscordLogo className="h-8 w-8 text-white" />
-      </motion.a>
-    </div>
+        <motion.a
+          href="https://discord.gg/VhKgEetwr8"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join our Discord server"
+          className="discord-fab-btn block"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 12 }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <DiscordLogo className="h-8 w-8 text-white" />
+        </motion.a>
+      </div>
+    </>
   );
 }
 
-/* Official-style Discord logo (SVG) */
+/* Official Discord logo (SVG) */
 export function DiscordLogo({ className }: { className?: string }) {
   return (
     <svg

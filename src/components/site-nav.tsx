@@ -8,6 +8,7 @@ import { Magnetic } from "@/components/motion-primitives";
 import { useBooking } from "@/hooks/use-booking";
 import { cn } from "@/lib/utils";
 import { DiscordLogo } from "@/components/discord-fab";
+import { motion, AnimatePresence } from "framer-motion";
 
 const NAV = [
   { href: "#services", label: "Services" },
@@ -29,109 +30,186 @@ export function SiteNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-40 transition-colors duration-300",
-        scrolled
-          ? "bg-background/95 border-b border-border"
-          : "bg-transparent border-b border-transparent"
-      )}
-    >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <nav className="flex h-20 items-center justify-between">
-          <Link
-            href="#top"
-            className="flex items-center gap-3 group"
-            aria-label="QuackForge home"
-          >
-            <div className="relative">
-              <img
-                src="/quackforge-logo.png"
-                alt=""
-                className="h-11 w-11 rounded-lg object-cover ring-1 ring-cyan-400/40 transition-all duration-300 group-hover:ring-cyan-300 group-hover:scale-105"
-                width={44}
-                height={44}
-              />
-              <div
-                aria-hidden
-                className="absolute inset-0 rounded-lg bg-cyan-400/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              />
+    <>
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-40 transition-colors duration-300",
+          scrolled && !open
+            ? "bg-background/95 border-b border-border"
+            : "bg-transparent border-b border-transparent"
+        )}
+      >
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <nav className="flex h-20 items-center justify-between">
+            <Link
+              href="#top"
+              className="flex items-center gap-3 group"
+              aria-label="QuackForge home"
+            >
+              <div className="relative">
+                <img
+                  src="/quackforge-logo.png"
+                  alt=""
+                  className="h-11 w-11 rounded-lg object-cover ring-1 ring-cyan-400/40 transition-all duration-300 group-hover:ring-cyan-300 group-hover:scale-105"
+                  width={44}
+                  height={44}
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 rounded-lg bg-cyan-400/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                />
+              </div>
+              <span className="text-2xl font-semibold tracking-tight">
+                Quack<span className="text-gradient-cyan">Forge</span>
+              </span>
+            </Link>
+
+            <div className="hidden lg:flex items-center gap-1">
+              {NAV.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground link-underline transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
-            <span className="text-2xl font-semibold tracking-tight">
-              Quack<span className="text-gradient-cyan">Forge</span>
-            </span>
-          </Link>
 
-          <div className="hidden lg:flex items-center gap-1">
-            {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground link-underline transition-colors"
+            <div className="flex items-center gap-2">
+              <Magnetic strength={0.3}>
+                <Button
+                  onClick={() => openBooking({})}
+                  className="hidden sm:inline-flex bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow h-10"
+                >
+                  Book a Project
+                </Button>
+              </Magnetic>
+              <Magnetic strength={0.3}>
+                <a
+                  href="https://discord.gg/VhKgEetwr8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Join our Discord server"
+                  className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#5865F2] hover:bg-[#4752C4] text-white transition-colors"
+                >
+                  <DiscordLogo className="h-5 w-5" />
+                </a>
+              </Magnetic>
+              <button
+                className="lg:hidden inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted bg-background/80"
+                onClick={() => setOpen(true)}
+                aria-label="Open menu"
               >
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Magnetic strength={0.3}>
-              <Button
-                onClick={() => openBooking({})}
-                className="hidden sm:inline-flex bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow h-10"
-              >
-                Book a Project
-              </Button>
-            </Magnetic>
-            <Magnetic strength={0.3}>
-              <a
-                href="https://discord.gg/VhKgEetwr8"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Join our Discord server"
-                className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#5865F2] hover:bg-[#4752C4] text-white transition-colors"
-              >
-                <DiscordLogo className="h-5 w-5" />
-              </a>
-            </Magnetic>
-            <button
-              className="lg:hidden inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted"
-              onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle menu"
-              aria-expanded={open}
-            >
-              {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </button>
-          </div>
-        </nav>
-      </div>
-
-      {open && (
-        <div className="lg:hidden border-t border-border bg-background/95">
-          <div className="mx-auto max-w-7xl px-5 py-3 flex flex-col gap-1">
-            {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-            <Button
-              onClick={() => {
-                setOpen(false);
-                openBooking({});
-              }}
-              className="mt-2 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold"
-            >
-              Book a Project
-            </Button>
-          </div>
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
+          </nav>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Mobile menu — full-screen overlay from very top, overrides logo */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="fixed inset-0 z-50 bg-background/98 flex flex-col"
+          >
+            {/* Top bar with close button (no logo) */}
+            <div className="flex items-center justify-between px-5 sm:px-8 h-20 border-b border-border">
+              <span className="text-2xl font-semibold tracking-tight">
+                Quack<span className="text-gradient-cyan">Forge</span>
+              </span>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+                className="inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Menu items — full-screen clickable area to close */}
+            <div
+              className="flex-1 flex flex-col px-5 sm:px-8 py-8"
+              onClick={(e) => {
+                // Close if user clicks anywhere not on a link/button
+                if (e.target === e.currentTarget) setOpen(false);
+              }}
+            >
+              <nav className="flex flex-col gap-2">
+                {NAV.map((item, i) => (
+                  <motion.a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * i, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="px-4 py-4 text-2xl font-semibold tracking-tight text-foreground hover:text-cyan-300 transition-colors border-b border-border"
+                  >
+                    {item.label}
+                  </motion.a>
+                ))}
+              </nav>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                className="mt-8 flex flex-col gap-3"
+              >
+                <Button
+                  onClick={() => {
+                    setOpen(false);
+                    openBooking({});
+                  }}
+                  className="bg-cyan-400 hover:bg-cyan-300 text-background font-semibold pulse-glow h-12 text-base"
+                >
+                  Book a Project
+                </Button>
+                <a
+                  href="https://discord.gg/VhKgEetwr8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold py-3 px-6 rounded-md h-12"
+                >
+                  <DiscordLogo className="h-5 w-5" />
+                  Join Discord
+                </a>
+              </motion.div>
+
+              {/* Email at bottom */}
+              <motion.a
+                href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+                className="mt-auto pt-8 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+              >
+                quackforgeofficial@gmail.com
+              </motion.a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
