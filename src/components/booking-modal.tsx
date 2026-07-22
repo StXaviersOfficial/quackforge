@@ -378,7 +378,7 @@ export function BookingModal() {
                   >
                     <div>
                       <Label htmlFor="bk-name" className="text-sm font-medium text-foreground/90 mb-2 block">
-                        Your name
+                        Business or brand name
                       </Label>
                       <Input
                         id="bk-name"

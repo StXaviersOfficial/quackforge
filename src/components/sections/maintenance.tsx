@@ -192,7 +192,7 @@ export function Maintenance() {
                   className="playing-card"
                   style={{ zIndex, height: "580px" }}
                   animate={{ transform, opacity, boxShadow }}
-                  transition={{ type: "spring", stiffness: 400, damping: 35, mass: 0.8 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 28, mass: 1.0 }}
                   onClick={() => setActiveMobile(i)}
                 >
                   {plan.bestCoverage && (

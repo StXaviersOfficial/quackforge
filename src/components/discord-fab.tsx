@@ -32,11 +32,13 @@ export function DiscordFab() {
   }, [showPopup]);
 
   // Hide FAB while scrolling, show after 0.5s of stillness
+  // BUT keep FAB visible if popup is showing
   React.useEffect(() => {
     let scrollTimer: ReturnType<typeof setTimeout>;
     let isScrolling = false;
 
     const onScroll = () => {
+      if (showPopup) return; // Don't hide FAB when popup is visible
       if (!isScrolling) {
         setFabVisible(false);
         isScrolling = true;
@@ -53,11 +55,9 @@ export function DiscordFab() {
       window.removeEventListener("scroll", onScroll);
       clearTimeout(scrollTimer);
     };
-  }, []);
+  }, [showPopup]);
 
-  // Book a Project button cycling animation:
-  // Default: compact QuackForge logo (64px circle)
-  // Every 25s: expands to pill-shaped "Book a Project" button for 4 seconds, then shrinks back
+  // Book a Project button cycling animation
   React.useEffect(() => {
     let expandTimer: ReturnType<typeof setTimeout>;
     let collapseTimer: ReturnType<typeof setTimeout>;
@@ -67,10 +67,9 @@ export function DiscordFab() {
       collapseTimer = setTimeout(() => {
         setBookExpanded(false);
         expandTimer = setTimeout(cycle, 25000);
-      }, 4000); // expanded for 4 seconds
+      }, 4000);
     };
 
-    // Start first cycle after 5s
     expandTimer = setTimeout(cycle, 5000);
 
     return () => {
@@ -82,6 +81,16 @@ export function DiscordFab() {
   const dismissPopup = () => {
     setShowPopup(false);
     setDismissed(true);
+  };
+
+  // Shared animation props — same for both Book a Project and Discord
+  const sharedAnim = {
+    initial: { opacity: 0, scale: 0.7 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.7 },
+    transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
+    whileHover: { scale: 1.08 },
+    whileTap: { scale: 0.95 },
   };
 
   return (
@@ -133,84 +142,85 @@ export function DiscordFab() {
         )}
       </AnimatePresence>
 
-      {/* FAB — hidden while scrolling, shown after 0.5s of stillness */}
+      {/* FAB — fixed 64px width container prevents layout shift when Book a Project expands */}
       <AnimatePresence>
         {fabVisible && (
           <motion.div
             className="discord-fab"
-            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "12px",
+              width: "64px", // Fixed width prevents Discord from shifting when Book expands
+            }}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        >
-          {/* Book a Project button — cycles between compact logo and expanded text */}
-          <AnimatePresence mode="wait">
-          {bookExpanded ? (
-            <motion.button
-              key="expanded"
-              onClick={() => openBooking({})}
-              initial={{ opacity: 0, scale: 0.7, width: 64 }}
-              animate={{ opacity: 1, scale: 1, width: "auto" }}
-              exit={{ opacity: 0, scale: 0.7, width: 64 }}
-              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-5 h-16 rounded-full whitespace-nowrap"
-              style={{
-                background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
-                color: "#0A1830",
-                fontWeight: 700,
-                fontSize: "14px",
-                boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
-              }}
-            >
-              Book a Project
-            </motion.button>
-          ) : (
-            <motion.button
-              key="compact"
-              onClick={() => openBooking({})}
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.7 }}
-              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Book a Project"
-              className="flex items-center justify-center rounded-full overflow-hidden"
-              style={{
-                width: "64px",
-                height: "64px",
-                background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
-                boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
-              }}
-            >
-              <img
-                src="/quackforge-logo.png"
-                alt="Book a Project"
-                className="h-12 w-12 rounded-full object-cover"
-                draggable={false}
-              />
-            </motion.button>
-          )}
-        </AnimatePresence>
+          >
+            {/* Book a Project button — absolute positioned so expansion doesn't shift Discord */}
+            <div style={{ position: "relative", width: "64px", height: "64px" }}>
+              <AnimatePresence mode="wait">
+                {bookExpanded ? (
+                  <motion.button
+                    key="expanded"
+                    onClick={() => openBooking({})}
+                    {...sharedAnim}
+                    className="flex items-center justify-center px-5 h-16 rounded-full whitespace-nowrap"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
+                      color: "#0A1830",
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+                    }}
+                  >
+                    Book a Project
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    key="compact"
+                    onClick={() => openBooking({})}
+                    {...sharedAnim}
+                    aria-label="Book a Project"
+                    className="flex items-center justify-center rounded-full overflow-hidden"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "64px",
+                      height: "64px",
+                      background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
+                      boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
+                    }}
+                  >
+                    <img
+                      src="/quackforge-logo.png"
+                      alt="Book a Project"
+                      className="h-12 w-12 rounded-full object-cover"
+                      draggable={false}
+                    />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
 
-        {/* Discord button — same 64px, centered below */}
-        <motion.a
-          href="https://discord.gg/VhKgEetwr8"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Join our Discord server"
-          className="discord-fab-btn"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 12 }}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <DiscordLogo className="h-8 w-8 text-white" />
-        </motion.a>
+            {/* Discord button — same shared animation, stays in place */}
+            <motion.a
+              href="https://discord.gg/VhKgEetwr8"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Join our Discord server"
+              className="discord-fab-btn"
+              {...sharedAnim}
+            >
+              <DiscordLogo className="h-8 w-8 text-white" />
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>

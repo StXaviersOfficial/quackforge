@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/motion-primitives";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { useBooking } from "@/hooks/use-booking";
 import { cn } from "@/lib/utils";
 import { DiscordLogo } from "@/components/discord-fab";
@@ -90,6 +91,9 @@ export function SiteNav() {
             </div>
 
             <div className="flex items-center gap-2">
+              <div className="hidden sm:block">
+                <ThemeSwitcher />
+              </div>
               <Magnetic strength={0.3}>
                 <Button
                   onClick={() => openBooking({})}
@@ -183,6 +187,7 @@ export function SiteNav() {
                 transition={{ delay: 0.35, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 className="mt-6 flex flex-col gap-3"
               >
+                <ThemeSwitcher />
                 <Button
                   onClick={() => {
                     setOpen(false);

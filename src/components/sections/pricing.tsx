@@ -381,7 +381,7 @@ export function Pricing() {
                   className="playing-card"
                   style={{ zIndex }}
                   animate={{ transform, opacity, boxShadow }}
-                  transition={{ type: "spring", stiffness: 400, damping: 35, mass: 0.8 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 28, mass: 1.0 }}
                   onClick={() => setActiveMobile(i)}
                 >
                   {tier.bestValue && (
