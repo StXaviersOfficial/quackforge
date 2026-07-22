@@ -171,8 +171,7 @@ export function DiscordFab() {
                     style={{
                       position: "absolute",
                       top: 0,
-                      left: "50%",
-                      transform: "translateX(-50%)",
+                      right: 0,
                       background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
                       color: "#0A1830",
                       fontWeight: 700,

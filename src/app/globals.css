@@ -431,9 +431,12 @@ html, body {
   inset: 0;
   z-index: 60;
   background: rgba(2, 6, 15, 0.92);
-  /* Full blur-lock — no interaction with site until dismissed */
   pointer-events: auto;
   cursor: pointer;
+}
+/* FAB stays above the popup backdrop — Discord logo visible */
+.discord-fab {
+  z-index: 61 !important;
 }
 .discord-fab-popup-text {
   position: fixed;
