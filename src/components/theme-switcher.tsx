@@ -64,19 +64,46 @@ export function ThemeSwitcher() {
 
   const applyRGB = (hue: number) => {
     const root = document.documentElement;
-    // Smooth gradient RGB — mix primary and accent with different hues
-    root.style.setProperty("--primary", `hsl(${hue}, 85%, 60%)`);
-    root.style.setProperty("--accent", `hsl(${(hue + 60) % 360}, 80%, 55%)`);
-    root.style.setProperty("--brand-cyan", `hsl(${hue}, 85%, 60%)`);
-    root.style.setProperty("--brand-blue", `hsl(${(hue + 60) % 360}, 80%, 55%)`);
+    const primary = `hsl(${hue}, 85%, 60%)`;
+    const accent = `hsl(${(hue + 60) % 360}, 80%, 55%)`;
+    root.style.setProperty("--primary", primary);
+    root.style.setProperty("--accent", accent);
+    root.style.setProperty("--brand-cyan", primary);
+    root.style.setProperty("--brand-blue", accent);
     root.style.setProperty("--border", `hsla(${hue}, 85%, 60%, 0.25)`);
+    root.style.setProperty("--ring", primary);
+    root.style.setProperty("--sidebar-primary", primary);
+    root.style.setProperty("--sidebar-ring", primary);
+    root.style.setProperty("--input", `hsla(${hue}, 85%, 60%, 0.12)`);
   };
 
   const applyTheme = (theme: Theme) => {
     const root = document.documentElement;
+    // Set the theme's own vars
     Object.entries(theme.vars).forEach(([key, val]) => {
       root.style.setProperty(key, val);
     });
+    // Derive ALL missing variables from the theme's main colors
+    // This ensures EVERY element on the page changes color
+    const bg = theme.vars["--background"];
+    const card = theme.vars["--card"];
+    const primary = theme.vars["--primary"];
+    const accent = theme.vars["--accent"];
+    if (bg) {
+      root.style.setProperty("--secondary", card || bg);
+      root.style.setProperty("--muted", card || bg);
+      root.style.setProperty("--popover", card || bg);
+      root.style.setProperty("--sidebar", bg);
+      root.style.setProperty("--sidebar-accent", card || bg);
+      root.style.setProperty("--primary-foreground", bg);
+      root.style.setProperty("--accent-foreground", bg);
+      root.style.setProperty("--sidebar-primary", primary);
+      root.style.setProperty("--sidebar-primary-foreground", bg);
+      root.style.setProperty("--sidebar-border", theme.vars["--border"] || "");
+      root.style.setProperty("--sidebar-ring", primary);
+      root.style.setProperty("--ring", primary);
+      root.style.setProperty("--input", `color-mix(in srgb, ${primary} 12%, transparent)`);
+    }
     setActive(theme.id);
     if (rgbInterval.current) { cancelAnimationFrame(rgbInterval.current as unknown as number); rgbInterval.current = null; setRgbActive(false); }
     if (cycleInterval.current) { clearInterval(cycleInterval.current); cycleInterval.current = null; setCycleActive(false); }
