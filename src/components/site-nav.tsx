@@ -91,9 +91,6 @@ export function SiteNav() {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="hidden lg:block">
-                <ThemeSwitcher />
-              </div>
               <Magnetic strength={0.3}>
                 <Button
                   onClick={() => openBooking({})}
@@ -113,6 +110,8 @@ export function SiteNav() {
                   <DiscordLogo className="h-5 w-5" />
                 </a>
               </Magnetic>
+              {/* Theme switcher — always visible, compact, right before hamburger */}
+              <ThemeSwitcher />
               <button
                 className="lg:hidden inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted bg-background/80"
                 onClick={() => setOpen(true)}
@@ -189,7 +188,6 @@ export function SiteNav() {
                 transition={{ delay: 0.3, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 className="mt-4 flex flex-col gap-2"
               >
-                <ThemeSwitcher />
                 <Button
                   onClick={() => {
                     setOpen(false);
