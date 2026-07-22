@@ -43,8 +43,8 @@ export function Team() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <StaggerGroup className="max-w-3xl mb-8 sm:mb-10" stagger={0.1}>
           <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 04 · Team
+            <p className="eyebrow text-primary mb-3 flex items-center gap-2">
+              <span className="h-px w-8 bg-primary/50" /> 04 · Team
             </p>
           </FadeUp>
           <FadeUp>
@@ -76,9 +76,9 @@ export function Team() {
                   ease: [0.4, 0, 0.2, 1],
                 }}
                 whileHover={{ y: -4, scale: 1.02 }}
-                className="rounded-xl border border-border bg-card p-5 hover:border-cyan-400/40 transition-colors"
+                className="rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition-colors"
               >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 mb-3">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 text-primary mb-3">
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-base font-semibold tracking-tight mb-2">{role.title}</h3>

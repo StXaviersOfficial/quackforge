@@ -23,9 +23,9 @@ export function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="eyebrow text-cyan-300 mb-3 flex items-center gap-2"
+            className="eyebrow text-primary mb-3 flex items-center gap-2"
           >
-            <span className="h-px w-8 bg-cyan-400/50" /> 01 · What we work with
+            <span className="h-px w-8 bg-primary/50" /> 01 · What we work with
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -50,7 +50,7 @@ export function Services() {
       </div>
 
       {/* Tech strip — single smooth marquee */}
-      <div className="relative overflow-hidden py-6 border-y border-cyan-400/20 bg-card/30">
+      <div className="relative overflow-hidden py-6 border-y border-primary/20 bg-card/30">
         {/* Edge gradients */}
         <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
           style={{ background: "linear-gradient(to right, var(--background), transparent)" }} />
@@ -86,14 +86,14 @@ function TechChip({ tech, variant = "default" }: { tech: string; variant?: "defa
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
       className={`group inline-flex items-center gap-2.5 mx-2 px-4 py-2.5 rounded-xl border transition-colors cursor-default ${
         variant === "alt"
-          ? "border-cyan-400/20 bg-background/60 hover:border-cyan-400/50 hover:bg-cyan-400/5"
-          : "border-cyan-400/25 bg-card hover:border-cyan-400/60 hover:bg-cyan-400/5"
+          ? "border-primary/20 bg-background/60 hover:border-primary/50 hover:bg-primary/5"
+          : "border-primary/25 bg-card hover:border-primary/60 hover:bg-primary/5"
       }`}
     >
       {/* Animated dot */}
       <span className="relative flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
       </span>
       <span className="text-sm font-mono text-foreground/90 whitespace-nowrap">{tech}</span>
     </motion.div>

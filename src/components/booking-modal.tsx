@@ -214,12 +214,12 @@ export function BookingModal() {
               if (e.target === e.currentTarget && !submitting) closeBooking();
             }}
           >
-            <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-cyan-400/20 px-5 sm:px-8 py-6">
+            <div className="booking-modal-inner relative min-h-screen w-full max-w-2xl mx-auto bg-card border-x border-primary/20 px-5 sm:px-8 py-6">
               {/* Header with progress bar + step indicators — sticky */}
-              <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-4 bg-card/95 border-b border-cyan-400/20 z-10 mb-6">
+              <div className="sticky top-0 -mx-5 sm:-mx-8 px-5 sm:px-8 py-4 bg-card/95 border-b border-primary/20 z-10 mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="eyebrow text-cyan-300 mb-0.5">Project Booking</p>
+                    <p className="eyebrow text-primary mb-0.5">Project Booking</p>
                     <h2 className="text-xl font-semibold tracking-tight">
                       {step === 0 && "Let's start."}
                       {step === 1 && "How can we reach you?"}
@@ -233,7 +233,7 @@ export function BookingModal() {
                     onClick={closeBooking}
                     disabled={submitting}
                     aria-label="Close"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-cyan-400 transition-colors disabled:opacity-50"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-colors disabled:opacity-50"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -248,7 +248,7 @@ export function BookingModal() {
                           className={cn(
                             "flex h-7 w-7 items-center justify-center rounded-full text-xs font-mono font-bold transition-all shrink-0",
                             step >= s
-                              ? "bg-cyan-400 text-background glow-cyan"
+                              ? "bg-primary text-background glow-cyan"
                               : "bg-muted text-muted-foreground border border-border"
                           )}
                         >
@@ -257,7 +257,7 @@ export function BookingModal() {
                         {s < 4 && (
                           <div className="flex-1 h-0.5 mx-1.5 bg-muted rounded-full overflow-hidden">
                             <motion.div
-                              className="h-full bg-cyan-400"
+                              className="h-full bg-primary"
                               initial={{ width: 0 }}
                               animate={{ width: step > s ? "100%" : "0%" }}
                               transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
@@ -274,7 +274,7 @@ export function BookingModal() {
                   <div>
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
                       <span>Step {step} of {STEPS.length - 1}</span>
-                      <span className="font-mono text-cyan-300 font-semibold">{currentProgress}%</span>
+                      <span className="font-mono text-primary font-semibold">{currentProgress}%</span>
                     </div>
                     <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                       <motion.div
@@ -328,23 +328,23 @@ export function BookingModal() {
                       </a>
                       <a
                         href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-                        className="flex items-center gap-3 px-4 py-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5 hover:bg-cyan-400/10 hover:border-cyan-400 transition-colors group"
+                        className="flex items-center gap-3 px-4 py-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary transition-colors group"
                       >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/15 border border-cyan-400/30 text-cyan-300">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 border border-primary/30 text-primary">
                           <Mail className="h-5 w-5" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-semibold">Email us instead</p>
                           <p className="text-xs text-muted-foreground">quackforgeofficial@gmail.com</p>
                         </div>
-                        <ArrowRight className="h-4 w-4 text-cyan-300 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
                       </a>
                     </div>
 
                     {preset.plan && (
-                      <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3 flex items-center justify-between">
+                      <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 flex items-center justify-between">
                         <div>
-                          <p className="text-[11px] font-mono uppercase text-cyan-300 mb-0.5">Selected plan</p>
+                          <p className="text-[11px] font-mono uppercase text-primary mb-0.5">Selected plan</p>
                           <p className="text-sm font-semibold">
                             {preset.plan}{preset.price ? ` · ${preset.price}` : ""}
                           </p>
@@ -354,7 +354,7 @@ export function BookingModal() {
 
                     <Button
                       onClick={() => setStep(1)}
-                      className="w-full bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12"
+                      className="w-full bg-primary hover:bg-primary/90 text-background font-semibold border-0 group h-12"
                       size="lg"
                     >
                       Or Continue on Web
@@ -386,7 +386,7 @@ export function BookingModal() {
                         onChange={(e) => setName(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
                         autoComplete="name"
-                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
+                        className="bg-background border-primary/20 focus:border-primary focus:ring-primary/30 h-12"
                       />
                     </div>
                     <div>
@@ -400,7 +400,7 @@ export function BookingModal() {
                         onChange={(e) => setEmail(e.target.value)}
                         onKeyDown={(e) => { if (e.key === "Enter" && canProceed()) nextStep(); }}
                         autoComplete="email"
-                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12"
+                        className="bg-background border-primary/20 focus:border-primary focus:ring-primary/30 h-12"
                       />
                     </div>
 
@@ -408,7 +408,7 @@ export function BookingModal() {
                       <Button
                         variant="outline"
                         onClick={prevStep}
-                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-primary/40 h-12"
                       >
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
@@ -416,7 +416,7 @@ export function BookingModal() {
                       <Button
                         onClick={nextStep}
                         disabled={!canProceed()}
-                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                        className="flex-1 bg-primary hover:bg-primary/90 text-background font-semibold border-0 group h-12 disabled:opacity-50"
                       >
                         Continue
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -450,14 +450,14 @@ export function BookingModal() {
                         className={cn(
                           "px-4 py-6 rounded-xl border text-left transition-all",
                           mode === "project"
-                            ? "border-cyan-400 bg-cyan-400/15 glow-cyan"
-                            : "border-border bg-background hover:border-cyan-400/40"
+                            ? "border-primary bg-primary/15 glow-cyan"
+                            : "border-border bg-background hover:border-primary/40"
                         )}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="text-base font-semibold">Book a Project</h3>
                           {mode === "project" && (
-                            <div className="h-5 w-5 rounded-full bg-cyan-400 flex items-center justify-center">
+                            <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
                               <Check className="h-3 w-3 text-background" />
                             </div>
                           )}
@@ -476,14 +476,14 @@ export function BookingModal() {
                         className={cn(
                           "px-4 py-6 rounded-xl border text-left transition-all",
                           mode === "maintenance"
-                            ? "border-cyan-400 bg-cyan-400/15 glow-cyan"
-                            : "border-border bg-background hover:border-cyan-400/40"
+                            ? "border-primary bg-primary/15 glow-cyan"
+                            : "border-border bg-background hover:border-primary/40"
                         )}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="text-base font-semibold">Maintenance</h3>
                           {mode === "maintenance" && (
-                            <div className="h-5 w-5 rounded-full bg-cyan-400 flex items-center justify-center">
+                            <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
                               <Check className="h-3 w-3 text-background" />
                             </div>
                           )}
@@ -498,14 +498,14 @@ export function BookingModal() {
                       <Button
                         variant="outline"
                         onClick={prevStep}
-                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-primary/40 h-12"
                       >
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
                       </Button>
                       <Button
                         onClick={nextStep}
-                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12"
+                        className="flex-1 bg-primary hover:bg-primary/90 text-background font-semibold border-0 group h-12"
                       >
                         Continue
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -535,10 +535,10 @@ export function BookingModal() {
                           value={projectType}
                           onValueChange={setProjectType}
                         >
-                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                          <SelectTrigger className="w-full bg-background border-primary/20 focus:border-primary focus:ring-primary/30 h-12">
                             <SelectValue placeholder="Pick one" />
                           </SelectTrigger>
-                          <SelectContent className="bg-card border-cyan-400/30 max-h-72" position="popper" sideOffset={4}>
+                          <SelectContent className="bg-card border-primary/30 max-h-72" position="popper" sideOffset={4}>
                             {PROJECT_TYPES.map((pt) => (
                               <SelectItem key={pt.value} value={pt.value}>{pt.label}</SelectItem>
                             ))}
@@ -558,10 +558,10 @@ export function BookingModal() {
                           value={budget}
                           onValueChange={setBudget}
                         >
-                          <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                          <SelectTrigger className="w-full bg-background border-primary/20 focus:border-primary focus:ring-primary/30 h-12">
                             <SelectValue placeholder="Pick one" />
                           </SelectTrigger>
-                          <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                          <SelectContent className="bg-card border-primary/30" position="popper" sideOffset={4}>
                             {budgetOptions.map((b) => (
                               <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
                             ))}
@@ -576,10 +576,10 @@ export function BookingModal() {
                             Timeline
                           </Label>
                           <Select key={`tl-${step}`} value={timeline} onValueChange={setTimeline}>
-                            <SelectTrigger className="w-full bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 h-12">
+                            <SelectTrigger className="w-full bg-background border-primary/20 focus:border-primary focus:ring-primary/30 h-12">
                               <SelectValue placeholder="Pick one" />
                             </SelectTrigger>
-                            <SelectContent className="bg-card border-cyan-400/30" position="popper" sideOffset={4}>
+                            <SelectContent className="bg-card border-primary/30" position="popper" sideOffset={4}>
                               {TIMELINES.map((t) => (
                                 <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                               ))}
@@ -593,7 +593,7 @@ export function BookingModal() {
                       <Button
                         variant="outline"
                         onClick={prevStep}
-                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-primary/40 h-12"
                       >
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
@@ -601,7 +601,7 @@ export function BookingModal() {
                       <Button
                         onClick={nextStep}
                         disabled={!canProceed()}
-                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                        className="flex-1 bg-primary hover:bg-primary/90 text-background font-semibold border-0 group h-12 disabled:opacity-50"
                       >
                         Continue
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -630,7 +630,7 @@ export function BookingModal() {
                         onChange={(e) => setBrief(e.target.value)}
                         rows={6}
                         placeholder={mode === "maintenance" ? "Describe the issue or what you need maintained" : "Describe your project briefly"}
-                        className="bg-background border-cyan-400/20 focus:border-cyan-400 focus:ring-cyan-400/30 resize-none"
+                        className="bg-background border-primary/20 focus:border-primary focus:ring-primary/30 resize-none"
                       />
                       <p className="text-[11px] text-muted-foreground mt-1.5">
                         {brief.length} characters · minimum 10
@@ -638,8 +638,8 @@ export function BookingModal() {
                     </div>
 
                     {/* Summary card — IKEA effect: user sees what they've built */}
-                    <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-4">
-                      <p className="text-[11px] font-mono uppercase text-cyan-300 mb-2">Your booking summary</p>
+                    <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
+                      <p className="text-[11px] font-mono uppercase text-primary mb-2">Your booking summary</p>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div><span className="text-muted-foreground">Name:</span> {name}</div>
                         <div><span className="text-muted-foreground">Email:</span> {email}</div>
@@ -656,7 +656,7 @@ export function BookingModal() {
                         variant="outline"
                         onClick={prevStep}
                         disabled={submitting}
-                        className="border-border text-muted-foreground hover:text-foreground hover:border-cyan-400/40 h-12"
+                        className="border-border text-muted-foreground hover:text-foreground hover:border-primary/40 h-12"
                       >
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
@@ -664,7 +664,7 @@ export function BookingModal() {
                       <Button
                         onClick={submitEnquiry}
                         disabled={!canProceed() || submitting}
-                        className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group h-12 disabled:opacity-50"
+                        className="flex-1 bg-primary hover:bg-primary/90 text-background font-semibold border-0 group h-12 disabled:opacity-50"
                       >
                         {submitting ? (
                           <>
@@ -695,7 +695,7 @@ export function BookingModal() {
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
-                      className="flex h-20 w-20 items-center justify-center rounded-full bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 mb-6 glow-cyan-strong"
+                      className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/40 text-primary mb-6 glow-cyan-strong"
                     >
                       <CheckCircle2 className="h-10 w-10" />
                     </motion.div>
@@ -716,7 +716,7 @@ export function BookingModal() {
                       <Button
                         variant="outline"
                         onClick={closeBooking}
-                        className="flex-1 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10"
+                        className="flex-1 border-primary/30 text-primary/80 hover:bg-primary/10"
                       >
                         Close
                       </Button>

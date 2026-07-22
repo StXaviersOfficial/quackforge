@@ -130,7 +130,7 @@ export function DiscordFab() {
                   href="https://discord.gg/VhKgEetwr8"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-cyan-300 hover:text-cyan-200 font-semibold underline-offset-2 underline"
+                  className="text-primary hover:text-primary/80 font-semibold underline-offset-2 underline"
                   onClick={dismissPopup}
                 >
                   Join our Discord server
@@ -154,7 +154,7 @@ export function DiscordFab() {
               gap: "12px",
               width: "64px",
               position: "fixed",
-              bottom: "88px",  /* Above Discord button (64px + 24px gap) */
+              bottom: "100px",  /* 64px Discord + 24px gap + 12px extra spacing */
               right: "24px",
               zIndex: 50,
             }}

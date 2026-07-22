@@ -67,7 +67,7 @@ const FAQS: QA[] = [
         for the fastest response — usually within minutes. You can also{" "}
         <a
           href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge%20FAQ"
-          className="inline-flex items-center gap-1 text-cyan-300 hover:text-cyan-200 underline-offset-4 underline font-medium"
+          className="inline-flex items-center gap-1 text-primary hover:text-primary/80 underline-offset-4 underline font-medium"
         >
           <Mail className="h-3.5 w-3.5 inline" />
           email the team
@@ -96,8 +96,8 @@ export function FAQ() {
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <StaggerGroup className="text-center mb-8 sm:mb-10" stagger={0.1}>
           <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2 justify-center">
-              <span className="h-px w-8 bg-cyan-400/50" /> 05 · FAQ
+            <p className="eyebrow text-primary mb-3 flex items-center gap-2 justify-center">
+              <span className="h-px w-8 bg-primary/50" /> 05 · FAQ
             </p>
           </FadeUp>
           <FadeUp>
@@ -110,7 +110,7 @@ export function FAQ() {
         <StaggerGroup className="space-y-3" stagger={0.06}>
           {FAQS.map((item, i) => (
             <FadeUp key={i}>
-              <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-cyan-400/30 transition-colors">
+              <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors">
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
                   className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left cursor-pointer"
@@ -120,7 +120,7 @@ export function FAQ() {
                   <motion.div
                     animate={{ rotate: openIndex === i ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                    className="shrink-0 text-cyan-300"
+                    className="shrink-0 text-primary"
                   >
                     <ChevronDown className="h-4 w-4" />
                   </motion.div>

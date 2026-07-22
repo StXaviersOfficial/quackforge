@@ -31,8 +31,8 @@ export function Contact() {
           {/* Left: copy + main CTA */}
           <div className="flex flex-col gap-5">
             <FadeUp>
-              <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-                <span className="h-px w-8 bg-cyan-400/50" /> 04 · Build your project
+              <p className="eyebrow text-primary mb-3 flex items-center gap-2">
+                <span className="h-px w-8 bg-primary/50" /> 04 · Build your project
               </p>
             </FadeUp>
             <FadeUp>
@@ -53,7 +53,7 @@ export function Contact() {
                 <Button
                   onClick={() => openBooking({})}
                   size="lg"
-                  className="bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow text-base px-7 h-13"
+                  className="bg-primary hover:bg-primary/90 text-background font-semibold border-0 group pulse-glow text-base px-7 h-13"
                 >
                   Book a Project
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -114,7 +114,7 @@ export function Contact() {
                 >
                   <TiltCard
                     max={3}
-                    className="relative rounded-xl border border-cyan-400/30 bg-cyan-400/5 p-5 hover:border-cyan-400 transition-colors overflow-hidden"
+                    className="relative rounded-xl border border-primary/30 bg-primary/5 p-5 hover:border-primary transition-colors overflow-hidden"
                   >
                     <div
                       aria-hidden
@@ -125,11 +125,11 @@ export function Contact() {
                       }}
                     />
                     <div className="relative flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-400/15 border border-cyan-400/30 text-cyan-300">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/15 border border-primary/30 text-primary">
                         <Mail className="h-6 w-6" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-mono text-cyan-300 mb-1">
+                        <p className="text-sm font-mono text-primary mb-1">
                           Email the team
                         </p>
                         <p className="text-base font-semibold">quackforgeofficial@gmail.com</p>
@@ -137,7 +137,7 @@ export function Contact() {
                           Tap to send us a message
                         </p>
                       </div>
-                      <ArrowRight className="h-5 w-5 text-cyan-300 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
                     </div>
                   </TiltCard>
                 </a>

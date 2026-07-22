@@ -25,13 +25,13 @@ export default function Error({
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center bg-cyan-400 hover:bg-cyan-300 text-background font-semibold px-6 py-3 rounded-lg transition-colors"
+            className="inline-flex items-center justify-center bg-primary hover:bg-cyan-300 text-background font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             Try again
           </button>
           <Link
             href="/"
-            className="inline-flex items-center justify-center border border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 font-semibold px-6 py-3 rounded-lg transition-colors"
+            className="inline-flex items-center justify-center border border-primary/40 text-cyan-200 hover:bg-primary/10 font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             Home
           </Link>

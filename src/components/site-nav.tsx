@@ -70,7 +70,7 @@ export function SiteNav() {
                 />
                 <div
                   aria-hidden
-                  className="absolute inset-0 rounded-lg bg-cyan-400/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute inset-0 rounded-lg bg-primary/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 />
               </div>
               <span className="text-2xl font-semibold tracking-tight">
@@ -91,13 +91,13 @@ export function SiteNav() {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="hidden sm:block">
+              <div className="hidden lg:block">
                 <ThemeSwitcher />
               </div>
               <Magnetic strength={0.3}>
                 <Button
                   onClick={() => openBooking({})}
-                  className="hidden sm:inline-flex bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow h-10"
+                  className="hidden sm:inline-flex bg-primary hover:bg-primary/90 text-background font-semibold border-0 group pulse-glow h-10"
                 >
                   Book a Project
                 </Button>
@@ -195,7 +195,7 @@ export function SiteNav() {
                     setOpen(false);
                     openBooking({});
                   }}
-                  className="bg-cyan-400 hover:bg-cyan-300 text-background font-semibold pulse-glow h-12 text-base"
+                  className="bg-primary hover:bg-primary/90 text-background font-semibold pulse-glow h-12 text-base"
                 >
                   Book a Project
                 </Button>

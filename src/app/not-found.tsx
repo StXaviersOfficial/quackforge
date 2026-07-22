@@ -11,7 +11,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="inline-flex items-center justify-center bg-cyan-400 hover:bg-cyan-300 text-background font-semibold px-6 py-3 rounded-lg transition-colors"
+          className="inline-flex items-center justify-center bg-primary hover:bg-cyan-300 text-background font-semibold px-6 py-3 rounded-lg transition-colors"
         >
           Back to QuackForge
         </Link>

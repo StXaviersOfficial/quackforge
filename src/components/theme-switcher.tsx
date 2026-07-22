@@ -273,6 +273,266 @@ export const THEMES: Theme[] = [
       "--brand-blue": "#475569",
     },
   },
+  {
+    id: "aqua",
+    name: "Aqua",
+    vars: {
+      "--background": "#05141A",
+      "--card": "#0A242E",
+      "--primary": "#00E5FF",
+      "--accent": "#00B8D4",
+      "--border": "rgba(0, 229, 255, 0.25)",
+      "--brand-cyan": "#00E5FF",
+      "--brand-blue": "#00B8D4",
+    },
+  },
+  {
+    id: "lavender",
+    name: "Lavender",
+    vars: {
+      "--background": "#0F0A1A",
+      "--card": "#1A122B",
+      "--primary": "#B19CD9",
+      "--accent": "#9B7EBD",
+      "--border": "rgba(177, 156, 217, 0.25)",
+      "--brand-cyan": "#B19CD9",
+      "--brand-blue": "#9B7EBD",
+    },
+  },
+  {
+    id: "forest",
+    name: "Forest",
+    vars: {
+      "--background": "#0A1A0A",
+      "--card": "#142B14",
+      "--primary": "#228B22",
+      "--accent": "#006400",
+      "--border": "rgba(34, 139, 34, 0.25)",
+      "--brand-cyan": "#228B22",
+      "--brand-blue": "#006400",
+    },
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    vars: {
+      "--background": "#1A0A05",
+      "--card": "#2B1208",
+      "--primary": "#FF6B35",
+      "--accent": "#E85D04",
+      "--border": "rgba(255, 107, 53, 0.25)",
+      "--brand-cyan": "#FF6B35",
+      "--brand-blue": "#E85D04",
+    },
+  },
+  {
+    id: "magenta",
+    name: "Magenta",
+    vars: {
+      "--background": "#1A0514",
+      "--card": "#2B0A1F",
+      "--primary": "#FF00FF",
+      "--accent": "#CC00CC",
+      "--border": "rgba(255, 0, 255, 0.25)",
+      "--brand-cyan": "#FF00FF",
+      "--brand-blue": "#CC00CC",
+    },
+  },
+  {
+    id: "turquoise",
+    name: "Turquoise",
+    vars: {
+      "--background": "#051A1A",
+      "--card": "#0A2B2B",
+      "--primary": "#40E0D0",
+      "--accent": "#00CED1",
+      "--border": "rgba(64, 224, 208, 0.25)",
+      "--brand-cyan": "#40E0D0",
+      "--brand-blue": "#00CED1",
+    },
+  },
+  {
+    id: "bronze",
+    name: "Bronze",
+    vars: {
+      "--background": "#1A140A",
+      "--card": "#2B220F",
+      "--primary": "#CD7F32",
+      "--accent": "#B8860B",
+      "--border": "rgba(205, 127, 50, 0.25)",
+      "--brand-cyan": "#CD7F32",
+      "--brand-blue": "#B8860B",
+    },
+  },
+  {
+    id: "platinum",
+    name: "Platinum",
+    vars: {
+      "--background": "#0F0F0F",
+      "--card": "#1A1A1A",
+      "--primary": "#E5E4E2",
+      "--accent": "#B8B8B8",
+      "--border": "rgba(229, 228, 226, 0.25)",
+      "--brand-cyan": "#E5E4E2",
+      "--brand-blue": "#B8B8B8",
+    },
+  },
+  {
+    id: "spring",
+    name: "Spring",
+    vars: {
+      "--background": "#0F1A05",
+      "--card": "#1A2B0A",
+      "--primary": "#9ACD32",
+      "--accent": "#7FB317",
+      "--border": "rgba(154, 205, 50, 0.25)",
+      "--brand-cyan": "#9ACD32",
+      "--brand-blue": "#7FB317",
+    },
+  },
+  {
+    id: "ocean",
+    name: "Ocean",
+    vars: {
+      "--background": "#05101A",
+      "--card": "#0A1F2B",
+      "--primary": "#1E90FF",
+      "--accent": "#0066CC",
+      "--border": "rgba(30, 144, 255, 0.25)",
+      "--brand-cyan": "#1E90FF",
+      "--brand-blue": "#0066CC",
+    },
+  },
+  {
+    id: "burgundy",
+    name: "Burgundy",
+    vars: {
+      "--background": "#140505",
+      "--card": "#240A0A",
+      "--primary": "#800020",
+      "--accent": "#5C0011",
+      "--border": "rgba(128, 0, 32, 0.25)",
+      "--brand-cyan": "#800020",
+      "--brand-blue": "#5C0011",
+    },
+  },
+  {
+    id: "saffron",
+    name: "Saffron",
+    vars: {
+      "--background": "#1A1405",
+      "--card": "#2B2208",
+      "--primary": "#FF9933",
+      "--accent": "#E08020",
+      "--border": "rgba(255, 153, 51, 0.25)",
+      "--brand-cyan": "#FF9933",
+      "--brand-blue": "#E08020",
+    },
+  },
+  {
+    id: "ice",
+    name: "Ice",
+    vars: {
+      "--background": "#0A1014",
+      "--card": "#141F28",
+      "--primary": "#B0E0E6",
+      "--accent": "#87CEEB",
+      "--border": "rgba(176, 224, 230, 0.25)",
+      "--brand-cyan": "#B0E0E6",
+      "--brand-blue": "#87CEEB",
+    },
+  },
+  {
+    id: "plum",
+    name: "Plum",
+    vars: {
+      "--background": "#10051A",
+      "--card": "#1F0A2B",
+      "--primary": "#8E4585",
+      "--accent": "#6A2E5C",
+      "--border": "rgba(142, 69, 133, 0.25)",
+      "--brand-cyan": "#8E4585",
+      "--brand-blue": "#6A2E5C",
+    },
+  },
+  {
+    id: "sand",
+    name: "Sand",
+    vars: {
+      "--background": "#1A160A",
+      "--card": "#2B240F",
+      "--primary": "#C2B280",
+      "--accent": "#A89B6C",
+      "--border": "rgba(194, 178, 128, 0.25)",
+      "--brand-cyan": "#C2B280",
+      "--brand-blue": "#A89B6C",
+    },
+  },
+  {
+    id: "electric",
+    name: "Electric",
+    vars: {
+      "--background": "#0A0014",
+      "--card": "#14001F",
+      "--primary": "#7DF9FF",
+      "--accent": "#00FFFF",
+      "--border": "rgba(125, 249, 255, 0.25)",
+      "--brand-cyan": "#7DF9FF",
+      "--brand-blue": "#00FFFF",
+    },
+  },
+  {
+    id: "olive",
+    name: "Olive",
+    vars: {
+      "--background": "#0F1405",
+      "--card": "#1A240A",
+      "--primary": "#808000",
+      "--accent": "#6B6B00",
+      "--border": "rgba(128, 128, 0, 0.25)",
+      "--brand-cyan": "#808000",
+      "--brand-blue": "#6B6B00",
+    },
+  },
+  {
+    id: "copper",
+    name: "Copper",
+    vars: {
+      "--background": "#1A0F05",
+      "--card": "#2B1A0A",
+      "--primary": "#B87333",
+      "--accent": "#9C5C1E",
+      "--border": "rgba(184, 115, 51, 0.25)",
+      "--brand-cyan": "#B87333",
+      "--brand-blue": "#9C5C1E",
+    },
+  },
+  {
+    id: "midnight",
+    name: "Midnight",
+    vars: {
+      "--background": "#05051A",
+      "--card": "#0A0A2B",
+      "--primary": "#191970",
+      "--accent": "#000080",
+      "--border": "rgba(25, 25, 112, 0.25)",
+      "--brand-cyan": "#191970",
+      "--brand-blue": "#000080",
+    },
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    vars: {
+      "--background": "#050014",
+      "--card": "#0A001F",
+      "--primary": "#39FF14",
+      "--accent": "#00FF00",
+      "--border": "rgba(57, 255, 20, 0.25)",
+      "--brand-cyan": "#39FF14",
+      "--brand-blue": "#00FF00",
+    },
+  },
 ];
 
 export function ThemeSwitcher() {
@@ -318,13 +578,12 @@ export function ThemeSwitcher() {
     <div ref={wrapRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors text-sm"
+        className="inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted transition-colors"
         aria-label="Change theme"
+        title={`Theme: ${activeTheme?.name || "Cyan"}`}
       >
-        <Palette className="h-4 w-4 text-primary" />
-        <span className="font-mono text-xs">{activeTheme?.name || "Cyan"}</span>
         <div
-          className="h-4 w-4 rounded-full border border-border"
+          className="h-5 w-5 rounded-full border border-border"
           style={{ background: activeTheme?.vars["--primary"] || "#22D3EE" }}
         />
       </button>
@@ -339,9 +598,9 @@ export function ThemeSwitcher() {
             className="absolute top-full right-0 mt-2 bg-card border border-border rounded-xl p-2 shadow-2xl z-50"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "6px",
-              maxWidth: "280px",
+              gridTemplateColumns: "repeat(8, 1fr)",
+              gap: "4px",
+              maxWidth: "360px",
             }}
           >
             {THEMES.map((theme) => (

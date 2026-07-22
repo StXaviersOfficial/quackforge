@@ -234,9 +234,9 @@ export function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="eyebrow text-cyan-300 mb-3 flex items-center gap-2"
+            className="eyebrow text-primary mb-3 flex items-center gap-2"
           >
-            <span className="h-px w-8 bg-cyan-400/50" /> 02 · Pricing
+            <span className="h-px w-8 bg-primary/50" /> 02 · Pricing
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -264,7 +264,7 @@ export function Pricing() {
                 onMouseLeave={onMouseUp}
                 onTouchStart={onMouseDown}
                 onTouchEnd={onMouseUp}
-                className="font-mono text-cyan-300 hover:text-cyan-200 underline-offset-4 underline font-semibold select-none cursor-pointer"
+                className="font-mono text-primary hover:text-primary/80 underline-offset-4 underline font-semibold select-none cursor-pointer"
                 title="Click to cycle · Hold 2s to open picker"
               >
                 {mounted ? currency.code : "USD"} {currency.symbol}
@@ -386,7 +386,7 @@ export function Pricing() {
                 >
                   {tier.bestValue && (
                     <div className="absolute top-3 right-3 z-20">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-400 text-background">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-primary text-background">
                         <Star className="h-2 w-2 fill-current" />
                         Best Value
                       </span>
@@ -439,8 +439,8 @@ export function Pricing() {
                     className={cn(
                       "w-full group text-sm h-10 mt-auto",
                       tier.bestValue
-                        ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
-                        : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+                        ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
+                        : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
                     )}
                   >
                     Choose {tier.name}
@@ -456,7 +456,7 @@ export function Pricing() {
             <button
               onClick={() => setActiveMobile((v) => Math.max(0, v - 1))}
               disabled={activeMobile === 0}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-card text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-card text-primary disabled:opacity-30 disabled:cursor-not-allowed hover:border-primary transition-colors"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -469,7 +469,7 @@ export function Pricing() {
                   aria-label={`Go to tier ${i + 1}`}
                   className={cn(
                     "h-1.5 rounded-full transition-all",
-                    i === activeMobile ? "w-6 bg-cyan-400" : "w-1.5 bg-muted-foreground/40"
+                    i === activeMobile ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/40"
                   )}
                 />
               ))}
@@ -477,7 +477,7 @@ export function Pricing() {
             <button
               onClick={() => setActiveMobile((v) => Math.min(TIERS.length - 1, v + 1))}
               disabled={activeMobile === TIERS.length - 1}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-card text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-card text-primary disabled:opacity-30 disabled:cursor-not-allowed hover:border-primary transition-colors"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5" />
@@ -528,13 +528,13 @@ function TierCard({
       className={cn(
         "relative rounded-xl border bg-card p-4 transition-colors flex flex-col h-full",
         tier.bestValue
-          ? "border-cyan-400/60 glow-cyan-strong"
-          : "border-border hover:border-cyan-400/40"
+          ? "border-primary/60 glow-cyan-strong"
+          : "border-border hover:border-primary/40"
       )}
     >
       {tier.bestValue && (
         <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-400 text-background whitespace-nowrap">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary text-background whitespace-nowrap">
             <Star className="h-2.5 w-2.5 fill-current" />
             Best Value
           </span>
@@ -580,8 +580,8 @@ function TierCard({
         className={cn(
           "w-full group text-[11px] h-8 mt-auto",
           tier.bestValue
-            ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
-            : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+            ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
         )}
       >
         Choose {tier.name}
@@ -608,13 +608,13 @@ function MobileTierCard({
       className={cn(
         "relative rounded-2xl border bg-card p-6 flex flex-col",
         tier.bestValue
-          ? "border-cyan-400/60 glow-cyan-strong"
+          ? "border-primary/60 glow-cyan-strong"
           : "border-border"
       )}
     >
       {tier.bestValue && (
         <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-400 text-background whitespace-nowrap">
+          <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[11px] font-mono font-bold bg-primary text-background whitespace-nowrap">
             <Star className="h-3 w-3 fill-current" />
             Best Value
           </span>
@@ -657,8 +657,8 @@ function MobileTierCard({
         className={cn(
           "w-full group text-base h-12 mt-auto",
           tier.bestValue
-            ? "bg-cyan-400 hover:bg-cyan-300 text-background border-0 font-semibold"
-            : "border-cyan-400/40 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
+            ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
         )}
       >
         Choose {tier.name}

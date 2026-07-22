@@ -39,13 +39,13 @@ export function Footer() {
             <div className="flex flex-col gap-3 lg:items-end">
               <Button
                 onClick={() => openBooking({})}
-                className="bg-cyan-400 hover:bg-cyan-300 text-background font-semibold border-0 group pulse-glow self-start lg:self-end"
+                className="bg-primary hover:bg-primary/90 text-background font-semibold border-0 group pulse-glow self-start lg:self-end"
               >
                 Book a Project
               </Button>
               <p className="text-xs text-muted-foreground">
                 Or browse the{" "}
-                <a href="#pricing" className="text-cyan-300 hover:text-cyan-200 underline-offset-4 underline">
+                <a href="#pricing" className="text-primary hover:text-primary/80 underline-offset-4 underline">
                   pricing tiers
                 </a>{" "}
                 first.
@@ -72,7 +72,7 @@ export function Footer() {
           <FooterCol title="Reach us">
             <a
               href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-              className="flex items-start gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors min-w-0"
+              className="flex items-start gap-2 text-sm text-muted-foreground hover:text-primary transition-colors min-w-0"
             >
               <Mail className="h-3.5 w-3.5 shrink-0 mt-0.5" />
               <span className="break-all">quackforgeofficial@gmail.com</span>
@@ -96,14 +96,14 @@ export function Footer() {
               href="https://github.com/StXaviersOfficial"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               <GithubLogo className="h-3.5 w-3.5" />
               GitHub
             </a>
             <a
               href="mailto:quackforgeofficial@gmail.com?subject=Project%20enquiry%20from%20QuackForge"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               <Mail className="h-3.5 w-3.5" />
               Email
@@ -120,7 +120,7 @@ export function Footer() {
           className="pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground"
         >
           <p>© {year} QuackForge. Independent dev studio · est. 2024.</p>
-          <p className="font-mono text-cyan-300/70">
+          <p className="font-mono text-primary/70">
             Taking new projects · reply within 24 hours
           </p>
         </motion.div>
@@ -132,7 +132,7 @@ export function Footer() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
-      <h4 className="eyebrow text-cyan-300 mb-1">{title}</h4>
+      <h4 className="eyebrow text-primary mb-1">{title}</h4>
       {children}
     </div>
   );
@@ -152,7 +152,7 @@ function FooterLink({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className="text-sm text-muted-foreground hover:text-cyan-300 transition-colors"
+      className="text-sm text-muted-foreground hover:text-primary transition-colors"
     >
       {children}
     </a>
