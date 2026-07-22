@@ -162,12 +162,12 @@ export function Maintenance() {
               let transform: string;
               let opacity = 0;
               let zIndex = 0;
-              let boxShadow = "0 10px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(34,211,238,0.15)";
+              let boxShadow = "0 10px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px color-mix(in srgb, var(--primary) 15%, transparent)";
               if (diff === 0) {
                 transform = "translateX(0px) translateZ(40px) rotateY(0deg) scale(1)";
                 opacity = 1;
                 zIndex = 10;
-                boxShadow = "0 20px 60px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(34,211,238,0.6), 0 0 60px -8px rgba(34,211,238,0.6)";
+                boxShadow = "0 20px 60px -10px rgba(0,0,0,0.9), 0 0 0 1px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 60px -8px color-mix(in srgb, var(--primary) 60%, transparent)";
               } else if (diff === -1) {
                 transform = "translateX(-110px) translateZ(-30px) rotateY(18deg) scale(0.92)";
                 opacity = 0.7;

@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { DiscordLogo } from "@/components/discord-fab";
 
 const PROJECT_TYPES = [
-  { value: "web-app", label: "Web app (Next.js / React)" },
+  { value: "web-app", label: "Web app" },
   { value: "static-site", label: "Static HTML/CSS site" },
   { value: "landing-page", label: "Landing page" },
   { value: "android-app", label: "Android app" },
