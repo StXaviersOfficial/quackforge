@@ -146,13 +146,17 @@ export function DiscordFab() {
       <AnimatePresence>
         {fabVisible && (
           <motion.div
-            className="discord-fab"
+            className="discord-fab-book"
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               gap: "12px",
-              width: "64px", // Fixed width prevents Discord from shifting when Book expands
+              width: "64px",
+              position: "fixed",
+              bottom: "88px",  /* Above Discord button (64px + 24px gap) */
+              right: "24px",
+              zIndex: 50,
             }}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -172,8 +176,8 @@ export function DiscordFab() {
                       position: "absolute",
                       top: 0,
                       right: 0,
-                      background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
-                      color: "#0A1830",
+                      background: "linear-gradient(135deg, var(--primary), var(--accent))",
+                      color: "var(--background)",
                       fontWeight: 700,
                       fontSize: "14px",
                       boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.3)",
@@ -194,7 +198,7 @@ export function DiscordFab() {
                       left: 0,
                       width: "64px",
                       height: "64px",
-                      background: "linear-gradient(135deg, #22D3EE, #3B82F6)",
+                      background: "linear-gradient(135deg, var(--primary), var(--accent))",
                       boxShadow: "0 8px 24px -4px rgba(34, 211, 238, 0.5), 0 0 0 1px rgba(34, 211, 238, 0.3)",
                     }}
                   >
@@ -208,21 +212,31 @@ export function DiscordFab() {
                 )}
               </AnimatePresence>
             </div>
-
-            {/* Discord button — same shared animation, stays in place */}
-            <motion.a
-              href="https://discord.gg/VhKgEetwr8"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Join our Discord server"
-              className="discord-fab-btn"
-              {...sharedAnim}
-            >
-              <DiscordLogo className="h-8 w-8 text-white" />
-            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Discord button — SEPARATE from Book a Project, always above popup (z-index 61) */}
+      <motion.a
+        href="https://discord.gg/VhKgEetwr8"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Join our Discord server"
+        className="discord-fab-btn"
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          zIndex: 61,
+        }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: fabVisible ? 1 : 0.8, opacity: fabVisible ? 1 : 0 }}
+        transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 12 }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <DiscordLogo className="h-8 w-8 text-white" />
+      </motion.a>
     </>
   );
 }

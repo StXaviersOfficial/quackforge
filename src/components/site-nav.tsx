@@ -143,29 +143,31 @@ export function SiteNav() {
               animate={{ y: 0 }}
               exit={{ y: "-100%" }}
               transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-              className="fixed top-0 left-0 right-0 z-50 bg-background/98 border-b border-cyan-400/30 shadow-2xl"
-              style={{ height: "100vh", maxHeight: "65vh" }}
+              className="fixed top-0 left-0 right-0 z-50 bg-background/98 border-b border-primary/30 shadow-2xl"
+              style={{ height: "100vh", maxHeight: "55vh" }}
             >
-            {/* Top bar with close button — no logo, just close */}
-            <div className="flex items-center justify-end px-5 sm:px-8 h-16 border-b border-border">
+            {/* Top bar — close button on right, no empty space */}
+            <div className="flex items-center justify-between px-5 sm:px-8 h-14 border-b border-border">
+              <span className="text-lg font-semibold tracking-tight">
+                Quack<span className="text-gradient-cyan">Forge</span>
+              </span>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="inline-flex h-10 w-10 items-center justify-center border border-border rounded-md hover:bg-muted"
+                className="inline-flex h-9 w-9 items-center justify-center border border-border rounded-md hover:bg-muted"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Menu items */}
+            {/* Menu items — no scroll, compact */}
             <div
-              className="px-5 sm:px-8 py-6 flex flex-col gap-1 overflow-y-auto"
-              style={{ height: "calc(100% - 4rem)" }}
+              className="px-5 sm:px-8 py-3 flex flex-col gap-0"
               onClick={(e) => {
                 if (e.target === e.currentTarget) setOpen(false);
               }}
             >
-              <nav className="flex flex-col gap-1">
+              <nav className="flex flex-col gap-0">
                 {NAV.map((item, i) => (
                   <motion.a
                     key={item.href}
@@ -174,7 +176,7 @@ export function SiteNav() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 * i + 0.1, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                    className="px-4 py-3 text-xl font-semibold tracking-tight text-foreground hover:text-cyan-300 transition-colors border-b border-border/50"
+                    className="px-4 py-2.5 text-base font-semibold tracking-tight text-foreground hover:text-primary transition-colors border-b border-border/30"
                   >
                     {item.label}
                   </motion.a>
@@ -184,8 +186,8 @@ export function SiteNav() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="mt-6 flex flex-col gap-3"
+                transition={{ delay: 0.3, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                className="mt-4 flex flex-col gap-2"
               >
                 <ThemeSwitcher />
                 <Button
