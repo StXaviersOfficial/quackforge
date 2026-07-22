@@ -58,8 +58,8 @@ export function Testimonials() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <StaggerGroup className="max-w-2xl mb-10 sm:mb-12" stagger={0.1}>
           <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 05 · Testimonials
+            <p className="eyebrow text-primary mb-3 flex items-center gap-2">
+              <span className="h-px w-8 bg-primary/50" /> 05 · Testimonials
             </p>
           </FadeUp>
           <FadeUp>
@@ -86,17 +86,17 @@ export function Testimonials() {
               <HoverLift y={-3}>
                 <TiltCard
                   max={3}
-                  className="h-full rounded-xl border border-border bg-card p-6 hover:border-cyan-400/40 transition-colors"
+                  className="h-full rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <Quote className="h-6 w-6 text-cyan-400/60" />
+                    <Quote className="h-6 w-6 text-primary/60" />
                     <div className="flex gap-0.5">
                       {Array.from({ length: 5 }).map((_, idx) => (
                         <Star
                           key={idx}
                           className={
                             idx < t.rating
-                              ? "h-3.5 w-3.5 fill-cyan-300 text-cyan-300"
+                              ? "h-3.5 w-3.5 fill-cyan-300 text-primary"
                               : "h-3.5 w-3.5 text-muted-foreground"
                           }
                         />
@@ -108,7 +108,7 @@ export function Testimonials() {
                   </p>
                   <div className="pt-4 border-t border-border">
                     <p className="text-sm font-semibold text-foreground">{t.role}</p>
-                    <p className="text-[11px] font-mono text-cyan-300/70 mt-1">
+                    <p className="text-[11px] font-mono text-primary/70 mt-1">
                       {t.projectMatch}
                     </p>
                   </div>

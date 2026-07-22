@@ -244,7 +244,7 @@ export function Maintenance() {
                       "w-full group text-sm h-10 mt-auto",
                       plan.bestCoverage
                         ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-                        : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+                        : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary"
                     )}
                   >
                     Choose {plan.name}
@@ -365,7 +365,7 @@ function PlanCard({
           "w-full group text-xs h-9 mt-auto",
           plan.bestCoverage
             ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary"
         )}
       >
         Choose {plan.name}
@@ -436,7 +436,7 @@ function MobilePlanCard({
           "w-full group text-base h-12 mt-auto",
           plan.bestCoverage
             ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary"
         )}
       >
         Choose {plan.name}

@@ -24,10 +24,10 @@ export function Hero() {
           {/* Left: text */}
           <StaggerGroup className="flex flex-col items-start gap-5" stagger={0.1}>
             <FadeUp>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-300/40 bg-cyan-300/10 text-xs font-mono text-primary/80">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/40 bg-primary/10 text-xs font-mono text-primary/80">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-300" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                 </span>
                 Online · taking new projects
               </span>
@@ -70,7 +70,7 @@ export function Hero() {
                     asChild
                     size="lg"
                     variant="outline"
-                    className="border-primary/50 text-primary/80 hover:bg-primary/10 hover:text-cyan-100 hover:border-primary bg-primary/5 text-base px-6 h-12"
+                    className="border-primary/50 text-primary/80 hover:bg-primary/10 hover:text-primary hover:border-primary bg-primary/5 text-base px-6 h-12"
                   >
                     <a href="#pricing">See pricing</a>
                   </Button>

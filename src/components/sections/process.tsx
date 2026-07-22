@@ -63,8 +63,8 @@ export function Process() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <StaggerGroup className="max-w-2xl mb-12" stagger={0.1}>
           <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 04 · Process
+            <p className="eyebrow text-primary mb-3 flex items-center gap-2">
+              <span className="h-px w-8 bg-primary/50" /> 04 · Process
             </p>
           </FadeUp>
           <FadeUp>
@@ -114,17 +114,17 @@ export function Process() {
                     stiffness: 200,
                     damping: 12,
                   }}
-                  className="absolute left-0 top-0 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full border border-cyan-400/40 bg-background text-cyan-300 font-mono text-sm sm:text-base font-semibold glow-cyan"
+                  className="absolute left-0 top-0 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full border border-primary/40 bg-background text-primary font-mono text-sm sm:text-base font-semibold glow-cyan"
                 >
                   {step.num}
                 </motion.div>
 
-                <div className="rounded-xl border border-border bg-card/40 backdrop-blur-sm p-5 sm:p-6 hover:border-cyan-400/30 transition-colors">
+                <div className="rounded-xl border border-border bg-card/40 backdrop-blur-sm p-5 sm:p-6 hover:border-primary/30 transition-colors">
                   <div className="flex items-center justify-between mb-2 gap-3">
                     <h3 className="text-base sm:text-lg font-semibold tracking-tight">
                       {step.title}
                     </h3>
-                    <span className="text-[11px] font-mono text-cyan-300/80 px-2 py-0.5 rounded-full border border-cyan-400/20 bg-cyan-400/5">
+                    <span className="text-[11px] font-mono text-primary/80 px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5">
                       {step.duration}
                     </span>
                   </div>

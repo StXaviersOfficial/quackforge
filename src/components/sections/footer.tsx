@@ -22,7 +22,7 @@ export function Footer() {
                 <img
                   src="/quackforge-logo.png"
                   alt=""
-                  className="h-10 w-10 rounded-lg object-cover ring-1 ring-cyan-400/40"
+                  className="h-10 w-10 rounded-lg object-cover ring-1 ring-primary/40"
                   width={40}
                   height={40}
                 />

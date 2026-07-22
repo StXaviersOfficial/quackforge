@@ -116,8 +116,8 @@ export function Work() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <StaggerGroup className="max-w-2xl mb-10 sm:mb-12" stagger={0.1}>
           <FadeUp>
-            <p className="eyebrow text-cyan-300 mb-3 flex items-center gap-2">
-              <span className="h-px w-8 bg-cyan-400/50" /> 04 · Work &amp; Process
+            <p className="eyebrow text-primary mb-3 flex items-center gap-2">
+              <span className="h-px w-8 bg-primary/50" /> 04 · Work &amp; Process
             </p>
           </FadeUp>
           <FadeUp>
@@ -140,7 +140,7 @@ export function Work() {
                 <HoverLift y={-4}>
                   <TiltCard
                     max={5}
-                    className="group relative h-full rounded-xl border border-border bg-card p-6 hover:border-cyan-400/40 transition-colors overflow-hidden"
+                    className="group relative h-full rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors overflow-hidden"
                   >
                     <div
                       aria-hidden
@@ -151,9 +151,9 @@ export function Work() {
                       }}
                     />
                     <div className="relative flex items-center justify-between mb-4">
-                      <span className="text-[11px] font-mono text-cyan-300">{p.kind}</span>
+                      <span className="text-[11px] font-mono text-primary">{p.kind}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-cyan-400/30 bg-cyan-400/5 text-cyan-300">
+                        <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-primary/30 bg-primary/5 text-primary">
                           {p.metric}
                         </span>
                         <span className="text-[11px] font-mono text-muted-foreground">{p.year}</span>
@@ -179,7 +179,7 @@ export function Work() {
                         </motion.span>
                       ))}
                     </div>
-                    <span className="absolute top-5 right-5 inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted-foreground group-hover:text-cyan-300 group-hover:border-cyan-400 transition-colors">
+                    <span className="absolute top-5 right-5 inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted-foreground group-hover:text-primary group-hover:border-primary transition-colors">
                       <ArrowUpRight className="h-3.5 w-3.5" />
                     </span>
                   </TiltCard>
@@ -212,10 +212,10 @@ export function Work() {
                   }}
                   className="w-[70%] sm:w-[40%] md:w-auto"
                 >
-                  <div className="rounded-lg border border-border bg-card p-5 hover:border-cyan-400/40 transition-colors">
+                  <div className="rounded-lg border border-border bg-card p-5 hover:border-primary/40 transition-colors">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-mono text-cyan-300">{step.num}</span>
-                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-cyan-400/20 bg-cyan-400/5 text-cyan-300">
+                      <span className="text-xs font-mono text-primary">{step.num}</span>
+                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5 text-primary">
                         {step.duration}
                       </span>
                     </div>

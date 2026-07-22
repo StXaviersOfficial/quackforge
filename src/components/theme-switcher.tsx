@@ -78,14 +78,14 @@ export function ThemeSwitcher() {
       root.style.setProperty(key, val);
     });
     setActive(theme.id);
-    if (rgbInterval.current) { clearInterval(rgbInterval.current); rgbInterval.current = null; setRgbActive(false); }
+    if (rgbInterval.current) { cancelAnimationFrame(rgbInterval.current as unknown as number); rgbInterval.current = null; setRgbActive(false); }
     if (cycleInterval.current) { clearInterval(cycleInterval.current); cycleInterval.current = null; setCycleActive(false); }
     try { localStorage.setItem("qf-theme", theme.id); } catch {}
   };
 
   const toggleRGB = () => {
     if (rgbInterval.current) {
-      clearInterval(rgbInterval.current);
+      cancelAnimationFrame(rgbInterval.current as unknown as number);
       rgbInterval.current = null;
       setRgbActive(false);
       applyTheme(THEMES.find((t) => t.id === "cyan")!);
@@ -93,11 +93,16 @@ export function ThemeSwitcher() {
       setRgbActive(true);
       if (cycleInterval.current) { clearInterval(cycleInterval.current); cycleInterval.current = null; setCycleActive(false); }
       let hue = 0;
-      applyRGB(hue);
-      rgbInterval.current = setInterval(() => {
-        hue = (hue + 2) % 360;
-        applyRGB(hue);
-      }, 50);
+      let lastTime = 0;
+      const tick = (time: number) => {
+        if (time - lastTime >= 50) {
+          hue = (hue + 3) % 360;
+          applyRGB(hue);
+          lastTime = time;
+        }
+        rgbInterval.current = requestAnimationFrame(tick) as unknown as ReturnType<typeof setInterval>;
+      };
+      rgbInterval.current = requestAnimationFrame(tick) as unknown as ReturnType<typeof setInterval>;
     }
   };
 
@@ -108,7 +113,7 @@ export function ThemeSwitcher() {
       setCycleActive(false);
     } else {
       setCycleActive(true);
-      if (rgbInterval.current) { clearInterval(rgbInterval.current); rgbInterval.current = null; setRgbActive(false); }
+      if (rgbInterval.current) { cancelAnimationFrame(rgbInterval.current as unknown as number); rgbInterval.current = null; setRgbActive(false); }
       let idx = THEMES.findIndex((t) => t.id === active);
       cycleInterval.current = setInterval(() => {
         idx = (idx + 1) % THEMES.length;

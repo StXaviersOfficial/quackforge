@@ -64,7 +64,7 @@ export function SiteNav() {
                 <img
                   src="/quackforge-logo.png"
                   alt=""
-                  className="h-11 w-11 rounded-lg object-cover ring-1 ring-cyan-400/40 transition-all duration-300 group-hover:ring-cyan-300 group-hover:scale-105"
+                  className="h-11 w-11 rounded-lg object-cover ring-1 ring-primary/40 transition-all duration-300 group-hover:ring-primary group-hover:scale-105"
                   width={44}
                   height={44}
                 />
