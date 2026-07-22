@@ -513,7 +513,7 @@ html, body {
 }
 .feat-text { color: #E6FBFF; }
 .feat-text.muted {
-  color: #7AA5CC;
+  color: var(--muted-foreground);
   text-decoration: line-through;
   text-decoration-color: rgba(255, 107, 107, 0.4);
 }

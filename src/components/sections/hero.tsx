@@ -9,7 +9,6 @@ import {
   TextReveal,
   Counter,
 } from "@/components/motion-primitives";
-import { CpuDiagram3D } from "@/components/cpu-diagram-3d";
 import { useBooking } from "@/hooks/use-booking";
 
 export function Hero() {
@@ -88,9 +87,13 @@ export function Hero() {
             </FadeUp>
           </StaggerGroup>
 
-          {/* Right: 3D CPU diagram */}
+          {/* Right: Placeholder for live scroll animation video */}
           <FadeUp delay={0.4}>
-            <CpuDiagram3D />
+            <div className="flex items-center justify-center w-full aspect-square max-w-[480px] mx-auto rounded-2xl border border-primary/20 bg-card/30">
+              <p className="text-center text-sm font-mono text-muted-foreground px-8">
+                Placeholder for Live scroll animation vid
+              </p>
+            </div>
           </FadeUp>
         </div>
       </div>

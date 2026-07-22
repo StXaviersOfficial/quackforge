@@ -538,7 +538,19 @@ export const THEMES: Theme[] = [
 export function ThemeSwitcher() {
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState("cyan");
+  const [rgbActive, setRgbActive] = React.useState(false);
+  const [cycleActive, setCycleActive] = React.useState(false);
   const wrapRef = React.useRef<HTMLDivElement>(null);
+  const rgbInterval = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const cycleInterval = React.useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const applyRGB = (hue: number) => {
+    const root = document.documentElement;
+    root.style.setProperty("--primary", `hsl(${hue}, 85%, 60%)`);
+    root.style.setProperty("--accent", `hsl(${(hue + 40) % 360}, 80%, 55%)`);
+    root.style.setProperty("--brand-cyan", `hsl(${hue}, 85%, 60%)`);
+    root.style.setProperty("--brand-blue", `hsl(${(hue + 40) % 360}, 80%, 55%)`);
+  };
 
   const applyTheme = (theme: Theme) => {
     const root = document.documentElement;
@@ -546,6 +558,8 @@ export function ThemeSwitcher() {
       root.style.setProperty(key, val);
     });
     setActive(theme.id);
+    if (rgbInterval.current) { clearInterval(rgbInterval.current); rgbInterval.current = null; setRgbActive(false); }
+    if (cycleInterval.current) { clearInterval(cycleInterval.current); cycleInterval.current = null; setCycleActive(false); }
     try {
       localStorage.setItem("qf-theme", theme.id);
     } catch {}
@@ -595,14 +609,63 @@ export function ThemeSwitcher() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute top-full right-0 mt-2 bg-card border border-border rounded-xl p-2 shadow-2xl z-50"
+            className="absolute top-full right-0 mt-2 bg-card border border-border rounded-xl p-2 shadow-2xl z-50 max-w-[calc(100vw-48px)]"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(8, 1fr)",
+              gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
               gap: "4px",
-              maxWidth: "360px",
             }}
           >
+            {/* RGB + Cycle mode buttons */}
+            <div className="col-span-full flex gap-2 mb-1 pb-1 border-b border-border">
+              <button
+                onClick={() => {
+                  if (rgbInterval.current) {
+                    clearInterval(rgbInterval.current);
+                    rgbInterval.current = null;
+                    setRgbActive(false);
+                    applyTheme(THEMES.find((t) => t.id === "cyan")!);
+                  } else {
+                    setRgbActive(true);
+                    let hue = 0;
+                    applyRGB(hue);
+                    rgbInterval.current = setInterval(() => {
+                      hue = (hue + 15) % 360;
+                      applyRGB(hue);
+                    }, 100);
+                  }
+                }}
+                className={cn(
+                  "flex-1 px-2 py-1.5 rounded-md text-[10px] font-mono font-bold transition-colors",
+                  rgbActive ? "bg-primary text-background" : "bg-muted text-muted-foreground hover:text-foreground"
+                )}
+              >
+                RGB
+              </button>
+              <button
+                onClick={() => {
+                  if (cycleInterval.current) {
+                    clearInterval(cycleInterval.current);
+                    cycleInterval.current = null;
+                    setCycleActive(false);
+                  } else {
+                    setCycleActive(true);
+                    let idx = THEMES.findIndex((t) => t.id === active);
+                    cycleInterval.current = setInterval(() => {
+                      idx = (idx + 1) % THEMES.length;
+                      applyTheme(THEMES[idx]);
+                    }, 7000);
+                  }
+                }}
+                className={cn(
+                  "flex-1 px-2 py-1.5 rounded-md text-[10px] font-mono font-bold transition-colors",
+                  cycleActive ? "bg-primary text-background" : "bg-muted text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Cycle
+              </button>
+            </div>
+
             {THEMES.map((theme) => (
               <button
                 key={theme.id}

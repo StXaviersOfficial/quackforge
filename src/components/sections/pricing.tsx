@@ -440,7 +440,7 @@ export function Pricing() {
                       "w-full group text-sm h-10 mt-auto",
                       tier.bestValue
                         ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-                        : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+                        : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary/90"
                     )}
                   >
                     Choose {tier.name}
@@ -581,7 +581,7 @@ function TierCard({
           "w-full group text-[11px] h-8 mt-auto",
           tier.bestValue
             ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary/90"
         )}
       >
         Choose {tier.name}
@@ -658,7 +658,7 @@ function MobileTierCard({
           "w-full group text-base h-12 mt-auto",
           tier.bestValue
             ? "bg-primary hover:bg-primary/90 text-background border-0 font-semibold"
-            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-cyan-100"
+            : "border-primary/40 text-primary/80 hover:bg-primary/10 hover:text-primary/90"
         )}
       >
         Choose {tier.name}

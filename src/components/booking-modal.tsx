@@ -644,6 +644,9 @@ export function BookingModal() {
                         <div><span className="text-muted-foreground">Name:</span> {name}</div>
                         <div><span className="text-muted-foreground">Email:</span> {email}</div>
                         <div><span className="text-muted-foreground">Type:</span> {mode === "maintenance" ? "Maintenance" : "Project"}</div>
+                        {mode === "project" && projectType && (
+                          <div><span className="text-muted-foreground">Build:</span> {PROJECT_TYPES.find(pt => pt.value === projectType)?.label}</div>
+                        )}
                         <div><span className="text-muted-foreground">{mode === "maintenance" ? "Plan:" : "Tier:"}</span> {budgetOptions.find(b => b.value === budget)?.label}</div>
                         {mode === "project" && timeline && (
                           <div><span className="text-muted-foreground">Timeline:</span> {TIMELINES.find(t => t.value === timeline)?.label}</div>
