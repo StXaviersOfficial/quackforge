@@ -336,7 +336,7 @@ export function ThemeSwitcher() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl p-2 shadow-2xl z-50"
+            className="absolute top-full right-0 mt-2 bg-card border border-border rounded-xl p-2 shadow-2xl z-50"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
